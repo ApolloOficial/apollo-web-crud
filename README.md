@@ -85,5 +85,6 @@ git push origin feature/nome-da-sua-tarefa
 ---
 
 ## 👥 Integrantes do Time
-* [@Nichiruto0](https://github.com)
-* [Seu Nome / Seu GitHub](https://github.com)
+* [@Nichiruto0](https://github.com/Nichiruto0)
+* [@Migs345](https://github.com/Migs345)
+* [@pczr](https://github.com/pczr)
