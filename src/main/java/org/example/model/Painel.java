@@ -12,6 +12,9 @@ public class Painel {
     private String localizacao;
     private int id_lote;
 
+    public Painel(){
+    }
+
     public Painel(int id, String material, String modelo, String marca, int eficiencia, int vida_util, String localizacao, int id_lote) {
         this.id_painel = id;
         this.material = material;

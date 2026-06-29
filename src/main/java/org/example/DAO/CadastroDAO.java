@@ -36,7 +36,7 @@ public class CadastroDAO extends ApolloConnection {
             PreparedStatement stmt = connection.prepareStatement(sql);
             ResultSet consulta = stmt.executeQuery();
             while (consulta.next()){
-                Cadastro cads = new Cadastro(0, null, null, 0);
+                Cadastro cads = new Cadastro();
                 cads.setId(consulta.getInt("id_cadastro"));
                 cads.setData(consulta.getObject("data", java.time.LocalDate.class));
                 cads.setInfo_foto(consulta.getString("info_foto"));

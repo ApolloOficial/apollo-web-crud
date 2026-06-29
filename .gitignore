@@ -1,2 +1,5 @@
 /.env
 /.gitignore
+.idea/
+.smarttomcat/
+target/

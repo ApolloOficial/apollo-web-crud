@@ -10,6 +10,9 @@ public class Leitura {
     private int id_leitor;
     private int id_lote;
 
+    public Leitura(){
+    }
+
     public Leitura(int id, LocalDate data, int id_leitor, int id_lote) {
         this.id = id;
         this.data = data;

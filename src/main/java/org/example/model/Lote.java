@@ -10,6 +10,9 @@ public class Lote {
     private int id_cadastro;
     private String localizacao;
 
+    public Lote(){
+    }
+
     public Lote(int id, int quantia_paineis, int eficiencia_geral, String observacao, int id_cadastro, String localizacao) {
         this.id = id;
         this.quantia_paineis = quantia_paineis;

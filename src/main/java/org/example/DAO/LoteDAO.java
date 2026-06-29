@@ -38,7 +38,7 @@ public class LoteDAO extends ApolloConnection {
             PreparedStatement stmt = connection.prepareStatement(sql);
             ResultSet consulta = stmt.executeQuery();
             while (consulta.next()){
-                Lote lote = new Lote(0, 0, 0, null, 0, null);
+                Lote lote = new Lote();
                 lote.setId(consulta.getInt("id_lote"));
                 lote.setQuantia_paineis(consulta.getInt("quantia_paineis"));
                 lote.setEficiencia_geral(consulta.getInt("eficiencia_geral"));

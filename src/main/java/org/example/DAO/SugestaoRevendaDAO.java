@@ -35,7 +35,7 @@ public class SugestaoRevendaDAO extends ApolloConnection {
             PreparedStatement stmt = connection.prepareStatement(sql);
             ResultSet consulta = stmt.executeQuery();
             while (consulta.next()){
-                 SugestaoRevenda sugestao = new SugestaoRevenda(0, 0, 0);
+                 SugestaoRevenda sugestao = new SugestaoRevenda();
                  sugestao.setId(consulta.getInt("id"));
                  sugestao.setId_painel(consulta.getInt("id_painel"));
                  sugestao.setPreco(consulta.getDouble("preco"));

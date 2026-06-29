@@ -7,6 +7,9 @@ public class SugestaoRevenda {
     private int id_painel;
     private double preco;
 
+    public SugestaoRevenda() {
+    }
+
     public SugestaoRevenda(int id, int id_painel, double preco) {
         this.id = id;
         this.id_painel = id_painel;

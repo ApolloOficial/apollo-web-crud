@@ -10,6 +10,9 @@ public class Cadastro {
     private String info_foto;
     private int id_cadastrante;
 
+    public Cadastro() {
+    }
+
     public Cadastro(int id, LocalDate data, String info_foto, int id_cadastrante) {
         this.id = id;
         this.data = data;
