@@ -11,7 +11,7 @@ public class MainInsertLoop {
         PainelDAO pnlDAO = new PainelDAO();
         LeituraDAO leiDAO = new LeituraDAO();
         SugestaoRevendaDAO sgstRevDAO = new SugestaoRevendaDAO();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 22; i < 24; i++) {
             //TESTE USUARIO
 
             Usuario user1 = new Usuario(1, "teste", "teste@teste", "111.111.111/"+i, "#1111111", "teste");
