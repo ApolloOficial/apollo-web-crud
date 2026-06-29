@@ -12,11 +12,12 @@ import java.io.PrintWriter;
 @WebServlet("/usuarios")
 public class UsuarioServlet extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("text/html;charset=UTF-8");
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        /*response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         out.println("<h1>Olá Mundo</h1>");
-        out.close();
+        out.close();*/
+        request.getRequestDispatcher("/test/teste.html").forward(request,response);
     }
 
     @Override
