@@ -17,7 +17,7 @@ public class UsuarioServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         out.println("<h1>Olá Mundo</h1>");
         out.close();*/
-        request.getRequestDispatcher("/test/teste.html").forward(request,response);
+        request.getRequestDispatcher("/WEB-INF/views/teste.html").forward(request,response);
     }
 
     @Override
