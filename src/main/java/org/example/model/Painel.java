@@ -13,14 +13,6 @@ public class Painel {
     private int id_lote;
 
     public Painel(){
-        this.id_painel = 0;
-        this.material = null;
-        this.modelo = null;
-        this.marca = null;
-        this.eficiencia = 0;
-        this.vida_util = 0;
-        this.localizacao = null;
-        this.id_lote = 0;
     }
 
     public Painel(int id, String material, String modelo, String marca, int eficiencia, int vida_util, String localizacao, int id_lote) {

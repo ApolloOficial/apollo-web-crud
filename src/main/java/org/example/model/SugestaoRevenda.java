@@ -8,9 +8,6 @@ public class SugestaoRevenda {
     private double preco;
 
     public SugestaoRevenda() {
-        this.id = 0;
-        this.id_painel = 0;
-        this.preco = 0;
     }
 
     public SugestaoRevenda(int id, int id_painel, double preco) {

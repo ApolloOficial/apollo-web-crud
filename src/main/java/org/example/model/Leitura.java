@@ -11,10 +11,6 @@ public class Leitura {
     private int id_lote;
 
     public Leitura(){
-        this.id = 0;
-        this.data = null;
-        this.id_leitor = 0;
-        this.id_lote = 0;
     }
 
     public Leitura(int id, LocalDate data, int id_leitor, int id_lote) {

@@ -11,10 +11,6 @@ public class Cadastro {
     private int id_cadastrante;
 
     public Cadastro() {
-        this.id = 0;
-        this.data = null;
-        this.info_foto = null;
-        this.id_cadastrante = 0;
     }
 
     public Cadastro(int id, LocalDate data, String info_foto, int id_cadastrante) {

@@ -11,12 +11,6 @@ public class Usuario {
     private String tipo;
 
     public Usuario(){
-        this.id_usuario = 0;
-        this.nome = null;
-        this.email = null;
-        this.cpf = null;
-        this.senha = null;
-        this.tipo = null;
     }
 
     public Usuario(int id_usuario, String nome, String email, String cpf, String senha, String tipo) {

@@ -11,12 +11,6 @@ public class Lote {
     private String localizacao;
 
     public Lote(){
-        this.id = 0;
-        this.quantia_paineis = 0;
-        this.eficiencia_geral = 0;
-        this.observacao = null;
-        this.id_cadastro = 0;
-        this.localizacao = null;
     }
 
     public Lote(int id, int quantia_paineis, int eficiencia_geral, String observacao, int id_cadastro, String localizacao) {
