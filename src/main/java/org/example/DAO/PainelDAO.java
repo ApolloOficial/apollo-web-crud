@@ -40,7 +40,7 @@ public class PainelDAO extends ApolloConnection {
             PreparedStatement stmt = connection.prepareStatement(sql);
             ResultSet consulta = stmt.executeQuery();
             while (consulta.next()){
-                Painel pnls = new Painel(0, null, null, null, 0, 0, null, 0);
+                Painel pnls = new Painel();
                 pnls.setId_painel(consulta.getInt("id_painel"));
                 pnls.setMaterial(consulta.getString("material"));
                 pnls.setModelo(consulta.getString("modelo"));

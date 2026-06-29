@@ -36,7 +36,7 @@ public class LeituraDAO extends ApolloConnection {
             PreparedStatement stmt = connection.prepareStatement(sql);
             ResultSet consulta = stmt.executeQuery();
             while (consulta.next()){
-                Leitura leitura = new Leitura(0, null, 0, 0);
+                Leitura leitura = new Leitura();
                 leitura.setId(consulta.getInt("id_leitura"));
                 leitura.setData(consulta.getObject("data", java.time.LocalDate.class));
                 leitura.setId_leitor(consulta.getInt("id_leitor"));

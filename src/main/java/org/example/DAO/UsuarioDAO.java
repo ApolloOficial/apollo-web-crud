@@ -38,7 +38,7 @@ public class UsuarioDAO extends ApolloConnection {
             PreparedStatement stmt = connection.prepareStatement(sql);
             ResultSet consulta = stmt.executeQuery();
             while (consulta.next()){
-                Usuario usuario = new Usuario(0,null,null,null,null, null);
+                Usuario usuario = new Usuario();
                 usuario.setId_usuario(consulta.getInt("id_usuario"));
                 usuario.setNome(consulta.getString("nome"));
                 usuario.setEmail(consulta.getString("email"));
