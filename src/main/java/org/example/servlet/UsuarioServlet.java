@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.ServletException;
+import org.example.DAO.UsuarioDAO;
 import org.example.model.Usuario;
 
 import java.io.IOException;
@@ -17,7 +18,10 @@ public class UsuarioServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         out.println("<h1>Olá Mundo</h1>");
         out.close();*/
-        request.getRequestDispatcher("/WEB-INF/views/teste.html").forward(request,response);
+        /*request.getRequestDispatcher("/WEB-INF/views/teste.html").forward(request,response);*/
+        UsuarioDAO userD = new UsuarioDAO();
+        request.setAttribute("usuarios",userD.listar());
+        request.getRequestDispatcher("/WEB-INF/views/teste.jsp").forward(request,response);
     }
 
     @Override
