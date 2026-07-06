@@ -1,40 +1,40 @@
-import org.example.model.*;
-import org.example.DAO.*;
+import org.apollo.apollowebcrud.model.*;
+import org.apollo.apollowebcrud.DAO.*;
 
 import java.time.LocalDate;
 
 public class MainInsertLoop {
     static void main() {
-        UsuarioDAO userDao = new UsuarioDAO();
-        CadastroDAO cadsDAO = new CadastroDAO();
-        LoteDAO loteDAO = new LoteDAO();
-        PainelDAO pnlDAO = new PainelDAO();
-        LeituraDAO leiDAO = new LeituraDAO();
-        SugestaoRevendaDAO sgstRevDAO = new SugestaoRevendaDAO();
-        for (int i = 22; i < 24; i++) {
+        org.apollo.apollowebcrud.DAO.UsuarioDAO userDao = new org.apollo.apollowebcrud.DAO.UsuarioDAO();
+        org.apollo.apollowebcrud.DAO.CadastroDAO cadsDAO = new org.apollo.apollowebcrud.DAO.CadastroDAO();
+        org.apollo.apollowebcrud.DAO.LoteDAO loteDAO = new org.apollo.apollowebcrud.DAO.LoteDAO();
+        org.apollo.apollowebcrud.DAO.PainelDAO pnlDAO = new org.apollo.apollowebcrud.DAO.PainelDAO();
+        org.apollo.apollowebcrud.DAO.LeituraDAO leiDAO = new org.apollo.apollowebcrud.DAO.LeituraDAO();
+        org.apollo.apollowebcrud.DAO.SugestaoRevendaDAO sgstRevDAO = new org.apollo.apollowebcrud.DAO.SugestaoRevendaDAO();
+        for (int i = 0; i < 20; i++) {
             //TESTE USUARIO
 
-            Usuario user1 = new Usuario(1, "teste", "teste@teste", "111.111.111/"+i, "#1111111", "teste");
+            org.apollo.apollowebcrud.model.Usuario user1 = new org.apollo.apollowebcrud.model.Usuario(1, "teste", "teste@teste", "111.111.111/"+i, "#1111111", "teste");
             System.out.println(userDao.inserir(user1));
             //TESTE CADASTRO
 
-            Cadastro cads1 = new Cadastro(1, LocalDate.of(2001, 9, 11), "teste.png", i+1);
+            org.apollo.apollowebcrud.model.Cadastro cads1 = new org.apollo.apollowebcrud.model.Cadastro(1, LocalDate.of(2001, 9, 11), "teste.png", i+1);
             System.out.println(cadsDAO.inserir(cads1));
             //TESTE LOTE
 
-            Lote lote1 = new Lote(1, 1, 1, "teste", i+1, "teste");
+            org.apollo.apollowebcrud.model.Lote lote1 = new org.apollo.apollowebcrud.model.Lote(1, 1, 1, "teste", i+1, "teste");
             System.out.println(loteDAO.inserir(lote1));
             //TESTE PAINEL
 
-            Painel pnl1 = new Painel(1, "teste", "teste", "teste", 1, 1, "teste", i+1);
+            org.apollo.apollowebcrud.model.Painel pnl1 = new org.apollo.apollowebcrud.model.Painel(1, "teste", "teste", "teste", 1, 1, "teste", i+1);
             System.out.println(pnlDAO.inserir(pnl1));
             //TESTE LEITURA
 
-            Leitura lei1 = new Leitura(1, LocalDate.of(2001, 9, 11), i+1, i+1);
+            org.apollo.apollowebcrud.model.Leitura lei1 = new org.apollo.apollowebcrud.model.Leitura(1, LocalDate.of(2001, 9, 11), i+1, i+1);
             System.out.println(leiDAO.inserir(lei1));
             //TESTE SUGESTAO
 
-            SugestaoRevenda sgstRev1 = new SugestaoRevenda(1, i+1, 1.0);
+            org.apollo.apollowebcrud.model.SugestaoRevenda sgstRev1 = new org.apollo.apollowebcrud.model.SugestaoRevenda(1, i+1, 1.0);
             System.out.println(sgstRevDAO.inserir(sgstRev1));
         }
     }
