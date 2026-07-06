@@ -1,5 +1,5 @@
-import org.example.model.*;
-import org.example.DAO.*;
+import org.apollo.apollowebcrud.model.*;
+import org.apollo.apollowebcrud.DAO.*;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -7,21 +7,21 @@ import java.util.logging.Logger;
 
 public class MainLimparv2 {
     static void main() {
-        UsuarioDAO userDao = null;
-        CadastroDAO cadsDAO = null;
-        LeituraDAO leiDAO = null;
-        LoteDAO loteDAO = null;
-        PainelDAO pnlDAO = null;
-        SugestaoRevendaDAO sgstRevDAO = null;
+        org.apollo.apollowebcrud.DAO.UsuarioDAO userDao = null;
+        org.apollo.apollowebcrud.DAO.CadastroDAO cadsDAO = null;
+        org.apollo.apollowebcrud.DAO.LeituraDAO leiDAO = null;
+        org.apollo.apollowebcrud.DAO.LoteDAO loteDAO = null;
+        org.apollo.apollowebcrud.DAO.PainelDAO pnlDAO = null;
+        org.apollo.apollowebcrud.DAO.SugestaoRevendaDAO sgstRevDAO = null;
         System.out.println("CONECTANDO COM O BANCO DE DADOS...");
         boolean seguir=false;
         try {
-            userDao = new UsuarioDAO();
-            cadsDAO = new CadastroDAO();
-            leiDAO = new LeituraDAO();
-            loteDAO = new LoteDAO();
-            pnlDAO = new PainelDAO();
-            sgstRevDAO = new SugestaoRevendaDAO();
+            userDao = new org.apollo.apollowebcrud.DAO.UsuarioDAO();
+            cadsDAO = new org.apollo.apollowebcrud.DAO.CadastroDAO();
+            leiDAO = new org.apollo.apollowebcrud.DAO.LeituraDAO();
+            loteDAO = new org.apollo.apollowebcrud.DAO.LoteDAO();
+            pnlDAO = new org.apollo.apollowebcrud.DAO.PainelDAO();
+            sgstRevDAO = new org.apollo.apollowebcrud.DAO.SugestaoRevendaDAO();
             System.out.println("CONEXÃO CONCLUÍDA COM SUCESSO");
             seguir = true;
         } catch (Exception ex){
@@ -31,38 +31,38 @@ public class MainLimparv2 {
         if(seguir) {
             //TESTE LEITURA
 
-            List<Leitura> leiList = leiDAO.listar();
-            for (Leitura l : leiList) {
+            List<org.apollo.apollowebcrud.model.Leitura> leiList = leiDAO.listar();
+            for (org.apollo.apollowebcrud.model.Leitura l : leiList) {
                 System.out.println(leiDAO.deletar(l));
             }
             //TESTE SUGESTAO
 
-            List<SugestaoRevenda> sgstRevList = sgstRevDAO.listar();
-            for (SugestaoRevenda s : sgstRevList) {
+            List<org.apollo.apollowebcrud.model.SugestaoRevenda> sgstRevList = sgstRevDAO.listar();
+            for (org.apollo.apollowebcrud.model.SugestaoRevenda s : sgstRevList) {
                 System.out.println(sgstRevDAO.deletar(s));
             }
             //TESTE PAINEL
 
-            List<Painel> pnList = pnlDAO.listar();
-            for (Painel p : pnList) {
+            List<org.apollo.apollowebcrud.model.Painel> pnList = pnlDAO.listar();
+            for (org.apollo.apollowebcrud.model.Painel p : pnList) {
                 System.out.println(pnlDAO.deletar(p));
             }
             //TESTE LOTE
 
-            List<Lote> loteList = loteDAO.listar();
-            for (Lote l : loteList) {
+            List<org.apollo.apollowebcrud.model.Lote> loteList = loteDAO.listar();
+            for (org.apollo.apollowebcrud.model.Lote l : loteList) {
                 System.out.println(loteDAO.deletar(l));
             }
             //TESTE CADASTRO
 
-            List<Cadastro> cadList = cadsDAO.listar();
-            for (Cadastro c : cadList) {
+            List<org.apollo.apollowebcrud.model.Cadastro> cadList = cadsDAO.listar();
+            for (org.apollo.apollowebcrud.model.Cadastro c : cadList) {
                 System.out.println(cadsDAO.deletar(c));
             }
             //TESTE USUARIO
 
-            List<Usuario> userList = userDao.listar();
-            for (Usuario u : userList) {
+            List<org.apollo.apollowebcrud.model.Usuario> userList = userDao.listar();
+            for (org.apollo.apollowebcrud.model.Usuario u : userList) {
                 System.out.println(userDao.deletar(u));
             }
         }
