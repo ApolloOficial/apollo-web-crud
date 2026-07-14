@@ -28,6 +28,7 @@ public class UsuarioDAO extends ApolloConnection {
             return true;
         } catch (SQLException ex) {
             Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, "SQL error on INSERT", ex);
+            usuario.setMensagemErro(ex.getMessage());
             return false;
         }
     }
