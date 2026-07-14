@@ -9,6 +9,7 @@ public class Usuario {
     private String cpf;
     private String senha;
     private String tipo;
+    private String mensagemErro;
 
     public Usuario(){
     }
@@ -69,6 +70,14 @@ public class Usuario {
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
+    }
+
+    public String getMensagemErro() {
+        return mensagemErro;
+    }
+
+    public void setMensagemErro(String mensagemErro) {
+        this.mensagemErro = mensagemErro;
     }
 
     //OVERRIDE DA SAÍDA TOSTRING()

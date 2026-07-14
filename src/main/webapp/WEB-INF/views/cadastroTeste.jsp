@@ -1,4 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -11,24 +12,29 @@
 <form action="usuarios" method="POST">
     <table>
         <tr>
-            <td><input type="text" name="nome" placeholder="Nome"></td>
+            <td><input type="text" name="nome" value="${param.nome}" placeholder="Nome"></td>
         </tr>
         <tr>
-            <td><input type="text" name="email" placeholder="E-mail"></td>
+            <td><input type="text" name="email" value="${param.email}" placeholder="E-mail" required></td>
         </tr>
         <tr>
-            <td><input type="text" name="cpf" placeholder="CPF"></td>
+            <td><input type="text" name="cpf" value="${param.cpf}" placeholder="CPF" required></td>
         </tr>
         <tr>
-            <td><input type="password" name="senha" placeholder="Senha"></td>
+            <td><input type="password" name="senha" placeholder="Senha" required></td>
         </tr>
         <tr>
-            <td><input type="text" name="tipo" placeholder="Tipo"></td>
+            <td><input type="text" name="tipo" value="${param.tipo}" placeholder="Tipo"></td>
         </tr>
         <tr>
             <td><button type="submit">Cadastrar</button></td>
         </tr>
     </table>
 </form>
+<c:if test="${not empty ErroNoCadastro}">
+    <script>
+        window.alert("Erro no Cadastro!\n"+"${ErroNoCadastro}");
+    </script>
+</c:if>
 </body>
 </html>
