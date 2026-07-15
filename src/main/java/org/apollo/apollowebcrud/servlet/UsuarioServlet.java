@@ -20,9 +20,25 @@ public class UsuarioServlet extends HttpServlet {
         out.println("<h1>Olá Mundo</h1>");
         out.close();*/
         /*request.getRequestDispatcher("/WEB-INF/views/teste.html").forward(request,response);*/
-        UsuarioDAO userD = new UsuarioDAO();
-        request.setAttribute("usuarios",userD.listar());
-        request.getRequestDispatcher("/WEB-INF/views/cadastroTeste.jsp").forward(request,response);
+        String action = request.getParameter("action");
+        if(action == null){
+            if(request.getSession(false).isNew()){
+                action = "telaInicial";
+            } else {
+                action = "cadastrar";
+            }
+        }
+        if (action.equals("listar")) {
+            UsuarioDAO userD = new UsuarioDAO();
+            request.setAttribute("usuarios", userD.listar());
+            request.getRequestDispatcher("/WEB-INF/views/teste.jsp").forward(request, response);
+        } else if (action.equals("cadastrar")) {
+            request.getRequestDispatcher("/WEB-INF/views/cadastroTeste.jsp").forward(request, response);
+        } else if (action.equals("telaInicial")) {
+            request.getRequestDispatcher("/WEB-INF/views/telaInicialUsuario.jsp").forward(request, response);
+        } else {
+                request.getRequestDispatcher("/WEB-INF/views/telaInicialUsuario.jsp").forward(request, response);
+            }
     }
 
     @Override
