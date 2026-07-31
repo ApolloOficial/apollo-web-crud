@@ -3,24 +3,27 @@ package org.apollo.apollowebcrud.model;
 public class Empresa {
 
     // ATRIBUTOS E CONSTRUTORES
-    private int idEmpresa;
+
+    private int id;
     private String nome;
+
+
+    public Empresa(int id, String nome) {
+        this.id = id;
+        this.nome = nome;
+    }
 
     public Empresa() {
     }
 
-    public Empresa(int idEmpresa, String nome) {
-        this.idEmpresa = idEmpresa;
-        this.nome = nome;
-    }
-
     // MÉTODOS GETTERS E SETTERS
-    public int getIdEmpresa() {
-        return idEmpresa;
+
+    public int getId() {
+        return id;
     }
 
-    public void setIdEmpresa(int idEmpresa) {
-        this.idEmpresa = idEmpresa;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -35,6 +38,6 @@ public class Empresa {
 
     @Override
     public String toString() {
-        return "ID=" + getIdEmpresa() + " NOME=" + getNome();
+        return "ID=" + getId() + " NOME=" + getNome();
     }
 }
