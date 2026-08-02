@@ -4,23 +4,22 @@ public class Lote {
     //ATRIBUTOS E CONSTRUTOR
 
     private int id;
-    private int quantia_paineis;
-    private int eficiencia_geral;
+    private int quantidadePaineis;
+    private int eficienciaGeral;
     private String observacao;
-    private int id_cadastro;
-    private String localizacao;
+    private int idFilial;
 
-    public Lote(){
-    }
-
-    public Lote(int id, int quantia_paineis, int eficiencia_geral, String observacao, int id_cadastro, String localizacao) {
+    public Lote(int id, int quantidadePaineis, int eficienciaGeral, String observacao, int idFilial) {
         this.id = id;
-        this.quantia_paineis = quantia_paineis;
-        this.eficiencia_geral = eficiencia_geral;
+        this.quantidadePaineis = quantidadePaineis;
+        this.eficienciaGeral = eficienciaGeral;
         this.observacao = observacao;
-        this.id_cadastro = id_cadastro;
-        this.localizacao = localizacao;
+        this.idFilial = idFilial;
     }
+
+    public Lote() {
+    }
+
     //MÉTODOS GETTERS E SETTERS
 
     public int getId() {
@@ -31,20 +30,20 @@ public class Lote {
         this.id = id;
     }
 
-    public int getQuantia_paineis() {
-        return quantia_paineis;
+    public int getQuantidadePaineis() {
+        return quantidadePaineis;
     }
 
-    public void setQuantia_paineis(int quantia_paineis) {
-        this.quantia_paineis = quantia_paineis;
+    public void setQuantidadePaineis(int quantidadePaineis) {
+        this.quantidadePaineis = quantidadePaineis;
     }
 
-    public int getEficiencia_geral() {
-        return eficiencia_geral;
+    public int getEficienciaGeral() {
+        return eficienciaGeral;
     }
 
-    public void setEficiencia_geral(int eficiencia_geral) {
-        this.eficiencia_geral = eficiencia_geral;
+    public void setEficienciaGeral(int eficienciaGeral) {
+        this.eficienciaGeral = eficienciaGeral;
     }
 
     public String getObservacao() {
@@ -55,25 +54,17 @@ public class Lote {
         this.observacao = observacao;
     }
 
-    public int getId_cadastro() {
-        return id_cadastro;
+    public int getIdFilial() {
+        return idFilial;
     }
 
-    public void setId_cadastro(int id_cadastro) {
-        this.id_cadastro = id_cadastro;
-    }
-
-    public String getLocalizacao() {
-        return localizacao;
-    }
-
-    public void setLocalizacao(String localizacao) {
-        this.localizacao = localizacao;
+    public void setIdFilial(int idFilial) {
+        this.idFilial = idFilial;
     }
     //OVERRIDE DA SAÍDA TOSTRING()
 
     @Override
-    public String toString(){
-        return "ID="+getId()+" QUANTIA P="+getQuantia_paineis()+" EFICIÊNCIA GERAL="+getEficiencia_geral()+" OBSERVAÇÃO="+getObservacao()+" ID CADASTRO="+getId_cadastro()+" LOCALIZAÇÃO="+getLocalizacao();
+    public String toString() {
+        return "ID=" + getId() + " QUANTIA P=" + getQuantidadePaineis() + " EFICIÊNCIA GERAL=" + getEficienciaGeral() + " OBSERVAÇÃO=" + getObservacao() + " ID CADASTRO=" + getIdFilial() + " LOCALIZAÇÃO=" + getLocalizacao();
     }
 }

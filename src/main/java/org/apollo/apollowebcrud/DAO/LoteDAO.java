@@ -19,10 +19,10 @@ public class LoteDAO extends ApolloConnection {
         String sql = "INSERT INTO lote (quantia_paineis, eficiencia_geral, observacao, id_cadastro, localizacao) VALUES(?, ?, ?, ?, ?)";
         try{
             PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setInt(1, lote.getQuantia_paineis());
-            stmt.setInt(2, lote.getEficiencia_geral());
+            stmt.setInt(1, lote.getQuantidadePaineis());
+            stmt.setInt(2, lote.getEficienciaGeral());
             stmt.setString(3, lote.getObservacao());
-            stmt.setInt(4, lote.getId_cadastro());
+            stmt.setInt(4, lote.getIdFilial());
             stmt.setString(5, lote.getLocalizacao());
             stmt.execute();
             return true;
@@ -40,10 +40,10 @@ public class LoteDAO extends ApolloConnection {
             while (consulta.next()){
                 Lote lote = new Lote();
                 lote.setId(consulta.getInt("id_lote"));
-                lote.setQuantia_paineis(consulta.getInt("quantia_paineis"));
-                lote.setEficiencia_geral(consulta.getInt("eficiencia_geral"));
+                lote.setQuantidadePaineis(consulta.getInt("quantia_paineis"));
+                lote.setEficienciaGeral(consulta.getInt("eficiencia_geral"));
                 lote.setObservacao(consulta.getString("observacao"));
-                lote.setId_cadastro(consulta.getInt("id_cadastro"));
+                lote.setIdFilial(consulta.getInt("id_cadastro"));
                 lote.setLocalizacao(consulta.getString("localizacao"));
                 lotes.add(lote);
             }
@@ -56,10 +56,10 @@ public class LoteDAO extends ApolloConnection {
         String sql = "UPDATE lote SET quantia_paineis=?, eficiencia_geral=?, observacao=?, id_cadastro=?, localizacao=? WHERE id_lote=?";
         try{
             PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setInt(1, lote.getQuantia_paineis());
-            stmt.setInt(2, lote.getEficiencia_geral());
+            stmt.setInt(1, lote.getQuantidadePaineis());
+            stmt.setInt(2, lote.getEficienciaGeral());
             stmt.setString(3, lote.getObservacao());
-            stmt.setInt(4, lote.getId_cadastro());
+            stmt.setInt(4, lote.getIdFilial());
             stmt.setString(5, lote.getLocalizacao());
             stmt.setInt(6, lote.getId());
             stmt.execute();

@@ -1,6 +1,5 @@
 package org.apollo.apollowebcrud.DAO;
 
-import org.apollo.apollowebcrud.model.Leitura;
 import org.apollo.apollowebcrud.util.ApolloConnection;
 
 import java.sql.*;
