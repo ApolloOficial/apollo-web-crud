@@ -40,7 +40,7 @@ public class UsuarioDAO extends ApolloConnection {
             ResultSet consulta = stmt.executeQuery();
             while (consulta.next()){
                 Usuario usuario = new Usuario();
-                usuario.setId_usuario(consulta.getInt("id_usuario"));
+                usuario.setId(consulta.getInt("id_usuario"));
                 usuario.setNome(consulta.getString("nome"));
                 usuario.setEmail(consulta.getString("email"));
                 usuario.setCpf(consulta.getString("cpf"));
@@ -62,7 +62,7 @@ public class UsuarioDAO extends ApolloConnection {
             stmt.setString(3, usuario.getCpf());
             stmt.setString(4, usuario.getSenha());
             stmt.setString(5, usuario.getTipo());
-            stmt.setInt(6, usuario.getId_usuario());
+            stmt.setInt(6, usuario.getId());
             stmt.execute();
             return true;
         } catch (SQLException ex) {
@@ -74,7 +74,7 @@ public class UsuarioDAO extends ApolloConnection {
         String sql = "DELETE FROM usuario WHERE id_usuario=?";
         try{
             PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setInt(1, usuario.getId_usuario());
+            stmt.setInt(1, usuario.getId());
             stmt.execute();
             return true;
         } catch (SQLException ex) {

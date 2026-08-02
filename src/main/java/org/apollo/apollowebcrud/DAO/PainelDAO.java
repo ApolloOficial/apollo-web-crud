@@ -41,7 +41,7 @@ public class PainelDAO extends ApolloConnection {
             ResultSet consulta = stmt.executeQuery();
             while (consulta.next()){
                 Painel pnls = new Painel();
-                pnls.setId_painel(consulta.getInt("id_painel"));
+                pnls.setId(consulta.getInt("id_painel"));
                 pnls.setMaterial(consulta.getString("material"));
                 pnls.setModelo(consulta.getString("modelo"));
                 pnls.setMarca(consulta.getString("marca"));
@@ -67,7 +67,7 @@ public class PainelDAO extends ApolloConnection {
             stmt.setInt(5, pnl.getVida_util());
             stmt.setString(6, pnl.getLocalizacao());
             stmt.setInt(7, pnl.getId_lote());
-            stmt.setInt( 8, pnl.getId_painel());
+            stmt.setInt( 8, pnl.getId());
             stmt.execute();
             return true;
         } catch (SQLException ex) {
@@ -79,7 +79,7 @@ public class PainelDAO extends ApolloConnection {
         String sql = "DELETE FROM painel WHERE id_painel=?";
         try{
             PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setInt(1, pnl.getId_painel());
+            stmt.setInt(1, pnl.getId());
             stmt.execute();
             return true;
         } catch (SQLException ex) {
