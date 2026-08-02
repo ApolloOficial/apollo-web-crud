@@ -9,9 +9,6 @@ public class Lote {
     private String observacao;
     private int idFilial;
 
-    public Lote() {
-    }
-
     public Lote(int id, int quantidadePaineis, int eficienciaGeral, String observacao, int idFilial) {
         this.id = id;
         this.quantidadePaineis = quantidadePaineis;
@@ -19,6 +16,10 @@ public class Lote {
         this.observacao = observacao;
         this.idFilial = idFilial;
     }
+
+    public Lote() {
+    }
+
     //MÉTODOS GETTERS E SETTERS
 
     public int getId() {

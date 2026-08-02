@@ -27,6 +27,9 @@ public class Painel {
         this.tempoUso = tempoUso;
     }
 
+    public Painel() {
+    }
+
 //    MÉTODOS GETTERS SETTERS
 
 
