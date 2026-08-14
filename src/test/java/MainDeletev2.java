@@ -1,5 +1,4 @@
-import org.apollo.apollowebcrud.model.*;
-import org.apollo.apollowebcrud.DAO.*;
+import org.apollo.apollowebcrud.DAO.SugestaoRealocacaoDAO;
 
 import java.time.LocalDate;
 import java.util.logging.Level;
@@ -12,7 +11,7 @@ public class MainDeletev2{
         org.apollo.apollowebcrud.DAO.LeituraDAO leiDAO = null;
         org.apollo.apollowebcrud.DAO.LoteDAO loteDAO = null;
         org.apollo.apollowebcrud.DAO.PainelDAO pnlDAO = null;
-        org.apollo.apollowebcrud.DAO.SugestaoRevendaDAO sgstRevDAO = null;
+        SugestaoRealocacaoDAO sgstRevDAO = null;
         System.out.println("CONECTANDO COM O BANCO DE DADOS...");
         boolean seguir=false;
         try {
@@ -21,7 +20,7 @@ public class MainDeletev2{
             leiDAO = new org.apollo.apollowebcrud.DAO.LeituraDAO();
             loteDAO = new org.apollo.apollowebcrud.DAO.LoteDAO();
             pnlDAO = new org.apollo.apollowebcrud.DAO.PainelDAO();
-            sgstRevDAO = new org.apollo.apollowebcrud.DAO.SugestaoRevendaDAO();
+            sgstRevDAO = new org.apollo.apollowebcrud.DAO.SugestaoRealocacaoDAO();
             System.out.println("CONEXÃO CONCLUÍDA COM SUCESSO");
             seguir = true;
         } catch (Exception ex){
