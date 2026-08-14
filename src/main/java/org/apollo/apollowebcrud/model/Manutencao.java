@@ -9,6 +9,7 @@ public class Manutencao {
     private String tipo;
     private String descricao;
     private String prazo;
+    private String mensagemErro;
 
     public Manutencao(int id, int idPainel, String tipo, String descricao, String prazo) {
         this.id = id;
@@ -61,6 +62,14 @@ public class Manutencao {
 
     public void setPrazo(String prazo) {
         this.prazo = prazo;
+    }
+
+    public String getMensagemErro() {
+        return mensagemErro;
+    }
+
+    public void setMensagemErro(String mensagemErro) {
+        this.mensagemErro = mensagemErro;
     }
 
     //OVERRIDE DA SAÍDA TOSTRING()

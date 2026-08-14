@@ -7,6 +7,7 @@ public class TipoUsuario {
     private int id;
     private String tipo;
     private String descricao;
+    private String mensagemErro;
 
     public TipoUsuario(int id, String tipo, String descricao) {
         this.id = id;
@@ -18,7 +19,6 @@ public class TipoUsuario {
     }
 
 //    MÉTODOS GETTERS SETTERS
-
 
     public int getId() {
         return id;
@@ -42,6 +42,14 @@ public class TipoUsuario {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
+    }
+
+    public String getMensagemErro() {
+        return mensagemErro;
+    }
+
+    public void setMensagemErro(String mensagemErro) {
+        this.mensagemErro = mensagemErro;
     }
 
     // OVERRIDE DA SAÍDA TOSTRING()

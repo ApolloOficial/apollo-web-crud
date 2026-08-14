@@ -8,6 +8,7 @@ public class Lote {
     private int eficienciaGeral;
     private String observacao;
     private int idFilial;
+    private String mensagemErro;
 
     public Lote(int id, int quantidadePaineis, int eficienciaGeral, String observacao, int idFilial) {
         this.id = id;
@@ -61,10 +62,18 @@ public class Lote {
     public void setIdFilial(int idFilial) {
         this.idFilial = idFilial;
     }
+
+    public String getMensagemErro() {
+        return mensagemErro;
+    }
+
+    public void setMensagemErro(String mensagemErro) {
+        this.mensagemErro = mensagemErro;
+    }
     //OVERRIDE DA SAÍDA TOSTRING()
 
     @Override
     public String toString() {
-        return "ID=" + getId() + " QUANTIA P=" + getQuantidadePaineis() + " EFICIÊNCIA GERAL=" + getEficienciaGeral() + " OBSERVAÇÃO=" + getObservacao() + " ID CADASTRO=" + getIdFilial() + " LOCALIZAÇÃO=" + getLocalizacao();
+        return "ID=" + getId() + " QUANTIA P=" + getQuantidadePaineis() + " EFICIÊNCIA GERAL=" + getEficienciaGeral() + " OBSERVAÇÃO=" + getObservacao() + " ID FILIAL=" + getIdFilial();
     }
 }
