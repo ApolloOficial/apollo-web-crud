@@ -30,11 +30,12 @@ public class UsuarioDAO extends ApolloConnection {
             stmt.execute();
             return true;
         } catch (SQLException ex) {
-            Logger.getLogger(FilialDAO.class.getName()).log(Level.SEVERE, "SQL error on INSERT", ex);
+            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, "SQL error on INSERT", ex);
             usuario.setMensagemErro(ex.getMessage());
             return false;
         }
     }
+
     public List<Usuario> listar(){
         String sql = "SELECT * FROM usuario ORDER BY id";
         List<Usuario> usuarios = new ArrayList<>();
@@ -58,8 +59,9 @@ public class UsuarioDAO extends ApolloConnection {
         }
         return usuarios;
     }
+
     public boolean atualizar(Usuario usuario){
-        String sql = "UPDATE usuario SET nome=?, email=?, telefone=?, cpf=?, senha=?, WHERE id=?";
+        String sql = "UPDATE usuario SET nome=?, email=?, telefone=?, cpf=?, senha=? WHERE id=?";
         try{
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, usuario.getNome());
@@ -72,9 +74,11 @@ public class UsuarioDAO extends ApolloConnection {
             return true;
         } catch (SQLException ex) {
             Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, "SQL error on UPDATE", ex);
+            usuario.setMensagemErro(ex.getMessage());
             return false;
         }
     }
+
     public boolean deletar(Usuario usuario){
         String sql = "DELETE FROM usuario WHERE id=?";
         try{
@@ -84,6 +88,7 @@ public class UsuarioDAO extends ApolloConnection {
             return true;
         } catch (SQLException ex) {
             Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, "SQL error on DELETE", ex);
+            usuario.setMensagemErro(ex.getMessage());
             return false;
         }
     }
