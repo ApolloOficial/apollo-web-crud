@@ -11,7 +11,7 @@ public class MainLimparv2 {
         org.apollo.apollowebcrud.DAO.LeituraDAO leiDAO = null;
         org.apollo.apollowebcrud.DAO.LoteDAO loteDAO = null;
         org.apollo.apollowebcrud.DAO.PainelDAO pnlDAO = null;
-        SugestaoRealocacaoDAO sgstRevDAO = null;
+        SugestaoRealocacaoDAO sgstReaDAO = null;
         System.out.println("CONECTANDO COM O BANCO DE DADOS...");
         boolean seguir=false;
         try {
@@ -20,7 +20,7 @@ public class MainLimparv2 {
             leiDAO = new org.apollo.apollowebcrud.DAO.LeituraDAO();
             loteDAO = new org.apollo.apollowebcrud.DAO.LoteDAO();
             pnlDAO = new org.apollo.apollowebcrud.DAO.PainelDAO();
-            sgstRevDAO = new org.apollo.apollowebcrud.DAO.SugestaoRealocacaoDAO();
+            sgstReaDAO = new org.apollo.apollowebcrud.DAO.SugestaoRealocacaoDAO();
             System.out.println("CONEXÃO CONCLUÍDA COM SUCESSO");
             seguir = true;
         } catch (Exception ex){
@@ -36,9 +36,9 @@ public class MainLimparv2 {
             }
             //TESTE SUGESTAO
 
-            List<org.apollo.apollowebcrud.model.SugestaoRevenda> sgstRevList = sgstRevDAO.listar();
-            for (org.apollo.apollowebcrud.model.SugestaoRevenda s : sgstRevList) {
-                System.out.println(sgstRevDAO.deletar(s));
+            List<org.apollo.apollowebcrud.model.SugestaoRealocacao> sgstReaList = sgstReaDAO.listar();
+            for (org.apollo.apollowebcrud.model.SugestaoRealocacao s : sgstReaList) {
+                System.out.println(sgstReaDAO.deletar(s));
             }
             //TESTE PAINEL
 

@@ -11,7 +11,7 @@ public class MainUpdatev2 {
         org.apollo.apollowebcrud.DAO.LeituraDAO leiDAO = null;
         org.apollo.apollowebcrud.DAO.LoteDAO loteDAO = null;
         org.apollo.apollowebcrud.DAO.PainelDAO pnlDAO = null;
-        SugestaoRealocacaoDAO sgstRevDAO = null;
+        SugestaoRealocacaoDAO sgstReaDAO = null;
         System.out.println("CONECTANDO COM O BANCO DE DADOS...");
         boolean seguir=false;
         try {
@@ -20,7 +20,7 @@ public class MainUpdatev2 {
             leiDAO = new org.apollo.apollowebcrud.DAO.LeituraDAO();
             loteDAO = new org.apollo.apollowebcrud.DAO.LoteDAO();
             pnlDAO = new org.apollo.apollowebcrud.DAO.PainelDAO();
-            sgstRevDAO = new org.apollo.apollowebcrud.DAO.SugestaoRealocacaoDAO();
+            sgstReaDAO = new org.apollo.apollowebcrud.DAO.SugestaoRealocacaoDAO();
             System.out.println("CONEXÃO CONCLUÍDA COM SUCESSO");
             seguir = true;
         } catch (Exception ex){
@@ -50,8 +50,8 @@ public class MainUpdatev2 {
             System.out.println(pnlDAO.atualizar(pnl1));
             //TESTE SUGESTAO
 
-            org.apollo.apollowebcrud.model.SugestaoRevenda sgstRev1 = new org.apollo.apollowebcrud.model.SugestaoRevenda(1, 2, 2.0);
-            System.out.println(sgstRevDAO.atualizar(sgstRev1));
+            org.apollo.apollowebcrud.model.SugestaoRealocacao sgstRea1 = new org.apollo.apollowebcrud.model.SugestaoRealocacao(1, 2, 2.0);
+            System.out.println(sgstReaDAO.atualizar(sgstRea1));
         }
     }
 }
