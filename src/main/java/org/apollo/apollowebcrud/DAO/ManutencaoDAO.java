@@ -23,7 +23,7 @@ public class ManutencaoDAO extends ApolloConnection {
             stmt.setInt(2, manutencao.getIdPainel());
             stmt.setString(3, manutencao.getTipo());
             stmt.setString(4, manutencao.getDescricao());
-            stmt.setString(5, manutencao.getPrazo());
+            stmt.setDate(5, Date.valueOf(manutencao.getPrazo()));
             stmt.execute();
             return true;
         } catch (SQLException ex) {
@@ -45,7 +45,7 @@ public class ManutencaoDAO extends ApolloConnection {
                 manutencao.setIdPainel(consulta.getInt("id_painel"));
                 manutencao.setTipo(consulta.getString("tipo"));
                 manutencao.setDescricao(consulta.getString("descricao"));
-                manutencao.setPrazo(consulta.getString("prazo"));
+                manutencao.setPrazo(consulta.getDate("prazo").toLocalDate());
                 manutencoes.add(manutencao);
             }
         } catch (SQLException ex) {
@@ -61,7 +61,7 @@ public class ManutencaoDAO extends ApolloConnection {
             stmt.setInt(1, manutencao.getIdPainel());
             stmt.setString(2, manutencao.getTipo());
             stmt.setString(3, manutencao.getDescricao());
-            stmt.setString(4, manutencao.getPrazo());
+            stmt.setDate(4, Date.valueOf(manutencao.getPrazo()));
             stmt.setInt(5, manutencao.getId());
             stmt.execute();
             return true;
