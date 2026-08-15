@@ -6,14 +6,15 @@ public class SugestaoRealocacao {
 
     private int id;
     private int idPainel;
-    private int preco;
+    private double preco;
     private String justificativa;
     private String destino;
+    private String mensagemErro;
 
     public SugestaoRealocacao() {
     }
 
-    public SugestaoRealocacao(int id, int idPainel, int preco, String justificativa, String destino) {
+    public SugestaoRealocacao(int id, int idPainel, double preco, String justificativa, String destino) {
         this.id = id;
         this.idPainel = idPainel;
         this.preco = preco;
@@ -39,11 +40,11 @@ public class SugestaoRealocacao {
         this.idPainel = idPainel;
     }
 
-    public int getPreco() {
+    public double getPreco() {
         return preco;
     }
 
-    public void setPreco(int preco) {
+    public void setPreco(double preco) {
         this.preco = preco;
     }
 
@@ -61,6 +62,14 @@ public class SugestaoRealocacao {
 
     public void setDestino(String destino) {
         this.destino = destino;
+    }
+
+    public String getMensagemErro() {
+        return mensagemErro;
+    }
+
+    public void setMensagemErro(String mensagemErro) {
+        this.mensagemErro = mensagemErro;
     }
 
     // OVERRIDE DA SAÍDA TOSTRING()

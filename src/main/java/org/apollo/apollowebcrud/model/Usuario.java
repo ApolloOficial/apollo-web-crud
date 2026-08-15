@@ -12,6 +12,7 @@ public class Usuario {
     private String telefone;
     private String cpf;
     private String senha;
+    private String mensagemErro;
 
     public Usuario(int id, String nome, int idTipoUsuario, int idEmpresa, String email, String telefone, String cpf, String senha) {
         this.id = id;
@@ -63,6 +64,10 @@ public class Usuario {
         return senha;
     }
 
+    public String getMensagemErro() {
+        return mensagemErro;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -93,6 +98,10 @@ public class Usuario {
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public void setMensagemErro(String mensagemErro) {
+        this.mensagemErro = mensagemErro;
     }
 
     // OVERRIDE DA SAÍDA TOSTRING()

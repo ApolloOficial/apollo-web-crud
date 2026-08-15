@@ -1,5 +1,4 @@
-import org.apollo.apollowebcrud.model.*;
-import org.apollo.apollowebcrud.DAO.*;
+import org.apollo.apollowebcrud.DAO.SugestaoRealocacaoDAO;
 
 import java.time.LocalDate;
 
@@ -10,7 +9,7 @@ public class MainInsertLoop {
         org.apollo.apollowebcrud.DAO.LoteDAO loteDAO = new org.apollo.apollowebcrud.DAO.LoteDAO();
         org.apollo.apollowebcrud.DAO.PainelDAO pnlDAO = new org.apollo.apollowebcrud.DAO.PainelDAO();
         org.apollo.apollowebcrud.DAO.LeituraDAO leiDAO = new org.apollo.apollowebcrud.DAO.LeituraDAO();
-        org.apollo.apollowebcrud.DAO.SugestaoRevendaDAO sgstRevDAO = new org.apollo.apollowebcrud.DAO.SugestaoRevendaDAO();
+        SugestaoRealocacaoDAO sgstReaDAO = new org.apollo.apollowebcrud.DAO.SugestaoRealocacaoDAO();
         for (int i = 0; i < 20; i++) {
             //TESTE USUARIO
 
@@ -34,8 +33,8 @@ public class MainInsertLoop {
             System.out.println(leiDAO.inserir(lei1));
             //TESTE SUGESTAO
 
-            org.apollo.apollowebcrud.model.SugestaoRevenda sgstRev1 = new org.apollo.apollowebcrud.model.SugestaoRevenda(1, i+1, 1.0);
-            System.out.println(sgstRevDAO.inserir(sgstRev1));
+            org.apollo.apollowebcrud.model.SugestaoRealocacao sgstRea1 = new org.apollo.apollowebcrud.model.SugestaoRealocacao(1, i+1, 1.0);
+            System.out.println(sgstReaDAO.inserir(sgstRea1));
         }
     }
 }

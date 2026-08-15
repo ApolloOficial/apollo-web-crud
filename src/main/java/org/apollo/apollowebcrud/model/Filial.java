@@ -6,6 +6,7 @@ public class Filial {
     private int id;
     private int idEmpresa;
     private String localizacao;
+    private String mensagemErro;
 
     public Filial() {
     }
@@ -39,6 +40,14 @@ public class Filial {
 
     public void setLocalizacao(String localizacao) {
         this.localizacao = localizacao;
+    }
+
+    public String getMensagemErro() {
+        return mensagemErro;
+    }
+
+    public void setMensagemErro(String mensagemErro) {
+        this.mensagemErro = mensagemErro;
     }
 
     // OVERRIDE DA SAÍDA TOSTRING()

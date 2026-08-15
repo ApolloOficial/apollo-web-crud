@@ -13,6 +13,7 @@ public class Painel {
     private int vidaUtil;
     private int idLote;
     private int tempoUso;
+    private String mensagemErro;
 
     public Painel(int id, String numeroSerie, String material, String modelo, String marca, String notaFiscal, double eficiencia, int vidaUtil, int idLote, int tempoUso) {
         this.id = id;
@@ -31,7 +32,6 @@ public class Painel {
     }
 
 //    MÉTODOS GETTERS SETTERS
-
 
     public int getId() {
         return id;
@@ -111,6 +111,14 @@ public class Painel {
 
     public void setTempoUso(int tempoUso) {
         this.tempoUso = tempoUso;
+    }
+
+    public String getMensagemErro() {
+        return mensagemErro;
+    }
+
+    public void setMensagemErro(String mensagemErro) {
+        this.mensagemErro = mensagemErro;
     }
 
     //OVERRIDE DA SAÍDA TOSTRING()

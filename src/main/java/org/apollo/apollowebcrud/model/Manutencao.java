@@ -1,5 +1,7 @@
 package org.apollo.apollowebcrud.model;
 
+import java.time.LocalDate;
+
 public class Manutencao {
 
 //    ATRIBUTOS E CONSTRUTOR
@@ -8,9 +10,10 @@ public class Manutencao {
     private int idPainel;
     private String tipo;
     private String descricao;
-    private String prazo;
+    private LocalDate prazo;
+    private String mensagemErro;
 
-    public Manutencao(int id, int idPainel, String tipo, String descricao, String prazo) {
+    public Manutencao(int id, int idPainel, String tipo, String descricao, LocalDate prazo) {
         this.id = id;
         this.idPainel = idPainel;
         this.tipo = tipo;
@@ -39,7 +42,7 @@ public class Manutencao {
         return descricao;
     }
 
-    public String getPrazo() {
+    public LocalDate getPrazo() {
         return prazo;
     }
 
@@ -59,8 +62,16 @@ public class Manutencao {
         this.descricao = descricao;
     }
 
-    public void setPrazo(String prazo) {
+    public void setPrazo(LocalDate prazo) {
         this.prazo = prazo;
+    }
+
+    public String getMensagemErro() {
+        return mensagemErro;
+    }
+
+    public void setMensagemErro(String mensagemErro) {
+        this.mensagemErro = mensagemErro;
     }
 
     //OVERRIDE DA SAÍDA TOSTRING()

@@ -6,7 +6,7 @@ public class Empresa {
 
     private int id;
     private String nome;
-
+    private String mensagemErro;
 
     public Empresa(int id, String nome) {
         this.id = id;
@@ -32,6 +32,14 @@ public class Empresa {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getMensagemErro() {
+        return mensagemErro;
+    }
+
+    public void setMensagemErro(String mensagemErro) {
+        this.mensagemErro = mensagemErro;
     }
 
     // OVERRIDE DA SAÍDA TOSTRING()
