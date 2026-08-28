@@ -16,14 +16,13 @@ public class ManutencaoDAO extends ApolloConnection {
     }
 
     public boolean inserir(Manutencao manutencao) {
-        String sql = "INSERT INTO manutencao (id, id_painel, tipo, descricao, prazo) VALUES (?,?,?,?,?)";
+        String sql = "INSERT INTO manutencao (id_painel, tipo, descricao, prazo) VALUES (?,?,?,?)";
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setInt(1, manutencao.getId());
-            stmt.setInt(2, manutencao.getIdPainel());
-            stmt.setString(3, manutencao.getTipo());
-            stmt.setString(4, manutencao.getDescricao());
-            stmt.setDate(5, Date.valueOf(manutencao.getPrazo()));
+            stmt.setInt(1, manutencao.getIdPainel());
+            stmt.setString(2, manutencao.getTipo());
+            stmt.setString(3, manutencao.getDescricao());
+            stmt.setDate(4, Date.valueOf(manutencao.getPrazo()));
             stmt.execute();
             return true;
         } catch (SQLException ex) {

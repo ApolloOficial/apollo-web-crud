@@ -16,12 +16,11 @@ public class TipoUsuarioDAO extends ApolloConnection {
     }
 
     public boolean inserir(TipoUsuario tipoUsuario) {
-        String sql = "INSERT INTO tipo_usuario (id, tipo, descricao) VALUES (?,?,?)";
+        String sql = "INSERT INTO tipo_usuario (tipo, descricao) VALUES (?,?)";
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setInt(1, tipoUsuario.getId());
-            stmt.setString(2, tipoUsuario.getTipo());
-            stmt.setString(3, tipoUsuario.getDescricao());
+            stmt.setString(1, tipoUsuario.getTipo());
+            stmt.setString(2, tipoUsuario.getDescricao());
             stmt.execute();
             return true;
         } catch (SQLException ex) {

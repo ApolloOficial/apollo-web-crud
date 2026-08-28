@@ -16,14 +16,13 @@ public class LoteDAO extends ApolloConnection {
     }
 
     public boolean inserir(Lote lote) {
-        String sql = "INSERT INTO lote (id, quantidade_paineis, eficiencia_geral, observacao, id_filial) VALUES (?,?,?,?,?)";
+        String sql = "INSERT INTO lote (quantidade_paineis, eficiencia_geral, observacao, id_filial) VALUES (?,?,?,?)";
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setInt(1, lote.getId());
-            stmt.setInt(2, lote.getQuantidadePaineis());
-            stmt.setInt(3, lote.getEficienciaGeral());
-            stmt.setString(4, lote.getObservacao());
-            stmt.setInt(5, lote.getIdFilial());
+            stmt.setInt(1, lote.getQuantidadePaineis());
+            stmt.setInt(2, lote.getEficienciaGeral());
+            stmt.setString(3, lote.getObservacao());
+            stmt.setInt(4, lote.getIdFilial());
             stmt.execute();
             return true;
         } catch (SQLException ex) {

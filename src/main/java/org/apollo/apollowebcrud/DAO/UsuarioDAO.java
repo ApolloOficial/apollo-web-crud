@@ -16,17 +16,16 @@ public class UsuarioDAO extends ApolloConnection {
     }
 
     public boolean inserir(Usuario usuario){
-        String sql = "INSERT INTO usuario (id, nome, id_tipo_usuario, id_empresa, email, telefone, cpf, senha) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO usuario (nome, id_tipo_usuario, id_empresa, email, telefone, cpf, senha) VALUES(?, ?, ?, ?, ?, ?, ?)";
         try{
             PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setInt(1, usuario.getId());
-            stmt.setString(2, usuario.getNome());
-            stmt.setInt(3, usuario.getIdTipoUsuario());
-            stmt.setInt(4, usuario.getIdEmpresa());
-            stmt.setString(5, usuario.getEmail());
-            stmt.setString(6, usuario.getTelefone());
-            stmt.setString(7, usuario.getCpf());
-            stmt.setString(8, usuario.getSenha());
+            stmt.setString(1, usuario.getNome());
+            stmt.setInt(2, usuario.getIdTipoUsuario());
+            stmt.setInt(3, usuario.getIdEmpresa());
+            stmt.setString(4, usuario.getEmail());
+            stmt.setString(5, usuario.getTelefone());
+            stmt.setString(6, usuario.getCpf());
+            stmt.setString(7, usuario.getSenha());
             stmt.execute();
             return true;
         } catch (SQLException ex) {

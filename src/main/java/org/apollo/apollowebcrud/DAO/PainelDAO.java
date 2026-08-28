@@ -16,19 +16,18 @@ public class PainelDAO extends ApolloConnection {
     }
 
     public boolean inserir(Painel painel) {
-        String sql = "INSERT INTO painel (id, numero_serie, material, modelo, marca, nota_fiscal, eficiencia, vida_util, id_lote, tempo_uso) VALUES (?,?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO painel (numero_serie, material, modelo, marca, nota_fiscal, eficiencia, vida_util, id_lote, tempo_uso) VALUES (?,?,?,?,?,?,?,?,?)";
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setInt(1, painel.getId());
-            stmt.setString(2, painel.getNumeroSerie());
-            stmt.setString(3, painel.getMaterial());
-            stmt.setString(4, painel.getModelo());
-            stmt.setString(5, painel.getMarca());
-            stmt.setString(6, painel.getNotaFiscal());
-            stmt.setDouble(7, painel.getEficiencia());
-            stmt.setInt(8, painel.getVidaUtil());
-            stmt.setInt(9, painel.getIdLote());
-            stmt.setInt(10, painel.getTempoUso());
+            stmt.setString(1, painel.getNumeroSerie());
+            stmt.setString(2, painel.getMaterial());
+            stmt.setString(3, painel.getModelo());
+            stmt.setString(4, painel.getMarca());
+            stmt.setString(5, painel.getNotaFiscal());
+            stmt.setDouble(6, painel.getEficiencia());
+            stmt.setInt(7, painel.getVidaUtil());
+            stmt.setInt(8, painel.getIdLote());
+            stmt.setInt(9, painel.getTempoUso());
             stmt.execute();
             return true;
         } catch (SQLException ex) {
