@@ -16,12 +16,11 @@ public class FilialDAO extends ApolloConnection {
     }
 
     public boolean inserirFilial(Filial filial) {
-        String sql = "INSERT INTO filial (id, id_empresa, localizacao) VALUES (?,?,?)";
+        String sql = "INSERT INTO filial (id_empresa, localizacao) VALUES (?,?)";
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setInt(1, filial.getId());
-            stmt.setInt(2, filial.getIdEmpresa());
-            stmt.setString(3, filial.getLocalizacao());
+            stmt.setInt(1, filial.getIdEmpresa());
+            stmt.setString(2, filial.getLocalizacao());
             stmt.execute();
             return true;
         } catch (SQLException ex) {

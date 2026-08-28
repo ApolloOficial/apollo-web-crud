@@ -16,11 +16,10 @@ public class EmpresaDAO extends ApolloConnection {
     }
 
     public boolean inserir(Empresa empresa) {
-        String sql = "INSERT INTO empresa (id, nome) VALUES (?,?)";
+        String sql = "INSERT INTO empresa (nome) VALUES (?)";
         try {
             PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setInt(1, empresa.getId());
-            stmt.setString(2, empresa.getNome());
+            stmt.setString(1, empresa.getNome());
             stmt.execute();
             return true;
         } catch (SQLException ex) {
