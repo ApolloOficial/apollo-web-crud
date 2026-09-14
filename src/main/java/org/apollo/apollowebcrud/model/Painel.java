@@ -123,8 +123,20 @@ public class Painel {
 
     //OVERRIDE DA SAÍDA TOSTRING()
 
+
     @Override
     public String toString() {
-        return "ID=" + getId() + " NUMERO_SERIE=" + getNumeroSerie() + " MATERIAL=" + getMaterial() + " MODELO=" + getModelo() + " MARCA=" + getMarca() + " NOTA_FISCAL=" + getNotaFiscal() + " EFICIENCIA=" + getEficiencia() + " VIDA_UTIL=" + getVidaUtil() + " ID_LOTE=" + getIdLote() + " TEMPO_USO=" + getTempoUso();
+        return "Painel{" +
+                "id=" + id +
+                ", numeroSerie='" + numeroSerie + '\'' +
+                ", material='" + material + '\'' +
+                ", modelo='" + modelo + '\'' +
+                ", marca='" + marca + '\'' +
+                ", notaFiscal='" + notaFiscal + '\'' +
+                ", eficiencia=" + eficiencia +
+                ", vidaUtil=" + vidaUtil +
+                ", idLote=" + idLote +
+                ", tempoUso=" + tempoUso +
+                '}';
     }
 }

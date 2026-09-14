@@ -44,8 +44,12 @@ public class Empresa {
 
     // OVERRIDE DA SAÍDA TOSTRING()
 
+
     @Override
     public String toString() {
-        return "ID=" + getId() + " NOME=" + getNome();
+        return "Empresa{" +
+                "id=" + id +
+                ", nome='" + nome + '\''+
+                '}';
     }
 }

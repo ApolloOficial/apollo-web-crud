@@ -72,8 +72,15 @@ public class Lote {
     }
     //OVERRIDE DA SAÍDA TOSTRING()
 
+
     @Override
     public String toString() {
-        return "ID=" + getId() + " QUANTIA P=" + getQuantidadePaineis() + " EFICIÊNCIA GERAL=" + getEficienciaGeral() + " OBSERVAÇÃO=" + getObservacao() + " ID FILIAL=" + getIdFilial();
+        return "Lote{" +
+                "idFilial=" + idFilial +
+                ", observacao='" + observacao + '\'' +
+                ", eficienciaGeral=" + eficienciaGeral +
+                ", quantidadePaineis=" + quantidadePaineis +
+                ", id=" + id +
+                '}';
     }
 }
