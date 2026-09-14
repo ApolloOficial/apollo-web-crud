@@ -51,8 +51,13 @@ public class Filial {
     }
 
     // OVERRIDE DA SAÍDA TOSTRING()
+2
     @Override
     public String toString() {
-        return "ID=" + getId() +" ID_EMPRESA=" + getIdEmpresa() + " LOCALIZACAO=" + getLocalizacao();
+        return "Filial{" +
+                "localizacao='" + localizacao + '\'' +
+                ", idEmpresa=" + idEmpresa +
+                ", id=" + id +
+                '}';
     }
 }

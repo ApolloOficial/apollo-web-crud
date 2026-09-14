@@ -78,6 +78,12 @@ public class Manutencao {
 
     @Override
     public String toString() {
-        return "ID=" + getId() + " ID_PAINEL=" + getIdPainel() + " TIPO=" + getTipo() + " DESCRICAO=" + getDescricao() + " PRAZO=" + getPrazo();
+        return "Manutencao{" +
+                "prazo=" + prazo +
+                ", descricao='" + descricao + '\'' +
+                ", tipo='" + tipo + '\'' +
+                ", idPainel=" + idPainel +
+                ", id=" + id +
+                '}';
     }
 }

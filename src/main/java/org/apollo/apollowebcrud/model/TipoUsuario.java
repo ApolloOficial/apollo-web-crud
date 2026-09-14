@@ -53,8 +53,13 @@ public class TipoUsuario {
     }
 
     // OVERRIDE DA SAÍDA TOSTRING()
+
     @Override
     public String toString() {
-        return "ID=" + getId() + " TIPO=" + getTipo() + " DESCRICAO=" + getDescricao();
+        return "TipoUsuario{" +
+                "descricao='" + descricao + '\'' +
+                ", tipo='" + tipo + '\'' +
+                ", id=" + id +
+                '}';
     }
 }
