@@ -6,7 +6,6 @@ public class SugestaoRealocacao {
 
     private int id;
     private int idLote;
-    private double preco;
     private String justificativa;
     private String destino;
     private String mensagemErro;
@@ -14,10 +13,9 @@ public class SugestaoRealocacao {
     public SugestaoRealocacao() {
     }
 
-    public SugestaoRealocacao(int id, int idLote, double preco, String justificativa, String destino) {
+    public SugestaoRealocacao(int id, int idLote, String justificativa, String destino) {
         this.id = id;
         this.idLote = idLote;
-        this.preco = preco;
         this.justificativa = justificativa;
         this.destino = destino;
     }
@@ -30,10 +28,6 @@ public class SugestaoRealocacao {
 
     public int getIdLote() {
         return idLote;
-    }
-
-    public double getPreco() {
-        return preco;
     }
 
     public String getJustificativa() {
@@ -56,10 +50,6 @@ public class SugestaoRealocacao {
         this.idLote = idLote;
     }
 
-    public void setPreco(double preco) {
-        this.preco = preco;
-    }
-
     public void setJustificativa(String justificativa) {
         this.justificativa = justificativa;
     }
@@ -78,7 +68,6 @@ public class SugestaoRealocacao {
     public String toString() {
         return "SugestaoRealocacao{" +
                 "idLote=" + idLote +
-                ", preco=" + preco +
                 ", justificativa='" + justificativa + '\'' +
                 ", destino='" + destino + '\'' +
                 ", id=" + id +

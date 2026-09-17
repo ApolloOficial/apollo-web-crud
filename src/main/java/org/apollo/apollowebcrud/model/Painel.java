@@ -13,7 +13,24 @@ public class Painel {
     private int vidaUtil;
     private int idLote;
     private int tempoUso;
+    private double potencia;
+    private double preco;
     private String mensagemErro;
+
+    public Painel(int id, String numeroSerie, String material, String modelo, String marca, String notaFiscal, double eficiencia, int vidaUtil, int idLote, int tempoUso, double potencia, double preco) {
+        this.id = id;
+        this.numeroSerie = numeroSerie;
+        this.material = material;
+        this.modelo = modelo;
+        this.marca = marca;
+        this.notaFiscal = notaFiscal;
+        this.eficiencia = eficiencia;
+        this.vidaUtil = vidaUtil;
+        this.idLote = idLote;
+        this.tempoUso = tempoUso;
+        this.potencia = potencia;
+        this.preco = preco;
+    }
 
     public Painel(int id, String numeroSerie, String material, String modelo, String marca, String notaFiscal, double eficiencia, int vidaUtil, int idLote, int tempoUso) {
         this.id = id;
@@ -32,6 +49,22 @@ public class Painel {
     }
 
 //    MÉTODOS GETTERS SETTERS
+
+    public double getPotencia() {
+        return potencia;
+    }
+
+    public void setPotencia(double potencia) {
+        this.potencia = potencia;
+    }
+
+    public double getPreco() {
+        return preco;
+    }
+
+    public void setPreco(double preco) {
+        this.preco = preco;
+    }
 
     public int getId() {
         return id;
@@ -127,8 +160,7 @@ public class Painel {
     @Override
     public String toString() {
         return "Painel{" +
-                "id=" + id +
-                ", numeroSerie='" + numeroSerie + '\'' +
+                "numeroSerie='" + numeroSerie + '\'' +
                 ", material='" + material + '\'' +
                 ", modelo='" + modelo + '\'' +
                 ", marca='" + marca + '\'' +
@@ -137,6 +169,9 @@ public class Painel {
                 ", vidaUtil=" + vidaUtil +
                 ", idLote=" + idLote +
                 ", tempoUso=" + tempoUso +
+                ", potencia=" + potencia +
+                ", preco=" + preco +
+                ", id=" + id +
                 '}';
     }
 }
