@@ -1,0 +1,134 @@
+package org.apollo.apollowebcrud.DAO;
+
+import org.apollo.apollowebcrud.model.Contrato;
+import org.apollo.apollowebcrud.model.StatusGeral;
+import org.apollo.apollowebcrud.util.ApolloConnection;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ContratoDAO extends ApolloConnection {
+
+    private static final String COLUNAS = "id, id_empresa, data_inicio, valor_mensal, status, id_usuario_cadastro";
+
+    public ContratoDAO() {
+        super();
+    }
+
+    private Contrato montar(ResultSet rs) throws SQLException {
+        Contrato contrato = new Contrato();
+        contrato.setId(rs.getInt("id"));
+        contrato.setIdEmpresa(rs.getInt("id_empresa"));
+        contrato.setDataInicio(rs.getDate("data_inicio").toLocalDate());
+        contrato.setValorMensal(rs.getBigDecimal("valor_mensal"));
+        contrato.setStatus(StatusGeral.valueOf(rs.getString("status")));
+        contrato.setIdUsuarioCadastro(rs.getObject("id_usuario_cadastro", Integer.class));
+        return contrato;
+    }
+
+    // CREATE
+
+    public boolean inserir(Contrato contrato) {
+        String sql = "INSERT INTO contrato (id_empresa, data_inicio, valor_mensal, status, id_usuario_cadastro) VALUES (?, ?, ?, ?, ?)";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setInt(1, contrato.getIdEmpresa());
+            stmt.setDate(2, Date.valueOf(contrato.getDataInicio()));
+            stmt.setBigDecimal(3, contrato.getValorMensal());
+            stmt.setString(4, StatusGeral.ATIVO.name());
+
+            if (contrato.getIdUsuarioCadastro() != null) {
+                stmt.setInt(5, contrato.getIdUsuarioCadastro());
+            } else {
+                stmt.setNull(5, Types.INTEGER);
+            }
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao inserir contrato: " + e.getMessage());
+            return false;
+        }
+    }
+
+    // READ por id
+
+    public Contrato buscarPorId(int id) {
+        String sql = "SELECT " + COLUNAS + " FROM contrato WHERE id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return montar(rs);
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar contrato: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+    // READ todos
+
+    public List<Contrato> listarTodos() {
+        List<Contrato> lista = new ArrayList<>();
+        String sql = "SELECT " + COLUNAS + " FROM contrato ORDER BY data_inicio DESC";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                lista.add(montar(rs));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao listar contratos: " + e.getMessage());
+        }
+
+        return lista;
+    }
+
+    // UPDATE
+
+    public boolean atualizar(Contrato contrato) {
+        String sql = "UPDATE contrato SET id_empresa = ?, data_inicio = ?, valor_mensal = ?, status = ? WHERE id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setInt(1, contrato.getIdEmpresa());
+            stmt.setDate(2, Date.valueOf(contrato.getDataInicio()));
+            stmt.setBigDecimal(3, contrato.getValorMensal());
+            stmt.setString(4, contrato.getStatus().name());
+            stmt.setInt(5, contrato.getId());
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao atualizar contrato: " + e.getMessage());
+            return false;
+        }
+    }
+
+    // DELETE
+
+    public boolean excluir(int id) {
+        String sql = "DELETE FROM contrato WHERE id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao excluir contrato: " + e.getMessage());
+            return false;
+        }
+    }
+}
