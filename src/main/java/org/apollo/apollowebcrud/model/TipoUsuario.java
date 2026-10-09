@@ -2,64 +2,80 @@ package org.apollo.apollowebcrud.model;
 
 public class TipoUsuario {
 
-//    ATRIBUTOS E CONSTRUTORES
+//    ENUM
+
+    public enum Tipo {
+        ADMINISTRADOR,
+        GERENTE,
+        OPERADOR
+    }
+
+//    ATRIBUTOS
 
     private int id;
-    private String tipo;
+    private Tipo nome;
     private String descricao;
     private String mensagemErro;
 
-    public TipoUsuario(int id, String tipo, String descricao) {
+//    (o restante da classe continua exatamente igual)
+//    CONSTRUTOR
+
+    public TipoUsuario(int id, Tipo nome, String descricao) {
         this.id = id;
-        this.tipo = tipo;
+        this.nome = nome;
         this.descricao = descricao;
     }
 
-    public TipoUsuario(){
+
+//    CONSTRUTOR VAZIO
+
+    public TipoUsuario() {
     }
 
-//    MÉTODOS GETTERS SETTERS
+    //    GETTERS
 
     public int getId() {
         return id;
     }
 
-    public String getTipo() {
-        return tipo;
+    public Tipo getNome() {
+        return nome;
     }
 
     public String getDescricao() {
         return descricao;
     }
 
+    public String getMensagemErro() {
+        return mensagemErro;
+    }
+
+//    SETTERS
+
     public void setId(int id) {
         this.id = id;
     }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
+    public void setNome(Tipo nome) {
+        this.nome = nome;
     }
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
 
-    public String getMensagemErro() {
-        return mensagemErro;
-    }
-
     public void setMensagemErro(String mensagemErro) {
         this.mensagemErro = mensagemErro;
     }
 
-    // OVERRIDE DA SAÍDA TOSTRING()
+//    SAÍDA TOSTRING()
 
     @Override
-    public String toString() {
+    public java.lang.String toString() {
         return "TipoUsuario{" +
-                "descricao='" + descricao + '\'' +
-                ", tipo='" + tipo + '\'' +
-                ", id=" + id +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", descricao='" + descricao + '\'' +
                 '}';
     }
 }

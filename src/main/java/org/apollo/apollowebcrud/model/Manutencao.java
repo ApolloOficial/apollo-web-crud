@@ -4,27 +4,41 @@ import java.time.LocalDate;
 
 public class Manutencao {
 
-//    ATRIBUTOS E CONSTRUTOR
+
+
+//    ATRIBUTOS
 
     private int id;
     private int idPainel;
-    private String tipo;
+    private TipoManutencao tipoManutencao;
     private String descricao;
-    private LocalDate prazo;
+    private StatusManutencao status;
+    private LocalDate dataAbertura = LocalDate.now();
+    private LocalDate dataPrevista;
+    private LocalDate dataConclusao;
+    private Integer idUsuarioResponsavel;
     private String mensagemErro;
 
-    public Manutencao(int id, int idPainel, String tipo, String descricao, LocalDate prazo) {
+//    CONSTRUTOR
+
+    public Manutencao(int id, int idPainel, TipoManutencao tipoManutencao, String descricao, StatusManutencao status, LocalDate dataAbertura, LocalDate dataPrevista, LocalDate dataConclusao, Integer idUsuarioResponsavel) {
         this.id = id;
         this.idPainel = idPainel;
-        this.tipo = tipo;
+        this.tipoManutencao = tipoManutencao;
         this.descricao = descricao;
-        this.prazo = prazo;
+        this.status = StatusManutencao.ABERTA;
+        this.dataAbertura = dataAbertura;
+        this.dataPrevista = dataPrevista;
+        this.dataConclusao = dataConclusao;
+        this.idUsuarioResponsavel = idUsuarioResponsavel;
     }
+
+//    CONSTRUTOR VAZIO
 
     public Manutencao() {
     }
 
-//    MÉTODOS GETTERS SETTERS
+//    GETTERS
 
     public int getId() {
         return id;
@@ -34,17 +48,40 @@ public class Manutencao {
         return idPainel;
     }
 
-    public String getTipo() {
-        return tipo;
+    public TipoManutencao getTipoManutencao() {
+        return tipoManutencao;
     }
 
     public String getDescricao() {
         return descricao;
     }
 
-    public LocalDate getPrazo() {
-        return prazo;
+    public StatusManutencao getStatus() {
+        return status;
     }
+
+    public LocalDate getDataAbertura() {
+        return dataAbertura;
+    }
+
+    public LocalDate getDataPrevista() {
+        return dataPrevista;
+    }
+
+    public LocalDate getDataConclusao() {
+        return dataConclusao;
+    }
+
+    public Integer getIdUsuarioResponsavel() {
+        return idUsuarioResponsavel;
+    }
+
+    public String getMensagemErro() {
+        return mensagemErro;
+    }
+
+
+//    SETTERS
 
     public void setId(int id) {
         this.id = id;
@@ -54,36 +91,53 @@ public class Manutencao {
         this.idPainel = idPainel;
     }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
+    public void setTipoManutencao(TipoManutencao tipoManutencao) {
+        this.tipoManutencao = tipoManutencao;
     }
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
 
-    public void setPrazo(LocalDate prazo) {
-        this.prazo = prazo;
+    public void setStatus(StatusManutencao status) {
+        this.status = status;
     }
 
-    public String getMensagemErro() {
-        return mensagemErro;
+    public void setDataAbertura(LocalDate dataAbertura) {
+        this.dataAbertura = dataAbertura;
+    }
+
+    public void setDataPrevista(LocalDate dataPrevista) {
+        this.dataPrevista = dataPrevista;
+    }
+
+    public void setDataConclusao(LocalDate dataConclusao) {
+        this.dataConclusao = dataConclusao;
+    }
+
+    public void setIdUsuarioResponsavel(Integer idUsuarioResponsavel) {
+        this.idUsuarioResponsavel = idUsuarioResponsavel;
     }
 
     public void setMensagemErro(String mensagemErro) {
         this.mensagemErro = mensagemErro;
     }
 
-    //OVERRIDE DA SAÍDA TOSTRING()
+
+//    SAÍDA TOSTRING()
 
     @Override
-    public String toString() {
+    public java.lang.String toString() {
         return "Manutencao{" +
-                "prazo=" + prazo +
-                ", descricao='" + descricao + '\'' +
-                ", tipo='" + tipo + '\'' +
+                "id=" + id +
                 ", idPainel=" + idPainel +
-                ", id=" + id +
+                ", tipoManutencao=" + tipoManutencao +
+                ", descricao=" + descricao +
+                ", status=" + status +
+                ", dataAbertura=" + dataAbertura +
+                ", dataPrevista=" + dataPrevista +
+                ", dataConclusao=" + dataConclusao +
+                ", idUsuarioResponsavel=" + idUsuarioResponsavel +
                 '}';
     }
 }

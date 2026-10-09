@@ -2,7 +2,7 @@ package org.apollo.apollowebcrud.model;
 
 public class Usuario {
 
-//    ATRIBUTO E CONSTRUTORES
+//    ATRIBUTO
 
     private int id;
     private String nome;
@@ -12,10 +12,13 @@ public class Usuario {
     private String email;
     private String telefone;
     private String cpf;
-    private String senha;
+    private String senhaHash;
+    private String ativo;
     private String mensagemErro;
 
-    public Usuario(int id, String nome, int idTipoUsuario, int idEmpresa, int idFilial, String email, String telefone, String cpf, String senha) {
+//    CONSTRUTOR
+
+    public Usuario(int id, String nome, int idTipoUsuario, int idEmpresa, int idFilial, String email, String telefone, String cpf, String senhaHash, String ativo) {
         this.id = id;
         this.nome = nome;
         this.idTipoUsuario = idTipoUsuario;
@@ -24,8 +27,16 @@ public class Usuario {
         this.email = email;
         this.telefone = telefone;
         this.cpf = cpf;
-        this.senha = senha;
+        this.senhaHash = senhaHash;
+        this.ativo = ativo;
     }
+
+//    CONSTRUTOR VAZIO
+
+    public Usuario() {
+    }
+
+//    GETTERS
 
     public int getId() {
         return id;
@@ -59,26 +70,79 @@ public class Usuario {
         return cpf;
     }
 
-    public String getSenha() {
-        return senha;
+    public String getSenhaHash() {
+        return senhaHash;
+    }
+
+    public String getAtivo() {
+        return ativo;
     }
 
     public String getMensagemErro() {
         return mensagemErro;
     }
 
+//    SETTERS
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setIdTipoUsuario(int idTipoUsuario) {
+        this.idTipoUsuario = idTipoUsuario;
+    }
+
+    public void setIdEmpresa(int idEmpresa) {
+        this.idEmpresa = idEmpresa;
+    }
+
+    public void setIdFilial(int idFilial) {
+        this.idFilial = idFilial;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public void setSenhaHash(String senhaHash) {
+        this.senhaHash = senhaHash;
+    }
+
+    public void setAtivo(String ativo) {
+        this.ativo = ativo;
+    }
+
+    public void setMensagemErro(String mensagemErro) {
+        this.mensagemErro = mensagemErro;
+    }
+
+//    SAÍDA TOSTRING()
+
     @Override
     public String toString() {
         return "Usuario{" +
                 "id=" + id +
-                ", nome='" + nome + '\'' +
+                ", nome=" + nome +
                 ", idTipoUsuario=" + idTipoUsuario +
                 ", idEmpresa=" + idEmpresa +
                 ", idFilial=" + idFilial +
-                ", email='" + email + '\'' +
-                ", telefone='" + telefone + '\'' +
-                ", cpf='" + cpf + '\'' +
-                ", senha='" + senha + '\'' +
+                ", email=" + email +
+                ", telefone=" + telefone +
+                ", cpf=" + cpf +
+                ", senhaHash=" + senhaHash +
+                ", ativo=" + ativo +
                 '}';
     }
 }

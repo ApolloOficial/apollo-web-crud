@@ -2,62 +2,147 @@ package org.apollo.apollowebcrud.model;
 
 public class Filial {
 
-    // ATRIBUTOS E CONSTRUTORES
+    // ATRIBUTOS
+
     private int id;
     private int idEmpresa;
-    private String localizacao;
+    private int idSegmento;
+    private String nome;
+    private String cnpj;
+    private String email;
+    private String telefone;
+    private int idEndereco;
+    private StatusGeral ativo;
+    private Integer idUsuarioCadastro;
     private String mensagemErro;
+
+//    CONSTRUTOR
+
+    public Filial(int id, int idEmpresa, int idSegmento, String nome, String cnpj, String email, String telefone, int idEndereco, StatusGeral ativo, Integer idUsuarioCadastro) {
+        this.id = id;
+        this.idEmpresa = idEmpresa;
+        this.idSegmento = idSegmento;
+        this.nome = nome;
+        this.cnpj = cnpj;
+        this.email = email;
+        this.telefone = telefone;
+        this.idEndereco = idEndereco;
+        this.ativo = StatusGeral.ATIVO;
+        this.idUsuarioCadastro = idUsuarioCadastro;
+    }
+
+//    CONSTRUTOR VAZIO
 
     public Filial() {
     }
 
-    public Filial(int id, int idEmpresa, String localizacao) {
-        this.id = id;
-        this.idEmpresa = idEmpresa;
-        this.localizacao = localizacao;
-    }
+//  GETTERS
 
-    // MÉTODOS GETTERS E SETTERS
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public int getIdEmpresa() {
         return idEmpresa;
     }
 
-    public void setIdEmpresa(int idEmpresa) {
-        this.idEmpresa = idEmpresa;
+    public int getIdSegmento() {
+        return idSegmento;
     }
 
-    public String getLocalizacao() {
-        return localizacao;
+    public String getNome() {
+        return nome;
     }
 
-    public void setLocalizacao(String localizacao) {
-        this.localizacao = localizacao;
+    public String getCnpj() {
+        return cnpj;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public int getIdEndereco() {
+        return idEndereco;
+    }
+
+    public StatusGeral getAtivo() {
+        return ativo;
+    }
+
+    public Integer getIdUsuarioCadastro() {
+        return idUsuarioCadastro;
     }
 
     public String getMensagemErro() {
         return mensagemErro;
     }
 
+//    SETTERS
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setIdEmpresa(int idEmpresa) {
+        this.idEmpresa = idEmpresa;
+    }
+
+    public void setIdSegmento(int idSegmento) {
+        this.idSegmento = idSegmento;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setCnpj(String cnpj) {
+        this.cnpj = cnpj;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
+    public void setIdEndereco(int idEndereco) {
+        this.idEndereco = idEndereco;
+    }
+
+    public void setAtivo(StatusGeral ativo) {
+        this.ativo = ativo;
+    }
+
+    public void setIdUsuarioCadastro(Integer idUsuarioCadastro) {
+        this.idUsuarioCadastro = idUsuarioCadastro;
+    }
+
     public void setMensagemErro(String mensagemErro) {
         this.mensagemErro = mensagemErro;
     }
 
-    // OVERRIDE DA SAÍDA TOSTRING()
-2
+//    SAÍDA TOSRTING()
+
     @Override
-    public String toString() {
+    public java.lang.String toString() {
         return "Filial{" +
-                "localizacao='" + localizacao + '\'' +
+                "id=" + id +
                 ", idEmpresa=" + idEmpresa +
-                ", id=" + id +
+                ", idSegmento=" + idSegmento +
+                ", nome=" + nome +
+                ", cnpj=" + cnpj +
+                ", email=" + email +
+                ", telefone=" + telefone +
+                ", idEndereco=" + idEndereco +
+                ", ativo=" + ativo +
+                ", idUsuarioCadastro=" + idUsuarioCadastro +
                 '}';
     }
 }
