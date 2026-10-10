@@ -2,25 +2,17 @@ package org.apollo.apollowebcrud.model;
 
 public class TipoUsuario {
 
-//    ENUM
-
-    public enum Tipo {
-        ADMINISTRADOR,
-        GERENTE,
-        OPERADOR
-    }
-
 //    ATRIBUTOS
 
     private int id;
-    private Tipo nome;
+    private TipoUsuEnum nome;
     private String descricao;
     private String mensagemErro;
 
 //    (o restante da classe continua exatamente igual)
 //    CONSTRUTOR
 
-    public TipoUsuario(int id, Tipo nome, String descricao) {
+    public TipoUsuario(int id, TipoUsuEnum nome, String descricao) {
         this.id = id;
         this.nome = nome;
         this.descricao = descricao;
@@ -38,7 +30,7 @@ public class TipoUsuario {
         return id;
     }
 
-    public Tipo getNome() {
+    public TipoUsuEnum getNome() {
         return nome;
     }
 
@@ -56,7 +48,7 @@ public class TipoUsuario {
         this.id = id;
     }
 
-    public void setNome(Tipo nome) {
+    public void setNome(TipoUsuEnum nome) {
         this.nome = nome;
     }
 
@@ -71,7 +63,7 @@ public class TipoUsuario {
 //    SAÍDA TOSTRING()
 
     @Override
-    public java.lang.String toString() {
+    public String toString() {
         return "TipoUsuario{" +
                 "id=" + id +
                 ", nome='" + nome + '\'' +
