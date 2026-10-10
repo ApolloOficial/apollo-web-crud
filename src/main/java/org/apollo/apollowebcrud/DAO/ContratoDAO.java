@@ -10,8 +10,6 @@ import java.util.List;
 
 public class ContratoDAO extends ApolloConnection {
 
-    private static final String COLUNAS = "id, id_empresa, data_inicio, valor_mensal, status, id_usuario_cadastro";
-
     public ContratoDAO() {
         super();
     }
@@ -29,10 +27,11 @@ public class ContratoDAO extends ApolloConnection {
 
     // CREATE
 
-    public boolean inserir(Contrato contrato) {
+    public int inserir(Contrato contrato) {
         String sql = "INSERT INTO contrato (id_empresa, data_inicio, valor_mensal, status, id_usuario_cadastro) VALUES (?, ?, ?, ?, ?)";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        // retorna o id gerado pelo banco
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setInt(1, contrato.getIdEmpresa());
             stmt.setDate(2, Date.valueOf(contrato.getDataInicio()));
@@ -45,18 +44,26 @@ public class ContratoDAO extends ApolloConnection {
                 stmt.setNull(5, Types.INTEGER);
             }
 
-            return stmt.executeUpdate() > 0;
+            stmt.executeUpdate();
+
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+
+            return -1;
 
         } catch (SQLException e) {
             System.err.println("Erro ao inserir contrato: " + e.getMessage());
-            return false;
+            return -1;
         }
     }
 
     // READ por id
 
     public Contrato buscarPorId(int id) {
-        String sql = "SELECT " + COLUNAS + " FROM contrato WHERE id = ?";
+        String sql = "SELECT * FROM contrato WHERE id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 
@@ -79,7 +86,7 @@ public class ContratoDAO extends ApolloConnection {
 
     public List<Contrato> listarTodos() {
         List<Contrato> lista = new ArrayList<>();
-        String sql = "SELECT " + COLUNAS + " FROM contrato ORDER BY data_inicio DESC";
+        String sql = "SELECT * FROM contrato ORDER BY data_inicio DESC";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {

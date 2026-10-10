@@ -9,8 +9,6 @@ import java.util.List;
 
 public class SegmentoDAO extends ApolloConnection {
 
-    private static final String COLUNAS = "id, nome, descricao";
-
     public SegmentoDAO() {
         super();
     }
@@ -23,27 +21,36 @@ public class SegmentoDAO extends ApolloConnection {
         return segmento;
     }
 
-    // CREATE
+// CREATE
 
-    public boolean inserir(Segmento segmento) {
+    public int inserir(Segmento segmento) {
         String sql = "INSERT INTO segmento (nome, descricao) VALUES (?, ?)";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        // retorna o id gerado pelo banco
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, segmento.getNome());
             stmt.setString(2, segmento.getDescricao());
 
-            return stmt.executeUpdate() > 0;
+            stmt.executeUpdate();
+
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+
+            return -1;
 
         } catch (SQLException e) {
             System.err.println("Erro ao inserir segmento: " + e.getMessage());
-            return false;
+            return -1;
         }
     }
 
     // READ por id
 
     public Segmento buscarPorId(int id) {
-        String sql = "SELECT " + COLUNAS + " FROM segmento WHERE id = ?";
+        String sql = "SELECT * FROM segmento WHERE id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -65,7 +72,7 @@ public class SegmentoDAO extends ApolloConnection {
 
     public List<Segmento> listarTodos() {
         List<Segmento> lista = new ArrayList<>();
-        String sql = "SELECT " + COLUNAS + " FROM segmento ORDER BY nome";
+        String sql = "SELECT * FROM segmento ORDER BY nome";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {

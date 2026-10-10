@@ -25,7 +25,7 @@ public class EmpresaDAO extends ApolloConnection {
         empresa.setCnpj(rs.getString("cnpj"));
         empresa.setEmailContato(rs.getString("email_contato"));
         empresa.setIdEndereco(rs.getInt("id_endereco"));
-        empresa.setAtivo(StatusGeral.valueOf(rs.getString("ativo")));
+        empresa.setStatus(StatusGeral.valueOf(rs.getString("ativo")));
         empresa.setUrlFoto(rs.getString("url_foto"));
         empresa.setIdUsuarioCadastro(rs.getObject("id_usuario_cadastro", Integer.class));
         return empresa;
@@ -49,16 +49,18 @@ public class EmpresaDAO extends ApolloConnection {
 
     // CREATE
 
-    public boolean inserir(Empresa empresa, Endereco endereco) {
+    public int inserir(Empresa empresa, Endereco endereco) {
         String sql = "INSERT INTO empresa (nome, descricao, cnpj, email_contato, id_endereco, ativo, url_foto, id_usuario_cadastro) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try {
             connection.setAutoCommit(false);
 
+            // insere endereço e seta o id na empresa
             int idEndereco = EnderecoDAO.inserirNaConexao(endereco, connection);
             empresa.setIdEndereco(idEndereco);
 
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            // retorna o id gerado pelo banco
+            try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setString(1, empresa.getNome());
                 stmt.setString(2, empresa.getDescricao());
                 stmt.setString(3, empresa.getCnpj());
@@ -74,15 +76,23 @@ public class EmpresaDAO extends ApolloConnection {
                 }
 
                 stmt.executeUpdate();
+
+                try (ResultSet rs = stmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        int idGerado = rs.getInt(1);
+                        connection.commit();
+                        return idGerado;
+                    }
+                }
             }
 
             connection.commit();
-            return true;
+            return -1;
 
         } catch (SQLException e) {
             desfazer();
             System.err.println("Erro ao inserir empresa: " + e.getMessage());
-            return false;
+            return -1;
 
         } finally {
             restaurarAutoCommit();
@@ -146,7 +156,7 @@ public class EmpresaDAO extends ApolloConnection {
                 stmt.setString(2, empresa.getDescricao());
                 stmt.setString(3, empresa.getCnpj());
                 stmt.setString(4, empresa.getEmailContato());
-                stmt.setString(5, empresa.getAtivo().name());
+                stmt.setString(5, empresa.getStatus().name());
                 stmt.setString(6, empresa.getUrlFoto());
                 stmt.setInt(7, empresa.getId());
 

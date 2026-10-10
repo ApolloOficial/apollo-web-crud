@@ -11,8 +11,6 @@ import java.util.List;
 
 public class FilialDAO extends ApolloConnection {
 
-    private static final String COLUNAS = "id, id_empresa, id_segmento, nome, cnpj, email, telefone, id_endereco, ativo, id_usuario_cadastro";
-
     public FilialDAO() {
         super();
     }
@@ -27,7 +25,7 @@ public class FilialDAO extends ApolloConnection {
         filial.setEmail(rs.getString("email"));
         filial.setTelefone(rs.getString("telefone"));
         filial.setIdEndereco(rs.getInt("id_endereco"));
-        filial.setAtivo(StatusGeral.valueOf(rs.getString("ativo")));
+        filial.setStatus(StatusGeral.valueOf(rs.getString("ATIVO")));
         filial.setIdUsuarioCadastro(rs.getObject("id_usuario_cadastro", Integer.class));
         return filial;
     }
@@ -48,18 +46,20 @@ public class FilialDAO extends ApolloConnection {
         }
     }
 
-    // CREATE
+// CREATE
 
-    public boolean inserir(Filial filial, Endereco endereco) {
+    public int inserir(Filial filial, Endereco endereco) {
         String sql = "INSERT INTO filial (id_empresa, id_segmento, nome, cnpj, email, telefone, id_endereco, ativo, id_usuario_cadastro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try {
             connection.setAutoCommit(false);
 
+            // insere endereço e seta o id na filial
             int idEndereco = EnderecoDAO.inserirNaConexao(endereco, connection);
             filial.setIdEndereco(idEndereco);
 
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            // retorna o id gerado pelo banco
+            try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setInt(1, filial.getIdEmpresa());
                 stmt.setInt(2, filial.getIdSegmento());
                 stmt.setString(3, filial.getNome());
@@ -76,15 +76,23 @@ public class FilialDAO extends ApolloConnection {
                 }
 
                 stmt.executeUpdate();
+
+                try (ResultSet rs = stmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        int idGerado = rs.getInt(1);
+                        connection.commit();
+                        return idGerado;
+                    }
+                }
             }
 
             connection.commit();
-            return true;
+            return -1;
 
         } catch (SQLException e) {
             desfazer();
             System.err.println("Erro ao inserir filial: " + e.getMessage());
-            return false;
+            return -1;
 
         } finally {
             restaurarAutoCommit();
@@ -94,7 +102,7 @@ public class FilialDAO extends ApolloConnection {
     // READ por id
 
     public Filial buscarPorId(int id) {
-        String sql = "SELECT " + COLUNAS + " FROM filial WHERE id = ?";
+        String sql = "SELECT * FROM filial WHERE id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -116,7 +124,7 @@ public class FilialDAO extends ApolloConnection {
 
     public List<Filial> listarTodos() {
         List<Filial> lista = new ArrayList<>();
-        String sql = "SELECT " + COLUNAS + " FROM filial ORDER BY nome";
+        String sql = "SELECT * FROM filial ORDER BY nome";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
@@ -150,7 +158,7 @@ public class FilialDAO extends ApolloConnection {
                 stmt.setString(4, filial.getCnpj());
                 stmt.setString(5, filial.getEmail());
                 stmt.setString(6, filial.getTelefone());
-                stmt.setString(7, filial.getAtivo().name());
+                stmt.setString(7, filial.getStatus().name());
                 stmt.setInt(8, filial.getId());
 
                 boolean atualizou = stmt.executeUpdate() > 0;

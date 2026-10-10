@@ -10,8 +10,6 @@ import java.util.List;
 
 public class PainelDAO extends ApolloConnection {
 
-    private static final String COLUNAS = "id, id_string, numero_serie, marca, modelo, potencia_w, nota_fiscal, status, data_instalacao";
-
     public PainelDAO() {
         super();
     }
@@ -23,40 +21,49 @@ public class PainelDAO extends ApolloConnection {
         painel.setNumeroSerie(rs.getString("numero_serie"));
         painel.setMarca(rs.getString("marca"));
         painel.setModelo(rs.getString("modelo"));
-        painel.setPotenciaW(rs.getBigDecimal("potencia_w"));
+        painel.setPotenciaW(rs.getDouble("potencia_w"));
         painel.setNotaFiscal(rs.getString("nota_fiscal"));
         painel.setStatus(StatusGeral.valueOf(rs.getString("status")));
         painel.setDataInstalacao(rs.getDate("data_instalacao").toLocalDate());
         return painel;
     }
 
-    // CREATE
+// CREATE
 
-    public boolean inserir(Painel painel) {
+    public int inserir(Painel painel) {
         String sql = "INSERT INTO painel (id_string, numero_serie, marca, modelo, potencia_w, nota_fiscal, status, data_instalacao) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        // retorna o id gerado pelo banco
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, painel.getIdString());
             stmt.setString(2, painel.getNumeroSerie());
             stmt.setString(3, painel.getMarca());
             stmt.setString(4, painel.getModelo());
-            stmt.setBigDecimal(5, painel.getPotenciaW());
+            stmt.setDouble(5, painel.getPotenciaW());
             stmt.setString(6, painel.getNotaFiscal());
             stmt.setString(7, StatusGeral.ATIVO.name());
             stmt.setDate(8, Date.valueOf(painel.getDataInstalacao()));
 
-            return stmt.executeUpdate() > 0;
+            stmt.executeUpdate();
+
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+
+            return -1;
 
         } catch (SQLException e) {
             System.err.println("Erro ao inserir painel: " + e.getMessage());
-            return false;
+            return -1;
         }
     }
 
     // READ por id
 
     public Painel buscarPorId(int id) {
-        String sql = "SELECT " + COLUNAS + " FROM painel WHERE id = ?";
+        String sql = "SELECT * FROM painel WHERE id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -78,7 +85,7 @@ public class PainelDAO extends ApolloConnection {
 
     public List<Painel> listarTodos() {
         List<Painel> lista = new ArrayList<>();
-        String sql = "SELECT " + COLUNAS + " FROM painel ORDER BY marca, modelo";
+        String sql = "SELECT * FROM painel ORDER BY marca, modelo";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
@@ -104,7 +111,7 @@ public class PainelDAO extends ApolloConnection {
             stmt.setString(2, painel.getNumeroSerie());
             stmt.setString(3, painel.getMarca());
             stmt.setString(4, painel.getModelo());
-            stmt.setBigDecimal(5, painel.getPotenciaW());
+            stmt.setDouble(5, painel.getPotenciaW());
             stmt.setString(6, painel.getNotaFiscal());
             stmt.setString(7, painel.getStatus().name());
             stmt.setDate(8, Date.valueOf(painel.getDataInstalacao()));

@@ -10,8 +10,6 @@ import java.util.List;
 
 public class StringSolarDAO extends ApolloConnection {
 
-    private static final String COLUNAS = "id, id_inversor, codigo, numero_mppt, numero_entrada, status";
-
     public StringSolarDAO() {
         super();
     }
@@ -27,12 +25,13 @@ public class StringSolarDAO extends ApolloConnection {
         return stringSolar;
     }
 
-    // CREATE
+// CREATE
 
-    public boolean inserir(StringSolar stringSolar) {
+    public int inserir(StringSolar stringSolar) {
         String sql = "INSERT INTO string (id_inversor, codigo, numero_mppt, numero_entrada, status) VALUES (?, ?, ?, ?, ?)";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        // retorna o id gerado pelo banco
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, stringSolar.getIdInversor());
             stmt.setString(2, stringSolar.getCodigo());
 
@@ -50,18 +49,26 @@ public class StringSolarDAO extends ApolloConnection {
 
             stmt.setString(5, StatusGeral.ATIVO.name());
 
-            return stmt.executeUpdate() > 0;
+            stmt.executeUpdate();
+
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+
+            return -1;
 
         } catch (SQLException e) {
             System.err.println("Erro ao inserir string solar: " + e.getMessage());
-            return false;
+            return -1;
         }
     }
 
     // READ por id
 
     public StringSolar buscarPorId(int id) {
-        String sql = "SELECT " + COLUNAS + " FROM string WHERE id = ?";
+        String sql = "SELECT * FROM string WHERE id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -83,7 +90,7 @@ public class StringSolarDAO extends ApolloConnection {
 
     public List<StringSolar> listarTodos() {
         List<StringSolar> lista = new ArrayList<>();
-        String sql = "SELECT " + COLUNAS + " FROM string ORDER BY codigo";
+        String sql = "SELECT * FROM string ORDER BY codigo";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {

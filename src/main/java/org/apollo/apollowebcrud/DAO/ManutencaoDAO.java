@@ -11,8 +11,6 @@ import java.util.List;
 
 public class ManutencaoDAO extends ApolloConnection {
 
-    private static final String COLUNAS = "id, id_painel, tipo_manutencao, descricao, status, data_abertura, data_prevista, data_conclusao, id_usuario_responsavel";
-
     public ManutencaoDAO() {
         super();
     }
@@ -36,12 +34,13 @@ public class ManutencaoDAO extends ApolloConnection {
         return manutencao;
     }
 
-    // CREATE
+// CREATE
 
-    public boolean inserir(Manutencao manutencao) {
+    public int inserir(Manutencao manutencao) {
         String sql = "INSERT INTO manutencao (id_painel, tipo_manutencao, descricao, status, data_abertura, data_prevista, data_conclusao, id_usuario_responsavel) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        // retorna o id gerado pelo banco
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, manutencao.getIdPainel());
             stmt.setString(2, manutencao.getTipoManutencao().name());
             stmt.setString(3, manutencao.getDescricao());
@@ -66,18 +65,26 @@ public class ManutencaoDAO extends ApolloConnection {
                 stmt.setNull(8, Types.INTEGER);
             }
 
-            return stmt.executeUpdate() > 0;
+            stmt.executeUpdate();
+
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+
+            return -1;
 
         } catch (SQLException e) {
             System.err.println("Erro ao inserir manutenção: " + e.getMessage());
-            return false;
+            return -1;
         }
     }
 
     // READ por id
 
     public Manutencao buscarPorId(int id) {
-        String sql = "SELECT " + COLUNAS + " FROM manutencao WHERE id = ?";
+        String sql = "SELECT * FROM manutencao WHERE id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -99,7 +106,7 @@ public class ManutencaoDAO extends ApolloConnection {
 
     public List<Manutencao> listarTodos() {
         List<Manutencao> lista = new ArrayList<>();
-        String sql = "SELECT " + COLUNAS + " FROM manutencao ORDER BY data_abertura DESC";
+        String sql = "SELECT * FROM manutencao ORDER BY data_abertura DESC";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {

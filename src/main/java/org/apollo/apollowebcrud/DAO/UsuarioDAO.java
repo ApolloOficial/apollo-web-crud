@@ -9,8 +9,6 @@ import java.util.List;
 
 public class UsuarioDAO extends ApolloConnection {
 
-    private static final String COLUNAS = "id, nome, id_tipo_usuario, id_filial, email, telefone, cpf, ativo, id_usuario_cadastro";
-
     public UsuarioDAO() {
         super();
     }
@@ -24,16 +22,16 @@ public class UsuarioDAO extends ApolloConnection {
         usuario.setEmail(rs.getString("email"));
         usuario.setTelefone(rs.getString("telefone"));
         usuario.setCpf(rs.getString("cpf"));
-        usuario.setAtivo(rs.getString("ativo"));
+        usuario.setStatus(rs.getString("ativo"));
         return usuario;
     }
 
-    // CREATE
+// CREATE
 
-    public boolean inserir(Usuario usuario) {
+    public int inserir(Usuario usuario) {
         String sql = "INSERT INTO usuario (nome, id_tipo_usuario, id_filial, email, telefone, cpf, senha_hash, ativo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        // retorna o id gerado pelo banco
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, usuario.getNome());
             stmt.setInt(2, usuario.getIdTipoUsuario());
             stmt.setInt(3, usuario.getIdFilial());
@@ -43,18 +41,26 @@ public class UsuarioDAO extends ApolloConnection {
             stmt.setString(7, usuario.getSenhaHash());
             stmt.setString(8, "ATIVO");
 
-            return stmt.executeUpdate() > 0;
+            stmt.executeUpdate();
+
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+
+            return -1;
 
         } catch (SQLException e) {
             System.err.println("Erro ao inserir usuário: " + e.getMessage());
-            return false;
+            return -1;
         }
     }
 
     // READ por id
 
     public Usuario buscarPorId(int id) {
-        String sql = "SELECT " + COLUNAS + " FROM usuario WHERE id = ?";
+        String sql = "SELECT * FROM usuario WHERE id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -76,7 +82,7 @@ public class UsuarioDAO extends ApolloConnection {
 
     public List<Usuario> listarTodos() {
         List<Usuario> lista = new ArrayList<>();
-        String sql = "SELECT " + COLUNAS + " FROM usuario ORDER BY nome";
+        String sql = "SELECT * FROM usuario ORDER BY nome";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
@@ -104,7 +110,7 @@ public class UsuarioDAO extends ApolloConnection {
             stmt.setString(4, usuario.getEmail());
             stmt.setString(5, usuario.getTelefone());
             stmt.setString(6, usuario.getCpf());
-            stmt.setString(7, usuario.getAtivo());
+            stmt.setString(7, usuario.getStatus());
             stmt.setInt(8, usuario.getId());
 
             return stmt.executeUpdate() > 0;

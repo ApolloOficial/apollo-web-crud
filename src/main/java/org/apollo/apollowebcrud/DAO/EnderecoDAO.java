@@ -9,8 +9,6 @@ import java.util.List;
 
 public class EnderecoDAO extends ApolloConnection {
 
-    private static final String COLUNAS = "id, cep, logradouro, numero, complemento, bairro, cidade, estado";
-
     public EnderecoDAO() {
         super();
     }
@@ -75,20 +73,21 @@ public class EnderecoDAO extends ApolloConnection {
 
     // CREATE
 
-    public boolean inserir(Endereco endereco) {
+// CREATE
+
+    public int inserir(Endereco endereco) {
         try {
-            inserirNaConexao(endereco, connection);
-            return true;
+            return inserirNaConexao(endereco, connection);
         } catch (SQLException e) {
             System.err.println("Erro ao inserir endereço: " + e.getMessage());
-            return false;
+            return -1;
         }
     }
 
     // READ por id
 
     public Endereco buscarPorId(int id) {
-        String sql = "SELECT " + COLUNAS + " FROM endereco WHERE id = ?";
+        String sql = "SELECT * FROM endereco WHERE id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -110,7 +109,7 @@ public class EnderecoDAO extends ApolloConnection {
 
     public List<Endereco> listarTodos() {
         List<Endereco> lista = new ArrayList<>();
-        String sql = "SELECT " + COLUNAS + " FROM endereco ORDER BY cidade, logradouro";
+        String sql = "SELECT * FROM endereco ORDER BY cidade, logradouro";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
