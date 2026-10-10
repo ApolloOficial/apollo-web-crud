@@ -13,14 +13,14 @@ public class Inversor {
     private String numeroSerie;
     private String marca;
     private String modelo;
-    private BigDecimal potenciaKw;
+    private double potenciaKw;
     private StatusGeral status;
     private LocalDate dataInstalacao;
     private String mensagemErro;
 
 //    CONSTRUTOR
 
-    public Inversor(int id, int idFilial, String codigo, String numeroSerie, String marca, String modelo, BigDecimal potenciaKw, StatusGeral status, LocalDate dataInstalacao) {
+    public Inversor(int id, int idFilial, String codigo, String numeroSerie, String marca, String modelo, double potenciaKw, StatusGeral status, LocalDate dataInstalacao) {
         this.id = id;
         this.idFilial = idFilial;
         this.codigo = codigo;
@@ -63,7 +63,7 @@ public class Inversor {
         return modelo;
     }
 
-    public BigDecimal getPotenciaKw() {
+    public double getPotenciaKw() {
         return potenciaKw;
     }
 
@@ -105,7 +105,7 @@ public class Inversor {
         this.modelo = modelo;
     }
 
-    public void setPotenciaKw(BigDecimal potenciaKw) {
+    public void setPotenciaKw(double potenciaKw) {
         this.potenciaKw = potenciaKw;
     }
 

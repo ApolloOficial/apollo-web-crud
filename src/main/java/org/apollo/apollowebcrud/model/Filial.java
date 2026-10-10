@@ -12,13 +12,13 @@ public class Filial {
     private String email;
     private String telefone;
     private int idEndereco;
-    private StatusGeral ativo;
+    private StatusGeral status;
     private Integer idUsuarioCadastro;
     private String mensagemErro;
 
 //    CONSTRUTOR
 
-    public Filial(int id, int idEmpresa, int idSegmento, String nome, String cnpj, String email, String telefone, int idEndereco, StatusGeral ativo, Integer idUsuarioCadastro) {
+    public Filial(int id, int idEmpresa, int idSegmento, String nome, String cnpj, String email, String telefone, int idEndereco, StatusGeral status, Integer idUsuarioCadastro) {
         this.id = id;
         this.idEmpresa = idEmpresa;
         this.idSegmento = idSegmento;
@@ -27,7 +27,7 @@ public class Filial {
         this.email = email;
         this.telefone = telefone;
         this.idEndereco = idEndereco;
-        this.ativo = StatusGeral.ATIVO;
+        this.status = StatusGeral.ATIVO;
         this.idUsuarioCadastro = idUsuarioCadastro;
     }
 
@@ -70,8 +70,8 @@ public class Filial {
         return idEndereco;
     }
 
-    public StatusGeral getAtivo() {
-        return ativo;
+    public StatusGeral getStatus() {
+        return status;
     }
 
     public Integer getIdUsuarioCadastro() {
@@ -116,8 +116,8 @@ public class Filial {
         this.idEndereco = idEndereco;
     }
 
-    public void setAtivo(StatusGeral ativo) {
-        this.ativo = ativo;
+    public void setStatus(StatusGeral status) {
+        this.status = status;
     }
 
     public void setIdUsuarioCadastro(Integer idUsuarioCadastro) {
@@ -141,7 +141,7 @@ public class Filial {
                 ", email=" + email +
                 ", telefone=" + telefone +
                 ", idEndereco=" + idEndereco +
-                ", ativo=" + ativo +
+                ", status=" + status +
                 ", idUsuarioCadastro=" + idUsuarioCadastro +
                 '}';
     }

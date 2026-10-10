@@ -10,21 +10,21 @@ public class Empresa {
     private String descricao;
     private String emailContato;
     private int idEndereco;
-    private StatusGeral ativo;
+    private StatusGeral status;
     private String urlFoto;
     private Integer idUsuarioCadastro;
     private String mensagemErro;
 
 //    CONSTRUTOR
 
-    public Empresa(int id, String nome, String cnpj, String descricao, String emailContato, int idEndereco, StatusGeral ativo, String urlFoto, Integer idUsuarioCadastro) {
+    public Empresa(int id, String nome, String cnpj, String descricao, String emailContato, int idEndereco, StatusGeral status, String urlFoto, Integer idUsuarioCadastro) {
         this.id = id;
         this.nome = nome;
         this.cnpj = cnpj;
         this.descricao = descricao;
         this.emailContato = emailContato;
         this.idEndereco = idEndereco;
-        this.ativo = StatusGeral.ATIVO;
+        this.status = StatusGeral.ATIVO;
         this.urlFoto = urlFoto;
         this.idUsuarioCadastro = idUsuarioCadastro;
     }
@@ -60,8 +60,8 @@ public class Empresa {
         return idEndereco;
     }
 
-    public StatusGeral getAtivo() {
-        return ativo;
+    public StatusGeral getStatus() {
+        return status;
     }
 
     public String getUrlFoto() {
@@ -102,8 +102,8 @@ public class Empresa {
         this.idEndereco = idEndereco;
     }
 
-    public void setAtivo(StatusGeral ativo) {
-        this.ativo = ativo;
+    public void setStatus(StatusGeral status) {
+        this.status = status;
     }
 
     public void setUrlFoto(String urlFoto) {
@@ -121,7 +121,7 @@ public class Empresa {
 //    SAÍDA TOSTRING()
 
     @Override
-    public java.lang.String toString() {
+    public String toString() {
         return "Empresa{" +
                 "id=" + id +
                 ", nome=" + nome +
@@ -129,7 +129,7 @@ public class Empresa {
                 ", descricao=" + descricao +
                 ", emailContato=" + emailContato +
                 ", idEndereco=" + idEndereco +
-                ", ativo=" + ativo +
+                ", ativo=" + status +
                 ", urlFoto=" + urlFoto +
                 ", idUsuarioCadastro=" + idUsuarioCadastro +
                 '}';

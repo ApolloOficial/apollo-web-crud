@@ -13,12 +13,13 @@ public class Usuario {
     private String telefone;
     private String cpf;
     private String senhaHash;
-    private String ativo;
+    private String status;
+    private String urlFoto;
     private String mensagemErro;
 
 //    CONSTRUTOR
 
-    public Usuario(int id, String nome, int idTipoUsuario, int idEmpresa, int idFilial, String email, String telefone, String cpf, String senhaHash, String ativo) {
+    public Usuario(int id, String nome, int idTipoUsuario, int idEmpresa, int idFilial, String email, String telefone, String cpf, String senhaHash, String status, String urlFoto) {
         this.id = id;
         this.nome = nome;
         this.idTipoUsuario = idTipoUsuario;
@@ -28,8 +29,10 @@ public class Usuario {
         this.telefone = telefone;
         this.cpf = cpf;
         this.senhaHash = senhaHash;
-        this.ativo = ativo;
+        this.status = status;
+        this.urlFoto = urlFoto;
     }
+
 
 //    CONSTRUTOR VAZIO
 
@@ -74,19 +77,24 @@ public class Usuario {
         return senhaHash;
     }
 
-    public String getAtivo() {
-        return ativo;
+    public String getStatus() {
+        return status;
+    }
+
+    public String getUrlFoto() {
+        return urlFoto;
     }
 
     public String getMensagemErro() {
         return mensagemErro;
     }
 
+
 //    SETTERS
 
-    public void setId(int id) {
-        this.id = id;
-    }
+public void setId(int id) {
+    this.id = id;
+}
 
     public void setNome(String nome) {
         this.nome = nome;
@@ -120,8 +128,12 @@ public class Usuario {
         this.senhaHash = senhaHash;
     }
 
-    public void setAtivo(String ativo) {
-        this.ativo = ativo;
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setUrlFoto(String urlFoto) {
+        this.urlFoto = urlFoto;
     }
 
     public void setMensagemErro(String mensagemErro) {
@@ -134,15 +146,16 @@ public class Usuario {
     public String toString() {
         return "Usuario{" +
                 "id=" + id +
-                ", nome=" + nome +
+                ", nome='" + nome + '\'' +
                 ", idTipoUsuario=" + idTipoUsuario +
                 ", idEmpresa=" + idEmpresa +
                 ", idFilial=" + idFilial +
-                ", email=" + email +
-                ", telefone=" + telefone +
-                ", cpf=" + cpf +
-                ", senhaHash=" + senhaHash +
-                ", ativo=" + ativo +
+                ", email='" + email + '\'' +
+                ", telefone='" + telefone + '\'' +
+                ", cpf='" + cpf + '\'' +
+                ", senhaHash='" + senhaHash + '\'' +
+                ", ativo='" + status + '\'' +
+                ", urlFoto='" + urlFoto + '\'' +
                 '}';
     }
 }

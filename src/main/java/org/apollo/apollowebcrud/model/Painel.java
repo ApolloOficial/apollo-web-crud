@@ -12,7 +12,7 @@ public class Painel {
     private String numeroSerie;
     private String marca;
     private String modelo;
-    private BigDecimal potenciaW;
+    private double potenciaW;
     private String notaFiscal;
     private StatusGeral status;
     private LocalDate dataInstalacao;
@@ -20,7 +20,7 @@ public class Painel {
 
 //    CONSTRUTOR
 
-    public Painel(int id, int idString, String numeroSerie, String marca, String modelo, BigDecimal potenciaW, String notaFiscal, String status, LocalDate dataInstalacao) {
+    public Painel(int id, int idString, String numeroSerie, String marca, String modelo, double potenciaW, String notaFiscal, String status, LocalDate dataInstalacao) {
         this.id = id;
         this.idString = idString;
         this.numeroSerie = numeroSerie;
@@ -59,7 +59,7 @@ public class Painel {
         return modelo;
     }
 
-    public BigDecimal getPotenciaW() {
+    public double getPotenciaW() {
         return potenciaW;
     }
 
@@ -101,7 +101,7 @@ public class Painel {
         this.modelo = modelo;
     }
 
-    public void setPotenciaW(BigDecimal potenciaW) {
+    public void setPotenciaW(double potenciaW) {
         this.potenciaW = potenciaW;
     }
 
