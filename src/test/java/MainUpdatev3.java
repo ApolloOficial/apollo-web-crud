@@ -8,7 +8,9 @@ public class MainUpdatev3 {
 
     public static void main(String[] args) {
 
+        EmpresaDAO empresaDAO = new EmpresaDAO();
         SegmentoDAO segmentoDAO = new SegmentoDAO();
+        FilialDAO filialDAO = new FilialDAO();
         TipoUsuarioDAO tipoUsuarioDAO = new TipoUsuarioDAO();
         UsuarioDAO usuarioDAO = new UsuarioDAO();
         InversorDAO inversorDAO = new InversorDAO();
@@ -22,20 +24,62 @@ public class MainUpdatev3 {
         System.out.println("Segmento: " + segmentoDAO.atualizar(segmento));
 
         // TESTE TIPO USUARIO
-        TipoUsuario tipoUsuario = new TipoUsuario(1, TipoUsuario.Tipo.GERENTE, "Descrição atualizada");
+        TipoUsuario tipoUsuario = new TipoUsuario(1, TipoUsuEnum.GERENTE, "Descrição atualizada");
         System.out.println("TipoUsuario: " + tipoUsuarioDAO.atualizar(tipoUsuario));
+
+        // TESTE EMPRESA
+        Empresa empresa = new Empresa();
+        empresa.setId(1);
+        empresa.setNome("Empresa Atualizada");
+        empresa.setDescricao("Descrição atualizada");
+        empresa.setCnpj("00000000000001");
+        empresa.setEmailContato("empresa.atualizada@teste.com");
+        empresa.setStatus(StatusGeral.ATIVO);
+        empresa.setUrlFoto(null);
+
+        Endereco enderecoEmpresa = new Endereco();
+        enderecoEmpresa.setCep("01310100");
+        enderecoEmpresa.setLogradouro("Av. Paulista Atualizada");
+        enderecoEmpresa.setNumero("2000");
+        enderecoEmpresa.setComplemento("Sala 2");
+        enderecoEmpresa.setBairro("Bela Vista");
+        enderecoEmpresa.setCidade("São Paulo");
+        enderecoEmpresa.setEstado("SP");
+
+        System.out.println("Empresa: " + empresaDAO.atualizar(empresa, enderecoEmpresa));
+
+        // TESTE FILIAL
+        Filial filial = new Filial();
+        filial.setId(1);
+        filial.setIdEmpresa(1);
+        filial.setIdSegmento(1);
+        filial.setNome("Filial Atualizada");
+        filial.setCnpj("11111111111111");
+        filial.setEmail("filial.atualizada@teste.com");
+        filial.setTelefone("11999999999");
+        filial.setStatus(StatusGeral.ATIVO);
+
+        Endereco enderecoFilial = new Endereco();
+        enderecoFilial.setCep("01310200");
+        enderecoFilial.setLogradouro("Rua Atualizada");
+        enderecoFilial.setNumero("300");
+        enderecoFilial.setComplemento(null);
+        enderecoFilial.setBairro("Centro");
+        enderecoFilial.setCidade("São Paulo");
+        enderecoFilial.setEstado("SP");
+
+        System.out.println("Filial: " + filialDAO.atualizar(filial, enderecoFilial));
 
         // TESTE USUARIO
         Usuario usuario = new Usuario();
         usuario.setId(1);
         usuario.setNome("Usuario Atualizado");
         usuario.setIdTipoUsuario(1);
-        usuario.setIdEmpresa(1);
         usuario.setIdFilial(1);
         usuario.setEmail("atualizado@teste.com");
         usuario.setTelefone("11977777777");
         usuario.setCpf("99999999999");
-        usuario.setAtivo("ATIVO");
+        usuario.setStatus("ATIVO");
         System.out.println("Usuario: " + usuarioDAO.atualizar(usuario));
 
         // TESTE INVERSOR
@@ -46,7 +90,7 @@ public class MainUpdatev3 {
         inversor.setNumeroSerie("NS-INV-ATUALIZADO");
         inversor.setMarca("SMA");
         inversor.setModelo("Sunny Boy 10");
-        inversor.setPotenciaKw(new BigDecimal("12.0"));
+        inversor.setPotenciaKw(12.0);
         inversor.setStatus(StatusGeral.ATIVO);
         inversor.setDataInstalacao(LocalDate.of(2024, 6, 1));
         System.out.println("Inversor: " + inversorDAO.atualizar(inversor));
@@ -68,7 +112,7 @@ public class MainUpdatev3 {
         painel.setNumeroSerie("NS-PNL-ATUALIZADO");
         painel.setMarca("Risen");
         painel.setModelo("RSM40-8-410M");
-        painel.setPotenciaW(new BigDecimal("420.0"));
+        painel.setPotenciaW(420.0);
         painel.setNotaFiscal("NF-ATUALIZADO");
         painel.setStatus(StatusGeral.ATIVO);
         painel.setDataInstalacao(LocalDate.of(2024, 6, 1));
@@ -92,7 +136,7 @@ public class MainUpdatev3 {
         contrato.setId(1);
         contrato.setIdEmpresa(1);
         contrato.setDataInicio(LocalDate.of(2024, 6, 1));
-        contrato.setValorMensal(new BigDecimal("2000.00"));
+        contrato.setValorMensal(new BigDecimal("100000"));
         contrato.setStatus(StatusGeral.ATIVO);
         System.out.println("Contrato: " + contratoDAO.atualizar(contrato));
     }

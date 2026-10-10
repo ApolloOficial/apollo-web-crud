@@ -8,6 +8,8 @@ public class MainInsertLoop {
 
     public static void main(String[] args) {
 
+//      CRIANDO OBJETOS PARA INSERÇÃO
+
         EmpresaDAO empresaDAO = new EmpresaDAO();
         SegmentoDAO segmentoDAO = new SegmentoDAO();
         FilialDAO filialDAO = new FilialDAO();
@@ -23,18 +25,20 @@ public class MainInsertLoop {
 
             // TESTE SEGMENTO
             Segmento segmento = new Segmento(0, "Agronegócio", "Segmento agrícola");
-            System.out.println("Segmento: " + segmentoDAO.inserir(segmento));
+            int idSegmento = segmentoDAO.inserir(segmento);
+            System.out.println("Segmento: " + idSegmento);
 
             // TESTE TIPO USUÁRIO
-            TipoUsuario tipoUsuario = new TipoUsuario(0, TipoUsuario.Tipo.ADMINISTRADOR, "Acesso total");
-            System.out.println("TipoUsuario: " + tipoUsuarioDAO.inserir(tipoUsuario));
+            TipoUsuario tipoUsuario = new TipoUsuario(0, TipoUsuEnum.ADMINISTRADOR, "Acesso total");
+            int idTipoUsuario = tipoUsuarioDAO.inserir(tipoUsuario);
+            System.out.println("TipoUsuario: " + idTipoUsuario);
 
             // TESTE EMPRESA
             Empresa empresa = new Empresa();
             empresa.setNome("Empresa Teste " + (i + 1));
             empresa.setDescricao("Descrição teste");
             empresa.setCnpj("0000000000000" + (i + 1));
-            empresa.setEmailContato("empresa@teste.com");
+            empresa.setEmailContato("empresa" + (i + 1) + "@teste.com");
             empresa.setUrlFoto(null);
 
             Endereco enderecoEmpresa = new Endereco();
@@ -46,15 +50,16 @@ public class MainInsertLoop {
             enderecoEmpresa.setCidade("São Paulo");
             enderecoEmpresa.setEstado("SP");
 
-            System.out.println("Empresa: " + empresaDAO.inserir(empresa, enderecoEmpresa));
+            int idEmpresa = empresaDAO.inserir(empresa, enderecoEmpresa);
+            System.out.println("Empresa: " + idEmpresa);
 
             // TESTE FILIAL
             Filial filial = new Filial();
-            filial.setIdEmpresa(1);
-            filial.setIdSegmento(1);
+            filial.setIdEmpresa(idEmpresa);
+            filial.setIdSegmento(idSegmento);
             filial.setNome("Filial Teste " + (i + 1));
             filial.setCnpj("1111111111111" + (i + 1));
-            filial.setEmail("filial@teste.com");
+            filial.setEmail("filial" + (i + 1) + "@teste.com");
             filial.setTelefone("11999999999");
 
             Endereco enderecoFilial = new Endereco();
@@ -66,72 +71,77 @@ public class MainInsertLoop {
             enderecoFilial.setCidade("São Paulo");
             enderecoFilial.setEstado("SP");
 
-            System.out.println("Filial: " + filialDAO.inserir(filial, enderecoFilial));
+            int idFilial = filialDAO.inserir(filial, enderecoFilial);
+            System.out.println("Filial: " + idFilial);
 
             // TESTE USUARIO
             Usuario usuario = new Usuario();
             usuario.setNome("Usuario Teste " + (i + 1));
-            usuario.setIdTipoUsuario(1);
-            usuario.setIdEmpresa(1);
-            usuario.setIdFilial(1);
+            usuario.setIdTipoUsuario(idTipoUsuario);
+            usuario.setIdFilial(idFilial);
             usuario.setEmail("usuario" + (i + 1) + "@teste.com");
             usuario.setTelefone("11988888888");
             usuario.setCpf("0000000000" + (i + 1));
             usuario.setSenhaHash("hash_teste");
-            usuario.setAtivo("ATIVO");
-            System.out.println("Usuario: " + usuarioDAO.inserir(usuario));
+            usuario.setStatus("ATIVO");
+
+            int idUsuario = usuarioDAO.inserir(usuario);
+            System.out.println("Usuario: " + idUsuario);
 
             // TESTE INVERSOR
             Inversor inversor = new Inversor();
-            inversor.setIdFilial(1);
+            inversor.setIdFilial(idFilial);
             inversor.setCodigo("INV-" + (i + 1));
             inversor.setNumeroSerie("NS-INV-" + (i + 1));
             inversor.setMarca("Fronius");
             inversor.setModelo("Symo 10");
-            inversor.setPotenciaKw(new BigDecimal("10.0"));
+            inversor.setPotenciaKw(10.0);
             inversor.setDataInstalacao(LocalDate.of(2024, 1, 15));
 
-            System.out.println("Inversor: " + inversorDAO.inserir(inversor));
+            int idInversor = inversorDAO.inserir(inversor);
+            System.out.println("Inversor: " + idInversor);
 
             // TESTE STRING SOLAR
             StringSolar stringSolar = new StringSolar();
-            stringSolar.setIdInversor(1);
+            stringSolar.setIdInversor(idInversor);
             stringSolar.setCodigo("STR-" + (i + 1));
             stringSolar.setNumeroMppt(1);
             stringSolar.setNumeroEntrada(1);
 
-            System.out.println("StringSolar: " + stringSolarDAO.inserir(stringSolar));
+            int idString = stringSolarDAO.inserir(stringSolar);
+            System.out.println("StringSolar: " + idString);
 
             // TESTE PAINEL
             Painel painel = new Painel();
-            painel.setIdString(1);
+            painel.setIdString(idString);
             painel.setNumeroSerie("NS-PNL-" + (i + 1));
             painel.setMarca("Canadian Solar");
             painel.setModelo("CS6R-410");
-            painel.setPotenciaW(new BigDecimal("410.0"));
+            painel.setPotenciaW(410.0);
             painel.setNotaFiscal("NF-" + (i + 1));
             painel.setDataInstalacao(LocalDate.of(2024, 1, 15));
 
-            System.out.println("Painel: " + painelDAO.inserir(painel));
+            int idPainel = painelDAO.inserir(painel);
+            System.out.println("Painel: " + idPainel);
 
             // TESTE MANUTENÇÃO
             Manutencao manutencao = new Manutencao();
-            manutencao.setIdPainel(1);
+            manutencao.setIdPainel(idPainel);
             manutencao.setTipoManutencao(TipoManutencao.CORRETIVA);
             manutencao.setDescricao("Manutenção teste " + (i + 1));
             manutencao.setDataAbertura(LocalDate.now());
             manutencao.setDataPrevista(LocalDate.now().plusDays(7));
             manutencao.setDataConclusao(null);
-            manutencao.setIdUsuarioResponsavel(1);
+            manutencao.setIdUsuarioResponsavel(idUsuario);
 
             System.out.println("Manutencao: " + manutencaoDAO.inserir(manutencao));
 
             // TESTE CONTRATO
             Contrato contrato = new Contrato();
-            contrato.setIdEmpresa(1);
+            contrato.setIdEmpresa(idEmpresa);
             contrato.setDataInicio(LocalDate.of(2024, 1, 1));
             contrato.setValorMensal(new BigDecimal("1500.00"));
-            contrato.setIdUsuarioCadastro(1);
+            contrato.setIdUsuarioCadastro(idUsuario);
 
             System.out.println("Contrato: " + contratoDAO.inserir(contrato));
         }
