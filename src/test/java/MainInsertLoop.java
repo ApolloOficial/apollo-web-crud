@@ -21,23 +21,35 @@ public class MainInsertLoop {
         ManutencaoDAO manutencaoDAO = new ManutencaoDAO();
         ContratoDAO contratoDAO = new ContratoDAO();
 
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 100; i++) {
 
             // TESTE SEGMENTO
-            Segmento segmento = new Segmento(0, "Agronegócio", "Segmento agrícola");
+            Segmento segmento = new Segmento(0, "Agronegócio"+i, "Segmento agrícola");
             int idSegmento = segmentoDAO.inserir(segmento);
             System.out.println("Segmento: " + idSegmento);
 
-            // TESTE TIPO USUÁRIO
-            TipoUsuario tipoUsuario = new TipoUsuario(0, TipoUsuEnum.ADMINISTRADOR, "Acesso total");
-            int idTipoUsuario = tipoUsuarioDAO.inserir(tipoUsuario);
-            System.out.println("TipoUsuario: " + idTipoUsuario);
+//             TESTE TIPO USUÁRIO
+//            Cria os três tipos de usuário nos primeiros loops
+
+            if(i==0) {
+                TipoUsuario tipoUsuario = new TipoUsuario(0, TipoUsuEnum.ADMINISTRADOR, "Acesso total");
+                int idTipoUsuario = tipoUsuarioDAO.inserir(tipoUsuario);
+                System.out.println("TipoUsuario: " + idTipoUsuario);
+            } else if(i==1) {
+                TipoUsuario tipoUsuario = new TipoUsuario(0, TipoUsuEnum.GERENTE, "O caba gere o pessoal");
+                int idTipoUsuario = tipoUsuarioDAO.inserir(tipoUsuario);
+                System.out.println("TipoUsuario: " + idTipoUsuario);
+            } else if(i==2) {
+                TipoUsuario tipoUsuario = new TipoUsuario(0, TipoUsuEnum.OPERADOR, "O caba opera");
+                int idTipoUsuario = tipoUsuarioDAO.inserir(tipoUsuario);
+                System.out.println("TipoUsuario: " + idTipoUsuario);
+            }
 
             // TESTE EMPRESA
             Empresa empresa = new Empresa();
             empresa.setNome("Empresa Teste " + (i + 1));
             empresa.setDescricao("Descrição teste");
-            empresa.setCnpj("0000000000000" + (i + 1));
+            empresa.setCnpj(esquerda0(i,14));
             empresa.setEmailContato("empresa" + (i + 1) + "@teste.com");
             empresa.setUrlFoto(null);
 
@@ -58,7 +70,7 @@ public class MainInsertLoop {
             filial.setIdEmpresa(idEmpresa);
             filial.setIdSegmento(idSegmento);
             filial.setNome("Filial Teste " + (i + 1));
-            filial.setCnpj("1111111111111" + (i + 1));
+            filial.setCnpj(esquerda0(i, 14));
             filial.setEmail("filial" + (i + 1) + "@teste.com");
             filial.setTelefone("11999999999");
 
@@ -77,11 +89,16 @@ public class MainInsertLoop {
             // TESTE USUARIO
             Usuario usuario = new Usuario();
             usuario.setNome("Usuario Teste " + (i + 1));
-            usuario.setIdTipoUsuario(idTipoUsuario);
+
+/*          Pega o resto e soma 1, pois o resto de uma divisão por 3 só pode ser números entre 0,1,2
+            então vai ficar rodando entre os id_tipo_usuario
+            ↓↓↓↓↓
+*/
+            usuario.setIdTipoUsuario(i%3+1);
             usuario.setIdFilial(idFilial);
             usuario.setEmail("usuario" + (i + 1) + "@teste.com");
             usuario.setTelefone("11988888888");
-            usuario.setCpf("0000000000" + (i + 1));
+            usuario.setCpf(esquerda0(i, 11));
             usuario.setSenhaHash("hash_teste");
             usuario.setStatus("ATIVO");
 
@@ -145,5 +162,16 @@ public class MainInsertLoop {
 
             System.out.println("Contrato: " + contratoDAO.inserir(contrato));
         }
+    }
+    //        MÉTODO PARA INSERÇÃO DE 14 DÍGITOS SEM REPETIÇÃO
+
+    public static String esquerda0(int i, int caracteres) {
+        String cnpjEmpr = "";
+        String cnpjEmprDig = String.valueOf(i);
+        while (cnpjEmpr.length() < caracteres - cnpjEmprDig.length()) {
+            cnpjEmpr += "0";
+        }
+        cnpjEmpr+=cnpjEmprDig;
+        return cnpjEmpr;
     }
 }

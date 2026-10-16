@@ -28,15 +28,18 @@ public class MainUpdatev3 {
         System.out.println("TipoUsuario: " + tipoUsuarioDAO.atualizar(tipoUsuario));
 
         // TESTE EMPRESA
+
+//      Criação do objeto
         Empresa empresa = new Empresa();
         empresa.setId(1);
         empresa.setNome("Empresa Atualizada");
         empresa.setDescricao("Descrição atualizada");
-        empresa.setCnpj("00000000000001");
+        empresa.setCnpj("10000000000001");
         empresa.setEmailContato("empresa.atualizada@teste.com");
         empresa.setStatus(StatusGeral.ATIVO);
         empresa.setUrlFoto(null);
 
+//      Criando objeto de endereço
         Endereco enderecoEmpresa = new Endereco();
         enderecoEmpresa.setCep("01310100");
         enderecoEmpresa.setLogradouro("Av. Paulista Atualizada");
@@ -46,6 +49,7 @@ public class MainUpdatev3 {
         enderecoEmpresa.setCidade("São Paulo");
         enderecoEmpresa.setEstado("SP");
 
+//      Inserindo model no banco
         System.out.println("Empresa: " + empresaDAO.atualizar(empresa, enderecoEmpresa));
 
         // TESTE FILIAL
