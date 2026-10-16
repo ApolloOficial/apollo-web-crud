@@ -6,88 +6,132 @@ import org.apollo.apollowebcrud.util.ApolloConnection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class UsuarioDAO extends ApolloConnection {
 
-    public UsuarioDAO(){
+    public UsuarioDAO() {
         super();
     }
 
-    public boolean inserir(Usuario usuario){
-        String sql = "INSERT INTO usuario (nome, id_tipo_usuario, id_empresa, email, telefone, cpf, senha) VALUES(?, ?, ?, ?, ?, ?, ?)";
-        try{
-            PreparedStatement stmt = connection.prepareStatement(sql);
+    private Usuario montar(ResultSet rs) throws SQLException {
+        Usuario usuario = new Usuario();
+        usuario.setId(rs.getInt("id"));
+        usuario.setNome(rs.getString("nome"));
+        usuario.setIdTipoUsuario(rs.getInt("id_tipo_usuario"));
+        usuario.setIdFilial(rs.getInt("id_filial"));
+        usuario.setEmail(rs.getString("email"));
+        usuario.setTelefone(rs.getString("telefone"));
+        usuario.setCpf(rs.getString("cpf"));
+        usuario.setStatus(rs.getString("ativo"));
+        return usuario;
+    }
+
+// CREATE
+
+    public int inserir(Usuario usuario) {
+        String sql = "INSERT INTO usuario (nome, id_tipo_usuario, id_filial, email, telefone, cpf, senha_hash, ativo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        // retorna o id gerado pelo banco
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, usuario.getNome());
             stmt.setInt(2, usuario.getIdTipoUsuario());
-            stmt.setInt(3, usuario.getIdEmpresa());
+            stmt.setInt(3, usuario.getIdFilial());
             stmt.setString(4, usuario.getEmail());
             stmt.setString(5, usuario.getTelefone());
             stmt.setString(6, usuario.getCpf());
-            stmt.setString(7, usuario.getSenha());
-            stmt.execute();
-            return true;
-        } catch (SQLException ex) {
-            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, "SQL error on INSERT", ex);
-            usuario.setMensagemErro(ex.getMessage());
-            return false;
-        }
-    }
+            stmt.setString(7, usuario.getSenhaHash());
+            stmt.setString(8, "ATIVO");
 
-    public List<Usuario> listar(){
-        String sql = "SELECT * FROM usuario ORDER BY id";
-        List<Usuario> usuarios = new ArrayList<>();
-        try {
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            ResultSet consulta = stmt.executeQuery();
-            while (consulta.next()){
-                Usuario usuario = new Usuario();
-                usuario.setId(consulta.getInt("id"));
-                usuario.setNome(consulta.getString("nome"));
-                usuario.setIdTipoUsuario(consulta.getInt("id_tipo_usuario"));
-                usuario.setIdEmpresa(consulta.getInt("id_empresa"));
-                usuario.setEmail(consulta.getString("email"));
-                usuario.setTelefone(consulta.getString("telefone"));
-                usuario.setCpf(consulta.getString("cpf"));
-                usuario.setSenha(consulta.getString("senha"));
-                usuarios.add(usuario);
+            stmt.executeUpdate();
+
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, "SQL error on SELECT", ex);
+
+            return -1;
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao inserir usuário: " + e.getMessage());
+            return -1;
         }
-        return usuarios;
     }
 
-    public boolean atualizar(Usuario usuario){
-        String sql = "UPDATE usuario SET nome=?, email=?, telefone=?, cpf=?, senha=? WHERE id=?";
-        try{
-            PreparedStatement stmt = connection.prepareStatement(sql);
+    // READ por id
+
+    public Usuario buscarPorId(int id) {
+        String sql = "SELECT * FROM usuario WHERE id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return montar(rs);
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar usuário: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+    // READ todos
+
+    public List<Usuario> listarTodos() {
+        List<Usuario> lista = new ArrayList<>();
+        String sql = "SELECT * FROM usuario ORDER BY nome";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                lista.add(montar(rs));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao listar usuários: " + e.getMessage());
+        }
+
+        return lista;
+    }
+
+    // UPDATE
+
+    public boolean atualizar(Usuario usuario) {
+        String sql = "UPDATE usuario SET nome = ?, id_tipo_usuario = ?, id_filial = ?, email = ?, telefone = ?, cpf = ?, ativo = ? WHERE id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, usuario.getNome());
-            stmt.setString(2, usuario.getEmail());
-            stmt.setString(3, usuario.getTelefone());
-            stmt.setString(4, usuario.getCpf());
-            stmt.setString(5, usuario.getSenha());
-            stmt.setInt(6, usuario.getId());
-            stmt.execute();
-            return true;
-        } catch (SQLException ex) {
-            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, "SQL error on UPDATE", ex);
-            usuario.setMensagemErro(ex.getMessage());
+            stmt.setInt(2, usuario.getIdTipoUsuario());
+            stmt.setInt(3, usuario.getIdFilial());
+            stmt.setString(4, usuario.getEmail());
+            stmt.setString(5, usuario.getTelefone());
+            stmt.setString(6, usuario.getCpf());
+            stmt.setString(7, usuario.getStatus());
+            stmt.setInt(8, usuario.getId());
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao atualizar usuário: " + e.getMessage());
             return false;
         }
     }
 
-    public boolean deletar(Usuario usuario){
-        String sql = "DELETE FROM usuario WHERE id=?";
-        try{
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setInt(1, usuario.getId());
-            stmt.execute();
-            return true;
-        } catch (SQLException ex) {
-            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, "SQL error on DELETE", ex);
-            usuario.setMensagemErro(ex.getMessage());
+    // DELETE
+
+    public boolean excluir(int id) {
+        String sql = "DELETE FROM usuario WHERE id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao excluir usuário: " + e.getMessage());
             return false;
         }
     }

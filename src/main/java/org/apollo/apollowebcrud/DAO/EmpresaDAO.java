@@ -1,77 +1,191 @@
 package org.apollo.apollowebcrud.DAO;
 
 import org.apollo.apollowebcrud.model.Empresa;
+import org.apollo.apollowebcrud.model.Endereco;
+import org.apollo.apollowebcrud.model.StatusGeral;
 import org.apollo.apollowebcrud.util.ApolloConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class EmpresaDAO extends ApolloConnection {
+
+    private static final String COLUNAS = "id, nome, descricao, cnpj, email_contato, id_endereco, ativo, url_foto, id_usuario_cadastro";
 
     public EmpresaDAO() {
         super();
     }
 
-    public boolean inserir(Empresa empresa) {
-        String sql = "INSERT INTO empresa (nome) VALUES (?)";
+    private Empresa montar(ResultSet rs) throws SQLException {
+        Empresa empresa = new Empresa();
+        empresa.setId(rs.getInt("id"));
+        empresa.setNome(rs.getString("nome"));
+        empresa.setDescricao(rs.getString("descricao"));
+        empresa.setCnpj(rs.getString("cnpj"));
+        empresa.setEmailContato(rs.getString("email_contato"));
+        empresa.setIdEndereco(rs.getInt("id_endereco"));
+        empresa.setStatus(StatusGeral.valueOf(rs.getString("ativo")));
+        empresa.setUrlFoto(rs.getString("url_foto"));
+        empresa.setIdUsuarioCadastro(rs.getObject("id_usuario_cadastro", Integer.class));
+        return empresa;
+    }
+
+    private void desfazer() {
         try {
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setString(1, empresa.getNome());
-            stmt.execute();
-            return true;
-        } catch (SQLException ex) {
-            Logger.getLogger(EmpresaDAO.class.getName()).log(Level.SEVERE, "SQL error on INSERT", ex);
-            empresa.setMensagemErro(ex.getMessage());
-            return false;
+            connection.rollback();
+        } catch (SQLException e) {
+            System.err.println("Erro ao desfazer transação: " + e.getMessage());
         }
     }
 
-    public List<Empresa> listar() {
-        String sql = "SELECT * FROM empresa ORDER BY id";
-        List<Empresa> empresas = new ArrayList<>();
+    private void restaurarAutoCommit() {
         try {
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            ResultSet consulta = stmt.executeQuery();
-            while (consulta.next()) {
-                Empresa empresa = new Empresa();
-                empresa.setId(consulta.getInt("id"));
-                empresa.setNome(consulta.getString("nome"));
-                empresas.add(empresa);
+            connection.setAutoCommit(true);
+        } catch (SQLException e) {
+            System.err.println("Erro ao restaurar auto-commit: " + e.getMessage());
+        }
+    }
+
+    // CREATE
+
+    public int inserir(Empresa empresa, Endereco endereco) {
+        String sql = "INSERT INTO empresa (nome, descricao, cnpj, email_contato, id_endereco, ativo, url_foto, id_usuario_cadastro) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try {
+            connection.setAutoCommit(false);
+
+            // insere endereço e seta o id na empresa
+            int idEndereco = EnderecoDAO.inserirNaConexao(endereco, connection);
+            empresa.setIdEndereco(idEndereco);
+
+            // retorna o id gerado pelo banco
+            try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                stmt.setString(1, empresa.getNome());
+                stmt.setString(2, empresa.getDescricao());
+                stmt.setString(3, empresa.getCnpj());
+                stmt.setString(4, empresa.getEmailContato());
+                stmt.setInt(5, empresa.getIdEndereco());
+                stmt.setString(6, StatusGeral.ATIVO.name());
+                stmt.setString(7, empresa.getUrlFoto());
+
+                if (empresa.getIdUsuarioCadastro() != null) {
+                    stmt.setInt(8, empresa.getIdUsuarioCadastro());
+                } else {
+                    stmt.setNull(8, Types.INTEGER);
+                }
+
+                stmt.executeUpdate();
+
+                try (ResultSet rs = stmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        int idGerado = rs.getInt(1);
+                        connection.commit();
+                        return idGerado;
+                    }
+                }
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(EmpresaDAO.class.getName()).log(Level.SEVERE, "SQL error on SELECT", ex);
+
+            connection.commit();
+            return -1;
+
+        } catch (SQLException e) {
+            desfazer();
+            System.err.println("Erro ao inserir empresa: " + e.getMessage());
+            return -1;
+
+        } finally {
+            restaurarAutoCommit();
         }
-        return empresas;
     }
 
-    public boolean atualizar(Empresa empresa) {
-        String sql = "UPDATE empresa SET nome=? WHERE id=?";
+    // READ por id
+
+    public Empresa buscarPorId(int id) {
+        String sql = "SELECT " + COLUNAS + " FROM empresa WHERE id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return montar(rs);
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar empresa: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+    // READ todos
+
+    public List<Empresa> listarTodos() {
+        List<Empresa> lista = new ArrayList<>();
+        String sql = "SELECT " + COLUNAS + " FROM empresa ORDER BY nome";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                lista.add(montar(rs));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao listar empresas: " + e.getMessage());
+        }
+
+        return lista;
+    }
+
+    // UPDATE
+
+    public boolean atualizar(Empresa empresa, Endereco endereco) {
+        String sql = "UPDATE empresa SET nome = ?, descricao = ?, cnpj = ?, email_contato = ?, ativo = ?, url_foto = ? WHERE id = ?";
+
         try {
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setString(1, empresa.getNome());
-            stmt.setInt(2, empresa.getId());
-            stmt.execute();
-            return true;
-        } catch (SQLException ex) {
-            Logger.getLogger(EmpresaDAO.class.getName()).log(Level.SEVERE, "SQL error on UPDATE", ex);
-            empresa.setMensagemErro(ex.getMessage());
+            connection.setAutoCommit(false);
+
+            endereco.setId(empresa.getIdEndereco());
+            EnderecoDAO.atualizarNaConexao(endereco, connection);
+
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setString(1, empresa.getNome());
+                stmt.setString(2, empresa.getDescricao());
+                stmt.setString(3, empresa.getCnpj());
+                stmt.setString(4, empresa.getEmailContato());
+                stmt.setString(5, empresa.getStatus().name());
+                stmt.setString(6, empresa.getUrlFoto());
+                stmt.setInt(7, empresa.getId());
+
+                boolean atualizou = stmt.executeUpdate() > 0;
+                connection.commit();
+                return atualizou;
+            }
+
+        } catch (SQLException e) {
+            desfazer();
+            System.err.println("Erro ao atualizar empresa: " + e.getMessage());
             return false;
+
+        } finally {
+            restaurarAutoCommit();
         }
     }
 
-    public boolean deletar(Empresa empresa) {
-        String sql = "DELETE FROM empresa WHERE id=?";
-        try {
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setInt(1, empresa.getId());
-            stmt.execute();
-            return true;
-        } catch (SQLException ex) {
-            Logger.getLogger(EmpresaDAO.class.getName()).log(Level.SEVERE, "SQL error on DELETE", ex);
-            empresa.setMensagemErro(ex.getMessage());
+    // DELETE
+
+    public boolean excluir(int id) {
+        String sql = "DELETE FROM empresa WHERE id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao excluir empresa: " + e.getMessage());
             return false;
         }
     }

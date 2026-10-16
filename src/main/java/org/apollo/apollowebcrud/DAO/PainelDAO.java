@@ -1,13 +1,12 @@
 package org.apollo.apollowebcrud.DAO;
 
 import org.apollo.apollowebcrud.model.Painel;
+import org.apollo.apollowebcrud.model.StatusGeral;
 import org.apollo.apollowebcrud.util.ApolloConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class PainelDAO extends ApolloConnection {
 
@@ -15,87 +14,128 @@ public class PainelDAO extends ApolloConnection {
         super();
     }
 
-    public boolean inserir(Painel painel) {
-        String sql = "INSERT INTO painel (numero_serie, material, modelo, marca, nota_fiscal, eficiencia, vida_util, id_lote, tempo_uso) VALUES (?,?,?,?,?,?,?,?,?)";
-        try {
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setString(1, painel.getNumeroSerie());
-            stmt.setString(2, painel.getMaterial());
-            stmt.setString(3, painel.getModelo());
-            stmt.setString(4, painel.getMarca());
-            stmt.setString(5, painel.getNotaFiscal());
-            stmt.setDouble(6, painel.getEficiencia());
-            stmt.setInt(7, painel.getVidaUtil());
-            stmt.setInt(8, painel.getIdLote());
-            stmt.setInt(9, painel.getTempoUso());
-            stmt.execute();
-            return true;
-        } catch (SQLException ex) {
-            Logger.getLogger(PainelDAO.class.getName()).log(Level.SEVERE, "SQL error on INSERT", ex);
-            painel.setMensagemErro(ex.getMessage());
-            return false;
+    private Painel montar(ResultSet rs) throws SQLException {
+        Painel painel = new Painel();
+        painel.setId(rs.getInt("id"));
+        painel.setIdString(rs.getInt("id_string"));
+        painel.setNumeroSerie(rs.getString("numero_serie"));
+        painel.setMarca(rs.getString("marca"));
+        painel.setModelo(rs.getString("modelo"));
+        painel.setPotenciaW(rs.getDouble("potencia_w"));
+        painel.setNotaFiscal(rs.getString("nota_fiscal"));
+        painel.setStatus(StatusGeral.valueOf(rs.getString("status")));
+        painel.setDataInstalacao(rs.getDate("data_instalacao").toLocalDate());
+        return painel;
+    }
+
+// CREATE
+
+    public int inserir(Painel painel) {
+        String sql = "INSERT INTO painel (id_string, numero_serie, marca, modelo, potencia_w, nota_fiscal, status, data_instalacao) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        // retorna o id gerado pelo banco
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setInt(1, painel.getIdString());
+            stmt.setString(2, painel.getNumeroSerie());
+            stmt.setString(3, painel.getMarca());
+            stmt.setString(4, painel.getModelo());
+            stmt.setDouble(5, painel.getPotenciaW());
+            stmt.setString(6, painel.getNotaFiscal());
+            stmt.setString(7, StatusGeral.ATIVO.name());
+            stmt.setDate(8, Date.valueOf(painel.getDataInstalacao()));
+
+            stmt.executeUpdate();
+
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+
+            return -1;
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao inserir painel: " + e.getMessage());
+            return -1;
         }
     }
 
-    public List<Painel> listar() {
-        String sql = "SELECT * FROM painel ORDER BY id";
-        List<Painel> paineis = new ArrayList<>();
-        try {
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            ResultSet consulta = stmt.executeQuery();
-            while (consulta.next()) {
-                Painel painel = new Painel();
-                painel.setId(consulta.getInt("id"));
-                painel.setNumeroSerie(consulta.getString("numero_serie"));
-                painel.setMaterial(consulta.getString("material"));
-                painel.setModelo(consulta.getString("modelo"));
-                painel.setMarca(consulta.getString("marca"));
-                painel.setNotaFiscal(consulta.getString("nota_fiscal"));
-                painel.setEficiencia(consulta.getDouble("eficiencia"));
-                painel.setVidaUtil(consulta.getInt("vida_util"));
-                painel.setIdLote(consulta.getInt("id_lote"));
-                painel.setTempoUso(consulta.getInt("tempo_uso"));
-                paineis.add(painel);
+    // READ por id
+
+    public Painel buscarPorId(int id) {
+        String sql = "SELECT * FROM painel WHERE id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return montar(rs);
+                }
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(PainelDAO.class.getName()).log(Level.SEVERE, "SQL error on SELECT", ex);
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar painel: " + e.getMessage());
         }
-        return paineis;
+
+        return null;
     }
+
+    // READ todos
+
+    public List<Painel> listarTodos() {
+        List<Painel> lista = new ArrayList<>();
+        String sql = "SELECT * FROM painel ORDER BY marca, modelo";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                lista.add(montar(rs));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao listar painéis: " + e.getMessage());
+        }
+
+        return lista;
+    }
+
+    // UPDATE
 
     public boolean atualizar(Painel painel) {
-        String sql = "UPDATE painel SET numero_serie=?, material=?, modelo=?, marca=?, nota_fiscal=?, eficiencia=?, vida_util=?, id_lote=?, tempo_uso=? WHERE id=?";
-        try {
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setString(1, painel.getNumeroSerie());
-            stmt.setString(2, painel.getMaterial());
-            stmt.setString(3, painel.getModelo());
-            stmt.setString(4, painel.getMarca());
-            stmt.setString(5, painel.getNotaFiscal());
-            stmt.setDouble(6, painel.getEficiencia());
-            stmt.setInt(7, painel.getVidaUtil());
-            stmt.setInt(8, painel.getIdLote());
-            stmt.setInt(9, painel.getTempoUso());
-            stmt.setInt(10, painel.getId());
-            stmt.execute();
-            return true;
-        } catch (SQLException ex) {
-            Logger.getLogger(PainelDAO.class.getName()).log(Level.SEVERE, "SQL error on UPDATE", ex);
-            painel.setMensagemErro(ex.getMessage());
+        String sql = "UPDATE painel SET id_string = ?, numero_serie = ?, marca = ?, modelo = ?, potencia_w = ?, nota_fiscal = ?, status = ?, data_instalacao = ? WHERE id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, painel.getIdString());
+            stmt.setString(2, painel.getNumeroSerie());
+            stmt.setString(3, painel.getMarca());
+            stmt.setString(4, painel.getModelo());
+            stmt.setDouble(5, painel.getPotenciaW());
+            stmt.setString(6, painel.getNotaFiscal());
+            stmt.setString(7, painel.getStatus().name());
+            stmt.setDate(8, Date.valueOf(painel.getDataInstalacao()));
+            stmt.setInt(9, painel.getId());
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao atualizar painel: " + e.getMessage());
             return false;
         }
     }
 
-    public boolean deletar(Painel painel) {
-        String sql = "DELETE FROM painel WHERE id=?";
-        try {
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setInt(1, painel.getId());
-            stmt.execute();
-            return true;
-        } catch (SQLException ex) {
-            Logger.getLogger(PainelDAO.class.getName()).log(Level.SEVERE, "SQL error on DELETE", ex);
-            painel.setMensagemErro(ex.getMessage());
+    // DELETE
+
+    public boolean excluir(int id) {
+        String sql = "DELETE FROM painel WHERE id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao excluir painel: " + e.getMessage());
             return false;
         }
     }
