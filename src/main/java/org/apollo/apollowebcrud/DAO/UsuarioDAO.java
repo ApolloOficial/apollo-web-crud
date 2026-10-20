@@ -1,4 +1,4 @@
-package org.apollo.apollowebcrud.DAO;
+package org.apollo.apollowebcrud.dao;
 
 import org.apollo.apollowebcrud.model.Usuario;
 import org.apollo.apollowebcrud.util.ApolloConnection;
@@ -26,7 +26,7 @@ public class UsuarioDAO extends ApolloConnection {
         return usuario;
     }
 
-// CREATE
+    // CREATE
 
     public int inserir(Usuario usuario) {
         String sql = "INSERT INTO usuario (nome, id_tipo_usuario, id_filial, email, telefone, cpf, senha_hash, ativo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -41,15 +41,7 @@ public class UsuarioDAO extends ApolloConnection {
             stmt.setString(7, usuario.getSenhaHash());
             stmt.setString(8, "ATIVO");
 
-            stmt.executeUpdate();
-
-            try (ResultSet rs = stmt.getGeneratedKeys()) {
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
-            }
-
-            return -1;
+            return stmt.executeUpdate();
 
         } catch (SQLException e) {
             System.err.println("Erro ao inserir usuário: " + e.getMessage());
@@ -64,6 +56,44 @@ public class UsuarioDAO extends ApolloConnection {
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return montar(rs);
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar usuário: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+    public Usuario buscarPorCpf(String cpf) {
+        String sql = "SELECT * FROM usuario WHERE cpf = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, cpf);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return montar(rs);
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar usuário: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+    public Usuario buscarPorEmail(String email) {
+        String sql = "SELECT * FROM usuario WHERE email = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, email);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -134,5 +164,27 @@ public class UsuarioDAO extends ApolloConnection {
             System.err.println("Erro ao excluir usuário: " + e.getMessage());
             return false;
         }
+    }
+
+    // VALIDADOR
+
+    public Usuario validarLogin (String email, String cpf, String senha) {
+        String sql = "SELECT * FROM usuario WHERE email = ? AND cpf = ? AND senha_hash = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            stmt.setString(2, cpf);
+            stmt.setString(3, senha);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return montar(rs);
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar usuário: " + e.getMessage());
+        }
+
+        return null;
     }
 }
