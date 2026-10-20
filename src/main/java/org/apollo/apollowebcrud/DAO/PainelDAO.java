@@ -1,4 +1,4 @@
-package org.apollo.apollowebcrud.DAO;
+package org.apollo.apollowebcrud.dao;
 
 import org.apollo.apollowebcrud.model.Painel;
 import org.apollo.apollowebcrud.model.StatusGeral;

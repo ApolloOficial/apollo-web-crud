@@ -1,4 +1,4 @@
-import org.apollo.apollowebcrud.DAO.*;
+import org.apollo.apollowebcrud.dao.*;
 
 public class MainDeletev3 {
 

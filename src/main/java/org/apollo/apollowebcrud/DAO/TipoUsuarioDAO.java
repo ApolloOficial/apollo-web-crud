@@ -1,4 +1,4 @@
-package org.apollo.apollowebcrud.DAO;
+package org.apollo.apollowebcrud.dao;
 
 import org.apollo.apollowebcrud.model.TipoUsuEnum;
 import org.apollo.apollowebcrud.model.TipoUsuario;
@@ -55,6 +55,25 @@ public class TipoUsuarioDAO extends ApolloConnection {
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return montar(rs);
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar tipo de usuário: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+    public TipoUsuario buscarPorNome(String nome) {
+        String sql = "SELECT * FROM tipo_usuario WHERE nome = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, nome);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
