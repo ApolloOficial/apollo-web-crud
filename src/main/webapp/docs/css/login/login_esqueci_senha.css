@@ -1,0 +1,35 @@
+/* Só o que é específico da tela "Esqueci a senha".
+   O resto vem de login.css, que precisa ser carregado antes. */
+
+.titulo{margin-bottom:18px}
+
+.instrucao{
+  margin-bottom:18px;
+  font-size:.62rem;
+  line-height:1.6;
+}
+
+#form-esqueci .campo{margin-bottom:26px}
+
+.erro{text-align:center}
+
+.voltar{
+  display:block;
+  margin-top:22px;
+  text-align:center;
+  font-size:.62rem;
+  font-weight:600;
+  color:var(--texto);
+  text-decoration:none;
+}
+
+.voltar:hover{text-decoration:underline}
+
+.voltar:focus-visible{
+  outline:2px solid var(--laranja);
+  outline-offset:2px;
+}
+
+@media (max-width:820px){
+  .instrucao,.voltar{font-size:.8rem}
+}
