@@ -1,0 +1,21 @@
+/* Só o que é específico da tela "Código via email".
+   O resto vem de login.css, que precisa ser carregado antes. */
+
+.titulo{margin-bottom:34px}
+
+.instrucao{
+  margin-bottom:18px;
+  font-size:.62rem;
+  line-height:1.6;
+}
+
+/* e-mails longos quebram em vez de estourar a coluna */
+#email-destino{overflow-wrap:anywhere}
+
+#form-codigo .campo{margin-bottom:26px}
+
+.erro{text-align:center}
+
+@media (max-width:820px){
+  .instrucao{font-size:.8rem}
+}
