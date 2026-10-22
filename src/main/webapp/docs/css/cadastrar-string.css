@@ -1,0 +1,158 @@
+/* Fundo levemente azulado desta tela */
+
+body {
+    background: #f7f9ff;
+}
+
+.titulo {
+    font-size: 24px;
+}
+
+.subtitulo {
+    font-size: 10px;
+    max-width: 420px;
+}
+
+
+/* Usuário no topo (sino + avatar) */
+
+.sino {
+    width: 10px;
+    height: 10px;
+    border-radius: 50% 50% 2px 2px;
+    background: #222;
+    margin-right: 14px;
+}
+
+.avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #9aa3b2;
+    border: 2px solid #ddd;
+}
+
+
+/* Layout: formulário + resumo lado a lado */
+
+.layout-string {
+    display: grid;
+    grid-template-columns: 1fr 245px;
+    gap: 10px;
+    align-items: start;
+}
+
+.card-string {
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+
+    min-height: 262px;
+    padding: 12px 12px 18px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.card-string .secao-titulo {
+    font-size: 10px;
+    font-weight: 700;
+    margin-bottom: 14px;
+}
+
+.card-string .secao-titulo::after {
+    height: 1px;
+    background: #ffb866;
+}
+
+.icone-secao {
+    width: 16px;
+    height: 16px;
+    border-radius: 5px;
+    background: #ffe3cf;
+    border: 1px solid #ff9633;
+}
+
+.card-string .grade {
+    gap: 12px 18px;
+}
+
+.card-string .campo label {
+    font-size: 8px;
+}
+
+.card-string .campo input {
+    height: 20px;
+    font-size: 10px;
+}
+
+.card-string .acoes-form {
+    margin-top: auto;
+    padding-top: 20px;
+    gap: 12px;
+}
+
+.card-string .botao-cancelar,
+.card-string .acoes-form .botao-adicionar {
+    padding: 8px 26px;
+}
+
+
+/* Card de resumo */
+
+.card-resumo {
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+
+    min-height: 125px;
+    padding: 12px 11px;
+}
+
+.resumo-titulo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    margin-bottom: 12px;
+}
+
+.icone-info {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1.5px solid #ff6e2f;
+    color: #ff6e2f;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.resumo-lista {
+    list-style: solid;
+    display: relative;
+    text-align: right;
+    flex-direction: column;
+    gap: 2px;
+
+    padding-left: 24px;
+
+    font-size: 8px;
+    font-weight: 700;
+}
+
+
+/* Responsivo */
+
+@media (max-width: 1000px) {
+    .layout-string {
+        grid-template-columns: 1fr;
+    }
+}
