@@ -37,8 +37,7 @@ public class UsuarioService {
             return "Seu email não foi informado";
         }
 
-        //REGEX
-        if (!usuarioNovo.getEmail().contains("mail.com") || !usuarioNovo.getEmail().contains("@")) {
+        if (!EmailUtils.isEmailValido(usuarioNovo.getEmail())) {
             return "Seu email não é válido";
         }
 
@@ -50,23 +49,20 @@ public class UsuarioService {
             return "Seu CPF não foi informado";
         }
 
+        if (!CpfUtils.isCpfValido(usuarioNovo.getCpf())) {
+            return "Seu CPF não é válido";
+        }
+
         if (CpfUtils.verificarCpfExist(usuarioNovo.getCpf())){
             return "Este CPF já foi cadastrado no sistema";
         }
-
-        //if (verifica se o cpf é valido) {}
 
         if (usuarioNovo.getSenhaHash() == null || usuarioNovo.getSenhaHash().trim().isEmpty()){
             return "Sua senha não foi informada";
         }
 
-        //REGEX
-        if (!usuarioNovo.getSenhaHash().matches(".*[!@#\\[\\]$%*&].*")){
-            return "Sua senha deve possuir pelo um destes caracteres especiais: !@[]#$%*&";
-        }
-
-        if (usuarioNovo.getSenhaHash().length() < 8) {
-            return "Sua senha deve possuir pelo menos 8 caracteres";
+        if (!SenhaUtils.isSenhaValida(usuarioNovo.getSenhaHash())) {
+            return "Sua senha deve conter: letra minúscula, maiúscula, número, caractere especial (@#$%^&+=!._-*) e no mínimo 8 caracteres";
         }
 
         boolean sucesso = usuarioDAO.inserir(usuarioNovo) > 0;
