@@ -1,0 +1,298 @@
+/* Título + subtítulo */
+
+.topo-texto {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.subtitulo {
+    font-size: 12px;
+    color: #666;
+    max-width: 400px;
+    line-height: 1.4;
+}
+
+
+/* Card principal */
+
+.card-form {
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 25px;
+
+    display: grid;
+    grid-template-columns: 1fr 220px;
+
+    padding: 25px 35px 22px 40px;
+}
+
+.form-coluna {
+    padding-right: 10px;
+}
+
+.form-coluna + .logo-coluna {
+    border-left: 1px solid #ddd;
+}
+
+
+/* Título de seção com linha laranja */
+
+.secao-titulo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    font-size: 15px;
+    font-weight: 500;
+
+    margin-bottom: 22px;
+}
+
+.secao-titulo::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #ffb866;
+}
+
+.secao-titulo + .grade {
+    margin-bottom: 26px;
+}
+
+
+/* Grade de campos (12 colunas) */
+
+.grade {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 8px 18px;
+}
+
+.col-4  { grid-column: span 4; }
+.col-6  { grid-column: span 6; }
+.col-12 { grid-column: span 12; }
+
+
+/* Campos */
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+}
+
+.campo label {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+    width: 100%;
+
+    border: 1px solid #ff9633;
+    border-radius: 20px;
+    background: white;
+
+    padding: 0 12px;
+    height: 26px;
+
+    font-size: 10px;
+    color: #222;
+
+    outline: none;
+    transition: 0.2s;
+}
+
+.campo textarea {
+    height: 52px;
+    padding: 8px 12px;
+    resize: none;
+    border-radius: 12px;
+}
+
+.campo input::placeholder,
+.campo textarea::placeholder {
+    color: #888;
+}
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+    border-color: #ff6e2f;
+    box-shadow: 0 0 0 3px #ffe3cf;
+}
+
+.campo input:disabled {
+    background: #ececec;
+    border-color: #ddd;
+    color: #777;
+    cursor: not-allowed;
+}
+
+
+/* Upload da logo */
+
+.logo-coluna {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+
+    padding-left: 22px;
+}
+
+.logo-coluna > span {
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.upload {
+    width: 138px;
+    height: 128px;
+
+    border: 1px solid #ddd;
+    border-radius: 18px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    text-align: center;
+    font-size: 9px;
+    color: #222;
+
+    padding: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.upload:hover {
+    border-color: #ff9633;
+    background: #fff8f2;
+}
+
+.upload input {
+    display: none;
+}
+
+/* "+" feito só com CSS (no lugar do ícone de imagem) */
+.upload-mais {
+    width: 34px;
+    height: 34px;
+    border: 2px solid #777;
+    border-radius: 8px;
+    position: relative;
+    margin-bottom: 4px;
+}
+
+.upload-mais::before,
+.upload-mais::after {
+    content: "";
+    position: absolute;
+    background: #777;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.upload-mais::before { width: 14px; height: 2px; }
+.upload-mais::after  { width: 2px; height: 14px; }
+
+.upload small {
+    font-size: 8px;
+    color: #555;
+    margin-top: 6px;
+}
+
+
+/* Botões */
+
+.acoes-form {
+    grid-column: 1 / -1;
+
+    display: flex;
+    justify-content: flex-end;
+    gap: 22px;
+
+    margin-top: 18px;
+}
+
+.botao-cancelar {
+    border: 1px solid #ff6e2f;
+    background: white;
+    color: #ff6e2f;
+
+    padding: 11px 38px;
+    border-radius: 20px;
+
+    font-size: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.botao-cancelar:hover {
+    background: #fff3e9;
+}
+
+.acoes-form .botao-adicionar {
+    padding: 11px 38px;
+}
+
+
+/* Menu: botão da sidebar que fica embaixo */
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar .menu-baixo {
+    margin-top: auto;
+}
+
+
+/* =========================================
+   RESPONSIVIDADE
+========================================= */
+
+@media (max-width: 1000px) {
+
+    .card-form {
+        grid-template-columns: 1fr;
+    }
+
+    .form-coluna + .logo-coluna {
+        border-left: none;
+        border-top: 1px solid #ddd;
+        padding: 20px 0 0;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 750px) {
+
+    .card-form {
+        padding: 20px;
+    }
+
+    .col-4,
+    .col-6 {
+        grid-column: span 12;
+    }
+
+    .acoes-form {
+        justify-content: stretch;
+    }
+
+    .acoes-form button {
+        flex: 1;
+    }
+}
