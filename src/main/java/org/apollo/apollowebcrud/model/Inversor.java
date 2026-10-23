@@ -113,7 +113,11 @@ public class Inversor {
         this.status = status;
     }
 
+    //    Garante que a conclusão da instalação não seja cadastrada em um momento futuro
     public void setDataInstalacao(LocalDate dataInstalacao) {
+        if (dataInstalacao != null && dataInstalacao.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("Data de finalização não pode ser no futuro");
+        }
         this.dataInstalacao = dataInstalacao;
     }
 

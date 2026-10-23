@@ -4,8 +4,6 @@ import java.time.LocalDate;
 
 public class Manutencao {
 
-
-
 //    ATRIBUTOS
 
     private int id;
@@ -111,7 +109,11 @@ public class Manutencao {
         this.dataPrevista = dataPrevista;
     }
 
+//    Garante que a conclusão da tarefa não seja cadastrada em um momento futuro
     public void setDataConclusao(LocalDate dataConclusao) {
+        if (dataConclusao != null && dataConclusao.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("Data de finalização não pode ser no futuro");
+        }
         this.dataConclusao = dataConclusao;
     }
 
