@@ -1,0 +1,16 @@
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<c:set var="raiz" value="${pageContext.request.contextPath}"/>
+<header>
+    <nav>
+        <a href="${raiz}/dashboard">Dashboard</a>
+        <a href="${raiz}/string">Lotes</a>
+        <a href="${raiz}/painel">Painéis</a>
+        <a href="${raiz}/inversor">Inversores</a>
+        <a href="${raiz}/manutencao">Manutenções</a>
+        <a href="${raiz}/empresa">Empresas</a>
+        <a href="${raiz}/filial">Filiais</a>
+        <a href="${raiz}/membros">Membros</a>
+    </nav>
+    <span><c:out value="${usuarioLogado.nome}"/></span>
+    <form action="${raiz}/logout" method="post"><button type="submit">Sair</button></form>
+</header>
