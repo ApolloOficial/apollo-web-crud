@@ -30,25 +30,84 @@ body {
    SIDEBAR
 ========================= */
 
-.sidebar {
-    width: 245px;
-    background: #ffffff;
-    border-right: 1px solid #e5e5e5;
-    padding: 30px 30px;
-    flex-shrink: 0;
+:root{
+  --ap-laranja:#FF8F2B;
+  --ap-texto:#1C1C1C;
+  --ap-borda:#EDEDED;
+  --ap-fundo:#FFFFFF;
 }
 
-.logo {
-    margin-bottom: 45px;
-    padding-left: 5px;
+*{box-sizing:border-box}
+body{margin:0;font-family:Manrope,Arial,sans-serif;background:#f5f5f5}
+
+.sidebar{
+  width:271px;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  padding:36px 27px 32px;
+  background:var(--ap-fundo);
+  border-right:1px solid var(--ap-borda);
 }
 
-.logo span {
-    font-size: 34px;
-    font-weight: 500;
-    color: #ff932f;
-    letter-spacing: -2px;
+/* Logo: nome + símbolo */
+.sidebar__logo{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  padding-left:19px;
+  margin-bottom:50px;
 }
+.sidebar__logo-nome{height:42px;width:auto;display:block}
+.sidebar__logo-simbolo{height:42px;width:auto;display:block}
+
+/* Navegação */
+.sidebar__nav{
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+}
+
+.sidebar__item{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  height:46px;
+  padding:0 16px;
+  border:1px solid var(--ap-borda);
+  border-radius:999px;
+  background:#fff;
+  color:var(--ap-texto);
+  font-size:16px;
+  font-weight:500;
+  text-decoration:none;
+  transition:background .15s, border-color .15s, color .15s;
+}
+.sidebar__item img{flex:none;display:block}
+.sidebar__item:hover{background:#FFF6EC;border-color:#FFD9B0}
+.sidebar__item:focus-visible,
+.sidebar__perfil:focus-visible{outline:2px solid var(--ap-laranja);outline-offset:2px}
+
+.sidebar__item--ativo,
+.sidebar__item--ativo:hover{
+  background:var(--ap-laranja);
+  border-color:var(--ap-laranja);
+  color:#fff;
+}
+
+/* Perfil no rodapé */
+.sidebar__perfil{
+  margin-top:auto;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:0 16px 0 28px;
+  color:var(--ap-texto);
+  font-size:16px;
+  font-weight:500;
+  text-decoration:none;
+}
+.sidebar__perfil img{flex:none;display:block}
 
 
 /* MENU */
