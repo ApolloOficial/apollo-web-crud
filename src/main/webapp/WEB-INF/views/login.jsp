@@ -1,4 +1,3 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -8,15 +7,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../docs/css/login/login.css">
+<link rel="stylesheet" href="login.css">
 </head>
 <body>
 <main class="tela">
 
   <section class="banner">
     <div class="logo">
-      <img class="logo-texto" src="../../docs/img/logo/Union.png" alt="Apollo">
-      <img class="logo-seta" src="../../docs/img/logo/Group 18.png" alt="" aria-hidden="true">
+      <img class="logo-texto" src="union.png" alt="Apollo">
+      <img class="logo-seta" src="Group_18.png" alt="" aria-hidden="true">
     </div>
     <h2>Cadastro, monitoramento, gestão e muito mais</h2>
     <p class="legal"><a href="#">Termos de serviço</a> / <a href="#">políticas de privacidade</a></p>
@@ -45,5 +44,7 @@
   </section>
 
 </main>
+
+<script src="login.js"></script>
 </body>
 </html>
