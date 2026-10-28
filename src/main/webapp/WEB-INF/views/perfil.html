@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Apollo · Meu Perfil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../docs/css/perfil.css">
+</head>
+<body>
+
+<!-- Ícones reutilizáveis -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-dash" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></symbol>
+  <symbol id="i-lotes" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="m9 16 5-5"/></symbol>
+  <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0 5 5L21 17.6a2.1 2.1 0 0 1-3 3l-6.3-6.3a4 4 0 0 1-5-5l2.6 2.6 2.4-.6.6-2.4z"/></symbol>
+  <symbol id="i-branch" viewBox="0 0 24 24"><circle cx="6" cy="5" r="2.5"/><circle cx="18" cy="5" r="2.5"/><circle cx="12" cy="19" r="2.5"/><path d="M6 7.5v2a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3v-2M12 12.5v4"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14a6.5 6.5 0 0 1 3.5 6"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5a7 7 0 0 0-14 0C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 15 6-6"/><circle cx="9.5" cy="9.5" r=".8"/><circle cx="14.5" cy="14.5" r=".8"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+  <symbol id="i-user-c" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="10" r="3"/><path d="M6 18.5a7 7 0 0 1 12 0"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></symbol>
+  <symbol id="i-building" viewBox="0 0 24 24"><rect x="4" y="3" width="12" height="18" rx="1"/><path d="M16 9h4v12h-4M8 7h4M8 11h4M8 15h4M10 21v-3"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+</svg>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <a class="logo" href="#" aria-label="Apollo">
+      <!-- troque pelo arquivo oficial: <img src="apollo-logo.png" alt="Apollo"> -->
+      apollo
+    </a>
+
+    <nav aria-label="Principal">
+      <ul class="menu">
+        <li><a href="#"><svg class="ico"><use href="#i-dash"/></svg>Dashboard</a></li>
+        <li><a href="#"><svg class="ico"><use href="#i-lotes"/></svg>Lotes</a></li>
+        <li><a href="#"><svg class="ico"><use href="#i-wrench"/></svg>Manutenções</a></li>
+        <li><a href="#"><svg class="ico"><use href="#i-branch"/></svg>Filiais</a></li>
+        <li><a href="#"><svg class="ico"><use href="#i-users"/></svg>Membros</a></li>
+        <li><a href="#"><svg class="ico"><use href="#i-pin"/></svg>Realocações</a></li>
+        <li><a href="#"><svg class="ico"><use href="#i-target"/></svg>Metas</a></li>
+      </ul>
+    </nav>
+
+    <ul class="menu bottom">
+      <li><a href="#" class="active" aria-current="page"><svg class="ico"><use href="#i-user-c"/></svg>Perfil</a></li>
+    </ul>
+  </aside>
+
+  <main class="main">
+
+    <header class="topbar">
+      <div class="left">
+        <a class="back" href="#" aria-label="Voltar"><svg class="ico"><use href="#i-back"/></svg></a>
+        <h1>Meu Perfil</h1>
+      </div>
+      <div class="right">
+        <button class="bell" aria-label="Notificações (há novas)"><svg class="ico"><use href="#i-bell"/></svg></button>
+        <button class="user-chip" aria-label="Menu do usuário">
+          <img src="img/neymar.jpg" alt="">
+          <span>Neymar Júnior César</span>
+          <svg class="ico" style="width:16px;height:16px"><use href="#i-chev"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <section class="card hero" aria-label="Resumo do perfil">
+      <div class="avatar">
+        <img src="img/neymar.jpg" alt="Foto de Neymar Júnior César">
+        <button type="button" aria-label="Alterar foto"><svg class="ico"><use href="#i-camera"/></svg></button>
+      </div>
+
+      <div class="hero-info">
+        <h2>Neymar Júnior César</h2>
+        <span class="badge role">Gerente</span>
+        <div class="contact"><svg class="ico"><use href="#i-mail"/></svg>neymar.cesar@solartech.com.br</div>
+        <div class="contact"><svg class="ico"><use href="#i-phone"/></svg>(11) 98765-4321</div>
+      </div>
+
+      <div class="hero-side">
+        <div class="side-item">
+          <svg class="ico"><use href="#i-building"/></svg>
+          <div><b>SolarTech Energia LTDA</b><small>Empresa</small></div>
+        </div>
+        <div class="side-item">
+          <svg class="ico"><use href="#i-pin"/></svg>
+          <div><b>Filial Matriz</b><small>Filial</small></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="grid">
+
+      <section class="card panel personal" aria-labelledby="t-pessoais">
+        <h2 id="t-pessoais"><svg class="ico"><use href="#i-user"/></svg>Informações pessoais</h2>
+        <dl class="rows">
+          <div class="row"><dt>Nome completo</dt><dd>Neymar Júnior César</dd></div>
+          <div class="row"><dt>E-mail</dt><dd>neymar.cesar@solartech.com.br</dd></div>
+          <div class="row"><dt>Telefone</dt><dd>(11) 98765-4321</dd></div>
+          <div class="row"><dt>CPF</dt><dd>123.456.789-00</dd></div>
+          <div class="row"><dt>Tipo de usuário</dt><dd>Gerente</dd></div>
+          <div class="row"><dt>Senha</dt><dd>-</dd></div>
+          <div class="row"><dt>Filial</dt><dd>-</dd></div>
+          <div class="row"><dt>Status</dt><dd><span class="badge ok">Ativo</span></dd></div>
+        </dl>
+      </section>
+
+      <div class="stack">
+        <section class="card panel compact" aria-labelledby="t-endereco">
+          <h2 id="t-endereco"><svg class="ico"><use href="#i-pin"/></svg>Endereço</h2>
+          <dl class="rows">
+            <div class="row"><dt>CEP</dt><dd>01310-100</dd></div>
+            <div class="row"><dt>Logradouro</dt><dd>Av. Paulista</dd></div>
+            <div class="row"><dt>Número</dt><dd>1000</dd></div>
+            <div class="row"><dt>Complemento</dt><dd>Conj. 1201</dd></div>
+            <div class="row"><dt>Bairro</dt><dd>Bela Vista</dd></div>
+            <div class="row"><dt>Cidade</dt><dd>São Paulo</dd></div>
+            <div class="row"><dt>Estado</dt><dd>SP</dd></div>
+          </dl>
+        </section>
+
+        <section class="card panel compact" aria-labelledby="t-empresa">
+          <h2 id="t-empresa"><svg class="ico"><use href="#i-building"/></svg>Dados da empresa</h2>
+          <dl class="rows">
+            <div class="row"><dt>Nome</dt><dd>SolarTech Energia LTDA</dd></div>
+            <div class="row"><dt>CNPJ</dt><dd>12.345.678/0001-90</dd></div>
+            <div class="row"><dt>Segmento</dt><dd>Energia Solar</dd></div>
+          </dl>
+        </section>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+</body>
+</html>
