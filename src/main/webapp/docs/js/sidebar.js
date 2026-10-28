@@ -44,7 +44,7 @@
     };
 
     var ITENS = {
-        dashboard: { texto: 'Dashboard', href: 'dashboard.html' },   // técnico/operador (gerente: ver DASH_GERENTE)
+        dashboard: { texto: 'Dashboard', href: 'dashboard-tecnico.html' },   // técnico/operador (gerente: ver DASH_GERENTE)
         filial:    { texto: 'Filial',    href: 'detalhes-filial.html' },
         usuarios:  { texto: 'Usuários',  href: 'membros.html' },
         contrato:  { texto: 'Contrato',  href: 'contrato.html' },
@@ -60,17 +60,17 @@
 
     // telas que têm uma versão para cada tipo de usuário
     var ROTAS = {
-        dashboard: { gerente: 'dashboard-crud.html' },
+        dashboard: { gerente: 'dashboard-gerente.html' },
         perfil:    { gerente: 'perfil-gerente.html', tecnico: 'perfil-tecnico.html', operador: 'perfil-tecnico.html' }
     };
 
     // cada página pertence a um grupo de tipos (usado quando a tela não tem data-tipo)
     var PAGINAS = {
-        'dashboard-crud.html': ['gerente'],
+        'dashboard-gerente.html': ['gerente'],
         'contrato.html':       ['gerente'],
         'empresa.html':        ['gerente'],
         'perfil-gerente.html': ['gerente'],
-        'dashboard.html':      ['tecnico', 'operador'],
+        'dashboard-tecnico.html':      ['tecnico', 'operador'],
         'detalhes-filial.html':['tecnico', 'operador'],
         'detalhes.html':       ['tecnico', 'operador'],
         'membros.html':        ['tecnico', 'operador'],
