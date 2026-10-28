@@ -1,0 +1,262 @@
+/* =====================================================
+   APOLLO — MELHORIAS DAS TELAS DE DETALHES
+   (filial, inversor, string)
+
+   Carregar DEPOIS do CSS da tela e do sidebar.css:
+     <link rel="stylesheet" href="../../docs/css/detalhes-filial.css">
+     <link rel="stylesheet" href="../../docs/css/sidebar.css">
+     <link rel="stylesheet" href="../../docs/css/detalhes-melhorias.css">
+
+   O que muda:
+   - nenhum texto abaixo de 11px (antes havia 8, 9 e 10px) e cinzas com contraste legível
+   - cabeçalho com avatar nas cores da logo e título maior
+   - campos do inversor/string em cartões mais respirados
+   - cards de inversor/string sem posição absoluta (não se sobrepõem em tela estreita)
+   - tabela de painéis com linhas claras em vez de pretas
+   - botões e áreas de clique maiores
+   - selos "Somente leitura" e do perfil do usuário (permissoes.js)
+   Para desfazer tudo, é só remover este <link>.
+   ===================================================== */
+
+/* ---------- Texto: tamanhos mínimos e contraste ---------- */
+main.conteudo .breadcrumb { font-size: 13px; }
+main.conteudo .subtitulo { font-size: 13px; color: #555; }
+main.conteudo .titulo-secao { font-size: 18px; font-weight: 600; margin: 30px 0 14px; }
+main.conteudo .link-voltar { font-size: 13px; }
+
+main.conteudo .badge { font-size: 11px; padding: 3px 12px; }
+main.conteudo .badge-mini { font-size: 11px; padding: 2px 11px; }
+
+main.conteudo .btn {
+    height: 34px;
+    padding: 0 18px;
+    font-size: 12px;
+}
+
+/* ---------- Cabeçalho (filial / inversor / string) ---------- */
+main.conteudo .card-inversor {
+    padding: 18px 22px;
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(17, 17, 17, .04);
+}
+
+main.conteudo .linha-nome { flex-wrap: wrap; }
+main.conteudo .linha-nome h2 { font-size: 22px; }
+
+/* avatar com o degradê da logo */
+main.conteudo .avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    background: linear-gradient(160deg, #ff672c 15%, #fcd83a 100%);
+    color: #3d1500;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+main.conteudo .btn-excluir { width: 44px; padding: 0; }
+main.conteudo .btn-excluir svg { width: 15px; height: 15px; }
+
+/* ---------- Campos (inversor / string) ---------- */
+main.conteudo .grade-info {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+}
+
+main.conteudo .card-info {
+    min-height: 78px;
+    gap: 5px;
+    padding: 14px 20px;
+    border-radius: 10px;
+}
+
+main.conteudo .card-info .rotulo { font-size: 12px; color: #6b6b6b; }
+main.conteudo .card-info .valor { font-size: 15px; }
+main.conteudo .card-info .valor.vazio { font-size: 14px; color: #8a8a8a; }
+
+main.conteudo .card-status {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 6px;
+    min-height: 78px;
+    padding: 14px 20px;
+}
+main.conteudo .card-status .badge { margin-left: 0; }
+
+/* ---------- Cards de inversor / string ---------- */
+main.conteudo .grade-strings {
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+}
+
+main.conteudo .card-string {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px 16px;
+    min-height: 0;
+    padding: 18px 20px;
+    border-radius: 12px;
+}
+
+main.conteudo .card-string:has(.badge-inativo) { background: #fafafa; }
+
+main.conteudo .card-string .tipo { font-size: 12px; color: #6b6b6b; }
+main.conteudo .card-string .codigo { margin-top: 4px; font-size: 16px; }
+main.conteudo .card-string .mppt { margin-top: 8px; font-size: 13px; font-weight: 500; }
+main.conteudo .card-string .paineis { margin-top: 4px; font-size: 12px; color: #6b6b6b; }
+main.conteudo .card-string .data { margin-top: 4px; font-size: 12px; color: #444; }
+
+/* some a posição absoluta: o selo fica em cima e o botão embaixo */
+main.conteudo .card-string .lado-direito {
+    position: static;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+main.conteudo .btn-detalhes { min-width: 116px; height: 32px; font-size: 12px; }
+
+/* ---------- Filial: métricas, dados e equipe ---------- */
+main.conteudo .metricas-filial {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+main.conteudo .metrica-card {
+    padding: 16px 20px 18px;
+    border-radius: 12px;
+}
+main.conteudo .metrica-card .rotulo { font-size: 12px; color: #6b6b6b; }
+main.conteudo .metrica-card strong {
+    margin: 4px 0 10px;
+    font-size: 32px;
+    font-variant-numeric: tabular-nums;
+}
+
+main.conteudo .painel-info { padding: 18px 20px 20px; border-radius: 12px; }
+main.conteudo .painel-info h3 { font-size: 15px; margin-bottom: 8px; }
+
+main.conteudo .lista-dados { gap: 0; }
+main.conteudo .lista-dados li {
+    padding: 9px 0;
+    font-size: 13px;
+    border-bottom: 1px solid #f0f0f0;
+}
+main.conteudo .lista-dados li:last-child { border-bottom: 0; }
+main.conteudo .lista-dados .chave { color: #6b6b6b; }
+
+main.conteudo .lista-equipe { gap: 14px; margin: 12px 0 14px; }
+main.conteudo .avatar-mini { width: 32px; height: 32px; font-size: 11px; }
+main.conteudo .membro-nome { font-size: 13px; }
+main.conteudo .membro-email { font-size: 12px; color: #6b6b6b; }
+main.conteudo .cargo { font-size: 11px; padding: 2px 10px; }
+main.conteudo .btn-mais { height: 30px; font-size: 12px; padding: 0 14px; }
+
+main.conteudo .card-monitor { padding: 16px 20px; border-radius: 12px; }
+main.conteudo .card-monitor h3 { font-size: 14px; }
+main.conteudo .card-monitor p { font-size: 12px; color: #666; }
+main.conteudo .card-monitor .badge { font-size: 11px; }
+
+/* ---------- String: painéis ---------- */
+main.conteudo .secao-paineis { border-radius: 12px; padding: 20px; }
+main.conteudo .paineis-topo h3 { font-size: 18px; font-weight: 600; }
+
+main.conteudo .metricas { gap: 16px; }
+main.conteudo .metrica { box-shadow: none; border-radius: 10px; padding: 14px 20px; }
+main.conteudo .metrica p { font-size: 12px; color: #6b6b6b; }
+main.conteudo .metrica strong { font-size: 24px; font-variant-numeric: tabular-nums; }
+
+main.conteudo .filtros .busca,
+main.conteudo .filtro-status { height: 38px; }
+main.conteudo .filtros .busca input,
+main.conteudo .filtro-status { font-size: 13px; }
+
+main.conteudo .tabela-paineis {
+    background: #fff;
+    border: 1px solid var(--borda);
+    border-radius: 10px;
+    padding: 4px 10px;
+}
+main.conteudo .tabela-paineis th,
+main.conteudo .tabela-paineis td { border-bottom: 1px solid #ececec; }
+main.conteudo .tabela-paineis th { height: 44px; font-size: 12px; font-weight: 600; color: #444; }
+main.conteudo .tabela-paineis td { height: 48px; font-size: 13px; }
+main.conteudo .tabela-paineis .badge { font-size: 11px; padding: 2px 12px; }
+main.conteudo .tabela-paineis tbody tr:hover td { background: #fffaf6; }
+main.conteudo .tabela-paineis .sem-resultado td { color: #6b6b6b; }
+
+main.conteudo .mais { min-width: 36px; min-height: 32px; border-radius: 8px; }
+main.conteudo .mais:hover { background: var(--laranja-suave); }
+
+main.conteudo .paginacao button { width: 32px; height: 32px; font-size: 13px; border-radius: 8px; }
+main.conteudo .paginacao button:disabled { opacity: .4; cursor: default; }
+
+/* perfil sem permissão de equipamento: some a coluna "Ações" */
+html[data-pode-equipamento="nao"] .tabela-paineis th:last-child,
+html[data-pode-equipamento="nao"] .tabela-paineis tr:not(.sem-resultado) td:last-child { display: none; }
+
+/* ---------- String: manutenções ---------- */
+main.conteudo .lista-manut { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+main.conteudo .card-manut { padding: 18px 20px; border-radius: 12px; }
+main.conteudo .card-manut .linha { font-size: 12px; }
+main.conteudo .card-manut .codigo { font-size: 16px; }
+main.conteudo .card-manut .id { font-size: 12px; color: #6b6b6b; }
+main.conteudo .card-manut .rodape { font-size: 12px; color: #444; }
+main.conteudo .card-manut .btn { height: 32px; font-size: 12px; }
+
+/* ---------- Selos de perfil e de somente leitura ---------- */
+.usuario .selo-perfil {
+    padding: 2px 10px;
+    border-radius: 10px;
+    background: var(--laranja-suave);
+    color: #b8470f;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.selo-leitura {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 12px;
+    border-radius: 12px;
+    background: #eee;
+    color: #555;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+/* ---------- Pop-ups: campos mais confortáveis ---------- */
+dialog.pop .pop-input,
+dialog.pop .pop-select { height: 38px; font-size: 13px; }
+dialog.pop .pop-campo > span,
+dialog.pop .pop-rotulo { font-size: 13px; }
+dialog.pop .pop-erro { font-size: 12px; }
+dialog.pop .pop-input:disabled { background: #f1f1f1; }
+
+/* ---------- Foco visível ---------- */
+main.conteudo .mais:focus-visible,
+main.conteudo .paginacao button:focus-visible,
+main.conteudo .filtro-status:focus-visible { outline: 2px solid var(--laranja); outline-offset: 2px; }
+
+/* ---------- Telas estreitas ---------- */
+@media (max-width: 750px) {
+    main.conteudo { padding: 20px 16px 32px; }
+
+    main.conteudo .card-inversor { flex-direction: column; align-items: flex-start; }
+    main.conteudo .acoes { flex-wrap: wrap; }
+
+    main.conteudo .grade-strings,
+    main.conteudo .lista-manut { grid-template-columns: 1fr; }
+
+    main.conteudo .card-string { grid-template-columns: 1fr; }
+    main.conteudo .card-string .lado-direito {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    main.conteudo .rodape-detalhes { flex-direction: column-reverse; gap: 12px; align-items: stretch; }
+    main.conteudo .rodape-detalhes .btn-cadastrar { width: 100%; }
+}

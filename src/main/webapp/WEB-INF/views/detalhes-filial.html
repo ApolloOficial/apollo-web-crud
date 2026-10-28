@@ -11,6 +11,7 @@
 
     <link rel="stylesheet" href="../../docs/css/detalhes-filial.css">
     <link rel="stylesheet" href="../../docs/css/sidebar.css">
+    <link rel="stylesheet" href="../../docs/css/detalhes-melhorias.css">
 </head>
 <body>
 
@@ -53,9 +54,9 @@
             </div>
 
             <div class="acoes">
-                <button type="button" class="btn btn-editar" data-abrir="dlg-editar-filial">Editar filial</button>
-                <button type="button" class="btn btn-inativar" data-abrir="dlg-inativar-filial">Inativar filial</button>
-                <button type="button" class="btn btn-excluir" data-abrir="dlg-excluir-filial" aria-label="Excluir filial">
+                <button type="button" class="btn btn-editar" data-abrir="dlg-editar-filial" data-permissao="filial">Editar filial</button>
+                <button type="button" class="btn btn-inativar" data-abrir="dlg-inativar-filial" data-permissao="filial">Inativar filial</button>
+                <button type="button" class="btn btn-excluir" data-abrir="dlg-excluir-filial" data-permissao="filial" aria-label="Excluir filial">
                     <svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                 </button>
             </div>
@@ -155,7 +156,7 @@
         <section class="grade-strings" id="listaInversores"></section>
 
         <div class="rodape-detalhes rodape-filial">
-            <button type="button" class="btn btn-cadastrar" data-abrir="dlg-cadastrar-inversor">Cadastrar inversor</button>
+            <button type="button" class="btn btn-cadastrar" data-abrir="dlg-cadastrar-inversor" data-permissao="equipamento">Cadastrar inversor</button>
         </div>
 
     </main>
@@ -289,7 +290,8 @@
     </form>
 </dialog>
 
-<script src="../JS/detalhes-filial.js"></script>
-<script src="../JS/permissoes.js"></script>
+<script src="../../docs/js/validar-email.js"></script>
+<script src="../../docs/js/detalhes-filial.js"></script>
+<script src="../../docs/js/permissoes.js"></script>
 </body>
 </html>

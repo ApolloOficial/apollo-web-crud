@@ -4,35 +4,34 @@
      <aside class="sidebar" data-ativo="dashboard"></aside>
      <script src="sidebar.js"></script>
    data-ativo = dashboard | filial | usuarios | contrato | empresa | perfil
-   data-tipo  = (opcional) para quais tipos a tela serve: "gerente" ou "tecnico,operador".
-                Se o tipo salvo não estiver na lista, usa o primeiro da lista.
-                Ex.: <aside class="sidebar" data-ativo="perfil" data-tipo="tecnico,operador"></aside>
+   data-tipo  = (opcional) tipos que podem abrir a tela: "gerente" ou "tecnico,operador".
+                Quem não estiver na lista é levado para o início do próprio perfil.
 
-   Tipo por página (automático, não precisa de data-tipo nessas telas):
-     Gerente            → dashboard-crud, contrato, empresa, perfil-gerente
-     Técnico / Operador → dashboard, detalhes-filial, detalhes, membros, perfil-tecnico
-   (data-tipo, se existir, tem prioridade sobre essa lista.)
-
-   Telas que mudam conforme o tipo:
-     Dashboard → Gerente: dashboard-crud.html  | Técnico / Operador: dashboard.html
-     Perfil    → Gerente: perfil-gerente.html  | Técnico / Operador: perfil-tecnico.html
-
-   Tipos de usuário e menus:
+   Menus:
      Técnico / Operador → Dashboard, Filial e Usuários
      Gerente            → Dashboard, Contrato e Empresa
    (Perfil fica sempre no rodapé.)
 
-   Como o tipo é escolhido (enquanto não existe login):
-     1) ?perfil=gerente | tecnico | operador na URL (fica salvo no navegador)
-     2) a própria tela: abrir Filial, Usuários ou os Detalhes mostra o menu de
-        Técnico/Operador; abrir Contrato ou Empresa mostra o de Gerente
-     3) Dashboard e Perfil usam o último tipo salvo (padrão: gerente)
-     Também dá para usar Apollo.definirPerfil('tecnico') no console.
+   TELAS COMPARTILHADAS (detalhes-filial, detalhes-inversor, detalhes-string,
+   detalhes, membros): qualquer perfil abre, e a sidebar NÃO muda.
+   O gerente que chega nelas pela Empresa continua com o menu de gerente
+   (item "Empresa" marcado). Antes, essas telas trocavam o menu para o de técnico.
+
+   De onde vem o perfil (ordem):
+     1) sessionStorage 'apollo_perfil'  → gravado pelo login (manda sempre)
+     2) ?perfil=gerente|tecnico|operador na URL → só para testes, e só sem login
+     3) último perfil lembrado (localStorage)  → padrão: gerente
+
+   ATENÇÃO: isto é só a parte visual. O servidor precisa conferir o perfil
+   em toda requisição.
    ===================================================== */
 (function () {
     'use strict';
 
-    var CHAVE = 'apollo-perfil';
+    var CHAVE = 'apollo-perfil';          // lembrado no navegador (modo teste)
+    var CHAVE_LOGIN = 'apollo_perfil';    // gravado pelo login.js (sessionStorage)
+    var EXIGIR_LOGIN = false;             // true = sem login, volta para o login
+    var PAGINA_LOGIN = 'login.html';
 
     var ICONES = {
         dashboard: '<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>',
@@ -44,7 +43,7 @@
     };
 
     var ITENS = {
-        dashboard: { texto: 'Dashboard', href: 'dashboard-tecnico.html' },   // técnico/operador (gerente: ver DASH_GERENTE)
+        dashboard: { texto: 'Dashboard', href: 'dashboard-tecnico.html' },
         filial:    { texto: 'Filial',    href: 'detalhes-filial.html' },
         usuarios:  { texto: 'Usuários',  href: 'membros.html' },
         contrato:  { texto: 'Contrato',  href: 'contrato.html' },
@@ -64,58 +63,64 @@
         perfil:    { gerente: 'perfil-gerente.html', tecnico: 'perfil-tecnico.html', operador: 'perfil-tecnico.html' }
     };
 
-    // cada página pertence a um grupo de tipos (usado quando a tela não tem data-tipo)
+    // telas RESTRITAS: só abrem para os tipos listados (os outros voltam ao início)
     var PAGINAS = {
         'dashboard-gerente.html': ['gerente'],
-        'contrato.html':       ['gerente'],
-        'empresa.html':        ['gerente'],
-        'perfil-gerente.html': ['gerente'],
-        'dashboard-tecnico.html':      ['tecnico', 'operador'],
-        'detalhes-filial.html':['tecnico', 'operador'],
-        'detalhes.html':       ['tecnico', 'operador'],
-        'membros.html':        ['tecnico', 'operador'],
-        'perfil-tecnico.html': ['tecnico', 'operador']
+        'contrato.html':          ['gerente'],
+        'empresa.html':           ['gerente'],
+        'perfil-gerente.html':    ['gerente'],
+        'dashboard-tecnico.html': ['tecnico', 'operador'],
+        'perfil-tecnico.html':    ['tecnico', 'operador']
     };
-
-    function permitidosDaPagina() {
-        var nome = decodeURIComponent(location.pathname.split('/').pop() || '').toLowerCase();
-        return PAGINAS[nome] || null;
-    }
+    // telas COMPARTILHADAS (qualquer perfil; a sidebar não troca): detalhes-filial,
+    // detalhes-inversor, detalhes-string, detalhes, membros → não entram em PAGINAS.
 
     var NOMES = { tecnico: 'Técnico', operador: 'Operador', gerente: 'Gerente' };
     var ALIAS = { adm: 'tecnico' };   // nome antigo
 
+    function nomeDaPagina() {
+        return decodeURIComponent(location.pathname.split('/').pop() || '').toLowerCase();
+    }
+
+    function normalizar(v) {
+        v = ALIAS[v] || v;
+        return MENU[v] ? v : null;
+    }
+
+    function lerLogin() {
+        try { return normalizar(sessionStorage.getItem(CHAVE_LOGIN)); } catch (e) { return null; }
+    }
+
     function lerSalvo() {
-        try { var v = localStorage.getItem(CHAVE); v = ALIAS[v] || v; return MENU[v] ? v : null; } catch (e) { return null; }
+        try { return normalizar(localStorage.getItem(CHAVE)); } catch (e) { return null; }
     }
 
     function gravar(tipo) {
         try { localStorage.setItem(CHAVE, tipo); } catch (e) {}
     }
 
-    function perfilAtual(ativo, permitidos) {
-        var url = new URLSearchParams(location.search).get('perfil');
-        url = ALIAS[url] || url;
+    // Perfil de quem está na tela. Quem fez login não consegue trocar pela URL.
+    function perfilAtual() {
+        var login = lerLogin();
+        if (login) return login;
 
-        var tipo = MENU[url] ? url : (lerSalvo() || 'gerente');   // URL > salvo > gerente
+        var url = normalizar(new URLSearchParams(location.search).get('perfil'));
+        if (url) { gravar(url); return url; }
 
-        // a tela declara para quais tipos serve (data-tipo)
-        if (permitidos && permitidos.length) {
-            if (permitidos.indexOf(tipo) < 0) tipo = permitidos[0];
-            gravar(tipo);
-            return tipo;
+        return lerSalvo() || 'gerente';
+    }
+
+    function inicio(tipo) {
+        return (ROTAS.dashboard[tipo]) || ITENS.dashboard.href;
+    }
+
+    function permitidosDaPagina(aside) {
+        var attr = aside.getAttribute('data-tipo');
+        if (attr) {
+            return attr.split(',').map(function (t) { return normalizar(t.trim()); })
+                                  .filter(Boolean);
         }
-
-        if (MENU[url]) { gravar(url); return url; }          // escolhido na URL
-
-        // a tela não existe no menu deste tipo → usa o tipo a que a tela pertence
-        if (ativo && ativo !== 'perfil' && MENU[tipo].indexOf(ativo) < 0) {
-            ['tecnico', 'gerente'].some(function (t) {
-                if (MENU[t].indexOf(ativo) > -1) { tipo = t; return true; }
-            });
-            gravar(tipo);
-        }
-        return tipo;
+        return PAGINAS[nomeDaPagina()] || null;      // null = compartilhada
     }
 
     function item(chave, ativo, extra, tipo) {
@@ -126,16 +131,32 @@
                '<svg viewBox="0 0 24 24">' + ICONES[chave] + '</svg>' + i.texto + '</a>';
     }
 
+    function bloquear(destino) {
+        document.documentElement.style.visibility = 'hidden';
+        if (nomeDaPagina() !== destino.toLowerCase()) location.replace(destino);
+    }
+
     function montar() {
         var aside = document.querySelector('aside.sidebar');
         if (!aside) return;
 
-        var ativo = aside.getAttribute('data-ativo') || '';
-        var attr = aside.getAttribute('data-tipo');
-        var permitidos = attr ? attr.split(',').map(function (t) { t = t.trim(); return ALIAS[t] || t; })
-                                          .filter(function (t) { return MENU[t]; }) : permitidosDaPagina();
-        var tipo = perfilAtual(ativo, permitidos);
+        var tipo = perfilAtual();
 
+        // sem login e a tela exige login → volta para o login
+        if (EXIGIR_LOGIN && !lerLogin()) { bloquear(PAGINA_LOGIN); return; }
+
+        // tela restrita a outros tipos → vai para o início do próprio perfil (não troca o perfil)
+        var permitidos = permitidosDaPagina(aside);
+        if (permitidos && permitidos.indexOf(tipo) < 0) { bloquear(inicio(tipo)); return; }
+
+        // o item marcado precisa existir no menu do tipo
+        // (gerente em Filial/Usuários/detalhes → "Empresa")
+        var ativo = aside.getAttribute('data-ativo') || '';
+        if (ativo && ativo !== 'perfil' && MENU[tipo].indexOf(ativo) < 0) {
+            ativo = tipo === 'gerente' ? 'empresa' : 'filial';
+        }
+
+        document.documentElement.setAttribute('data-perfil', tipo);
         aside.setAttribute('data-perfil', tipo);
         aside.innerHTML =
             '<div class="logo"><div class="logo-apollo" role="img" aria-label="Apollo">' +
@@ -148,16 +169,21 @@
     }
 
     window.Apollo = {
-        versao: 4,
-        perfil: function () { return perfilAtual(''); },
-        nomePerfil: function () { return NOMES[perfilAtual('')]; },
+        versao: 5,
+        perfil: function () { return perfilAtual(); },
+        nomePerfil: function () { return NOMES[perfilAtual()]; },
+        // só funciona sem login (testes); com login o perfil é o do login
         definirPerfil: function (tipo) {
-            tipo = ALIAS[tipo] || tipo;
-            if (!MENU[tipo]) return;
+            tipo = normalizar(tipo);
+            if (!tipo || lerLogin()) return;
             var a = document.querySelector('aside.sidebar');
             if (a) a.removeAttribute('data-tipo');
             gravar(tipo);
             montar();
+        },
+        sair: function () {
+            try { sessionStorage.removeItem(CHAVE_LOGIN); localStorage.removeItem(CHAVE); } catch (e) {}
+            location.href = PAGINA_LOGIN;
         }
     };
 

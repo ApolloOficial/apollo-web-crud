@@ -11,6 +11,7 @@
 
     <link rel="stylesheet" href="../../docs/css/detalhes-string.css">
     <link rel="stylesheet" href="../../docs/css/sidebar.css">
+    <link rel="stylesheet" href="../../docs/css/detalhes-melhorias.css">
 </head>
 <body>
 
@@ -56,9 +57,9 @@
             </div>
 
             <div class="acoes">
-                <button type="button" class="btn btn-editar" data-abrir="dlg-editar-string">Editar</button>
-                <button type="button" class="btn btn-inativar" data-abrir="dlg-inativar-string">Inativar</button>
-                <button type="button" class="btn btn-excluir" data-abrir="dlg-excluir-string" aria-label="Excluir string">
+                <button type="button" class="btn btn-editar" data-abrir="dlg-editar-string" data-permissao="equipamento">Editar</button>
+                <button type="button" class="btn btn-inativar" data-abrir="dlg-inativar-string" data-permissao="equipamento">Inativar</button>
+                <button type="button" class="btn btn-excluir" data-abrir="dlg-excluir-string" data-permissao="equipamento" aria-label="Excluir string">
                     <svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                 </button>
             </div>
@@ -92,7 +93,7 @@
         <section class="secao-paineis">
             <div class="paineis-topo">
                 <h3>Painéis da String</h3>
-                <button type="button" class="btn btn-cadastrar" data-abrir="dlg-add-painel">Adicionar painel</button>
+                <button type="button" class="btn btn-cadastrar" data-abrir="dlg-add-painel" data-permissao="equipamento">Adicionar painel</button>
             </div>
 
             <div class="metricas">
@@ -271,6 +272,8 @@
     </form>
 </dialog>
 
+<script src="../../docs/js/validar-email.js"></script>
 <script src="../../docs/js/detalhes-string.js"></script>
+<script src="../../docs/js/permissoes.js"></script>
 </body>
 </html>

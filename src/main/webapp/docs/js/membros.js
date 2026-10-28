@@ -26,6 +26,13 @@
     var corpo = $('corpo'), menu = $('menu'), dlg = $('dlg-membro'), form = $('form-membro');
     var menuDono = null;
 
+    /* ---------- Permissões: gerente cadastra técnico, técnico cadastra operador, operador não cadastra ---------- */
+    var perfil = (window.Apollo && window.Apollo.perfil()) || 'operador';   // sem sidebar.js: o mais restrito
+    var CADASTRA = { gerente: ['Técnico'], tecnico: ['Operador'], operador: [] };
+    var cargos = CADASTRA[perfil] || [];
+    var temAcoes = cargos.length > 0;
+    function podeGerir(m) { return cargos.indexOf(m.c) > -1; }   // só mexe em quem pode cadastrar
+
     function esc(t) { var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
     function iniciais(n) { var p = n.trim().split(/\s+/); return (p[0][0] + (p.length > 1 ? p[p.length - 1][0] : '')).toUpperCase(); }
 
@@ -74,9 +81,9 @@
                 '<td><div class="membro"><span class="av">' + esc(iniciais(m.n)) + '</span>' + esc(m.n) + '</div></td>' +
                 '<td>' + esc(m.f) + '</td><td>' + esc(m.c) + '</td><td>' + esc(m.e) + '</td>' +
                 '<td><span class="selo ' + (m.a ? 'ativo' : 'inativo') + '">' + (m.a ? 'Ativo' : 'Inativo') + '</span></td>' +
-                '<td><button type="button" class="mais" data-i="' + membros.indexOf(m) + '" aria-haspopup="true" aria-label="Ações de ' + esc(m.n) + '">&middot;&middot;&middot;</button></td>' +
+                (temAcoes ? '<td>' + (podeGerir(m) ? '<button type="button" class="mais" data-i="' + membros.indexOf(m) + '" aria-haspopup="true" aria-label="Ações de ' + esc(m.n) + '">&middot;&middot;&middot;</button>' : '') + '</td>' : '') +
                 '</tr>';
-        }).join('') : '<tr><td colspan="6" class="vazio">Nenhum membro encontrado.</td></tr>';
+        }).join('') : '<tr><td colspan="' + (temAcoes ? 6 : 5) + '" class="vazio">Nenhum membro encontrado.</td></tr>';
 
         $('contagem').textContent = lista.length
             ? 'Mostrando ' + (ini + 1) + '–' + (ini + fatia.length) + ' de ' + lista.length + ' membros'
@@ -181,6 +188,7 @@
     });
 
     form.addEventListener('submit', function (e) {
+        var jaBarrado = e.defaultPrevented;   // e-mail inválido (validar-email.js)
         e.preventDefault();
         var primeiro = null;
         form.querySelectorAll('[required]').forEach(function (c) {
@@ -192,8 +200,10 @@
             if (vazio && !primeiro) primeiro = c;
         });
         if (primeiro) { primeiro.focus(); return; }
+        if (jaBarrado) return;
 
         var f = form.elements;
+        if (cargos.indexOf(f.cargo.value) < 0) return;   // confere o cargo de novo
         var dados = { n: f.nome.value.trim(), e: f.email.value.trim(), c: f.cargo.value, f: f.filial.value, a: f.status.value === 'Ativo' };
 
         if (editando) {
@@ -206,6 +216,19 @@
         dlg.close();
         render();
     });
+
+    /* ---------- Aplica o perfil na tela ---------- */
+    if (!temAcoes) {
+        // operador: não cadastra, não edita, não inativa
+        $('btn-novo').remove();
+        dlg.remove();
+        document.querySelector('.tabela').classList.add('sem-acoes');
+        document.querySelector('.tabela thead th:last-child').remove();
+    } else {
+        // só aparecem os cargos que o perfil pode cadastrar
+        form.elements.cargo.innerHTML = (cargos.length > 1 ? '<option value="" selected></option>' : '') +
+            cargos.map(function (c) { return '<option' + (cargos.length === 1 ? ' selected' : '') + '>' + c + '</option>'; }).join('');
+    }
 
     render();
 })();

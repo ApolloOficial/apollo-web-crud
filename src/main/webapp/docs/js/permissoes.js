@@ -1,70 +1,142 @@
 /* =====================================================
    APOLLO — PERMISSÕES POR PERFIL
-   Quem pode cadastrar quem:
+   O perfil vem do sidebar.js (Apollo.perfil()), que lê o login.
+   Sem o sidebar.js na página, vale o perfil mais restrito (operador).
+
+   QUEM CADASTRA QUEM
      gerente  -> cadastra técnico
      tecnico  -> cadastra usuário (operador)
      operador -> não cadastra ninguém
 
-   O perfil vem do login (login.js guarda em sessionStorage).
-   Para testar sem login, abra a tela com ?perfil=operador,
-   ?perfil=tecnico ou ?perfil=gerente.
+   QUEM MEXE EM QUÊ (mude aqui, em PODE, se as regras forem outras)
+     filial       = editar / inativar / excluir a filial
+     equipamento  = cadastrar, editar, inativar e excluir inversor, string e painel
+     gerente  -> filial + equipamento
+     tecnico  -> equipamento
+     operador -> somente leitura (manutenções continuam liberadas)
 
-   ATENÇÃO: esconder o botão aqui é só visual. O servidor
-   precisa conferir o perfil de novo antes de cadastrar.
+   COMO USAR NO HTML
+     <button data-permissao="filial" ...>        some se o perfil não pode
+     <button data-permissao="equipamento" ...>   (o pop-up ligado em data-abrir sai junto)
+
+   ATENÇÃO: esconder botão é só visual. O servidor precisa
+   conferir o perfil de novo antes de gravar qualquer coisa.
    ===================================================== */
 (function () {
     'use strict';
 
-    let CHAVE = 'apollo_perfil';
+    var perfil = (window.Apollo && window.Apollo.perfil()) || 'operador';
 
-    let PODE_CADASTRAR = {
+    var PODE = {
+        gerente:  { filial: true,  equipamento: true  },
+        tecnico:  { filial: false, equipamento: true  },
+        operador: { filial: false, equipamento: false }
+    };
+
+    var CADASTRA = {
         gerente:  ['Técnico'],
         tecnico:  ['Operador'],
         operador: []
     };
 
-    let ROTULO_BOTAO = {
+    var ROTULO_BOTAO = {
         gerente: 'Cadastrar técnico',
         tecnico: 'Cadastrar usuário'
     };
 
-    let CLASSE_CARGO = {
+    var CLASSE_CARGO = {
         'Técnico':  'cargo-azul',
         'Operador': 'cargo-amarelo'
     };
 
-    /* ---------- Perfil atual ---------- */
-    function perfilAtual() {
-        let url = new URLSearchParams(window.location.search).get('perfil');
-        try {
-            if (url && PODE_CADASTRAR.hasOwnProperty(url)) sessionStorage.setItem(CHAVE, url);
-            let salvo = sessionStorage.getItem(CHAVE);
-            if (salvo && PODE_CADASTRAR.hasOwnProperty(salvo)) return salvo;
-        } catch (erro) { /* sessionStorage indisponível */ }
+    var NOMES = { gerente: 'Gerente', tecnico: 'Técnico', operador: 'Operador' };
 
-        return (url && PODE_CADASTRAR.hasOwnProperty(url)) ? url : 'gerente';
+    var direitos = PODE[perfil] || PODE.operador;
+    var cargos = CADASTRA[perfil] || [];
+
+    function pode(chave) { return !!direitos[chave]; }
+
+    // para o CSS (ex.: esconder a coluna "Ações" da tabela de painéis)
+    document.documentElement.setAttribute('data-perfil', perfil);
+    document.documentElement.setAttribute('data-pode-equipamento', pode('equipamento') ? 'sim' : 'nao');
+    document.documentElement.setAttribute('data-pode-filial', pode('filial') ? 'sim' : 'nao');
+
+
+    /* ---------- Remove o que o perfil não pode usar ---------- */
+    function aplicar() {
+        document.querySelectorAll('[data-permissao]').forEach(function (el) {
+            if (pode(el.getAttribute('data-permissao'))) return;
+
+            var alvo = el.getAttribute('data-abrir');
+            var dialog = alvo ? document.getElementById(alvo) : null;
+            if (dialog) dialog.remove();
+
+            el.remove();
+        });
+
+        // cabeçalho sem nenhum botão → avisa que a tela está só para leitura
+        document.querySelectorAll('.acoes').forEach(function (acoes) {
+            if (acoes.children.length > 0) return;
+
+            var nome = acoes.closest('.card-inversor');
+            acoes.remove();
+
+            var linha = nome && nome.querySelector('.linha-nome');
+            if (linha && !linha.querySelector('.selo-leitura')) {
+                var selo = document.createElement('span');
+                selo.className = 'selo-leitura';
+                selo.textContent = 'Somente leitura';
+                linha.appendChild(selo);
+            }
+        });
     }
 
-    let perfil = perfilAtual();
-    let cargos = PODE_CADASTRAR[perfil];
+    aplicar();
+    // linhas da tabela e cards são desenhados depois pelo JS da tela
+    new MutationObserver(aplicar).observe(document.body, { childList: true, subtree: true });
 
-    let botao = document.getElementById('btnCadastrarUsuario');
-    let dialog = document.getElementById('dlg-cadastrar-usuario');
-    if (!botao || !dialog) return;
 
-    /* ---------- Operador: não vê nada ---------- */
+    /* ---------- Breadcrumb: o primeiro item depende do perfil ---------- */
+    document.querySelectorAll('.breadcrumb a[href="empresa.html"]').forEach(function (a) {
+        if (perfil === 'gerente') {
+            a.textContent = 'Empresa';
+            return;
+        }
+        // técnico e operador não têm a tela Empresa
+        var sep = a.nextElementSibling;
+        if (sep && sep.classList.contains('sep')) sep.remove();
+        a.remove();
+    });
+
+
+    /* ---------- Perfil ao lado do nome ---------- */
+    var usuario = document.querySelector('.usuario');
+    var nomeEl = usuario && usuario.querySelector('span:not(.seta)');
+    if (nomeEl && !usuario.querySelector('.selo-perfil')) {
+        var selo = document.createElement('small');
+        selo.className = 'selo-perfil';
+        selo.textContent = NOMES[perfil] || perfil;
+        nomeEl.insertAdjacentElement('afterend', selo);
+    }
+
+
+    /* ---------- Cadastrar usuário (tela da filial / equipe) ---------- */
+    var botao = document.getElementById('btnCadastrarUsuario');
+    var dialogUsuario = document.getElementById('dlg-cadastrar-usuario');
+    if (!botao || !dialogUsuario) return;
+
+    // operador: não vê nada
     if (cargos.length === 0) {
         botao.remove();
-        dialog.remove();
+        dialogUsuario.remove();
         return;
     }
 
-    /* ---------- Técnico / Gerente ---------- */
     botao.textContent = ROTULO_BOTAO[perfil];
     document.getElementById('tituloCadastrarUsuario').textContent = ROTULO_BOTAO[perfil];
 
-    let form = dialog.querySelector('form');
-    let select = document.getElementById('cargoNovoUsuario');
+    var form = dialogUsuario.querySelector('form');
+    var select = document.getElementById('cargoNovoUsuario');
 
     // com um único cargo possível ele já vem selecionado
     select.innerHTML = (cargos.length > 1 ? '<option value="" selected></option>' : '') +
@@ -72,26 +144,25 @@
             return '<option' + (cargos.length === 1 && i === 0 ? ' selected' : '') + '>' + c + '</option>';
         }).join('');
 
-    /* ---------- Cadastrar na lista da equipe ---------- */
     function escapar(texto) {
-        let div = document.createElement('div');
+        var div = document.createElement('div');
         div.textContent = texto;
         return div.innerHTML;
     }
 
     function iniciais(nome) {
-        let partes = nome.trim().split(/\s+/);
-        let a = partes[0].charAt(0);
-        let b = partes.length > 1 ? partes[partes.length - 1].charAt(0) : '';
+        var partes = nome.trim().split(/\s+/);
+        var a = partes[0].charAt(0);
+        var b = partes.length > 1 ? partes[partes.length - 1].charAt(0) : '';
         return (a + b).toUpperCase();
     }
 
     form.addEventListener('submit', function (e) {
-        if (e.defaultPrevented) return;                        // faltou campo
+        if (e.defaultPrevented) return;                        // faltou campo / e-mail inválido
         if (!e.submitter || e.submitter.value !== 'ok') return;
 
-        let f = form.elements;
-        let cargo = f.cargo.value;
+        var f = form.elements;
+        var cargo = f.cargo.value;
 
         // confere de novo (alguém pode ter mexido no HTML)
         if (cargos.indexOf(cargo) === -1) {
@@ -99,10 +170,10 @@
             return;
         }
 
-        let nome = f.nome.value.trim();
-        let email = f.email.value.trim();
+        var nome = f.nome.value.trim();
+        var email = f.email.value.trim();
 
-        let li = document.createElement('li');
+        var li = document.createElement('li');
         li.innerHTML =
             '<div class="avatar-mini">' + escapar(iniciais(nome)) + '</div>' +
             '<div>' +

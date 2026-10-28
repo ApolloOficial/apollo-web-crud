@@ -262,7 +262,7 @@
                         '<td>' + Number(p.potencia).toFixed(2) + '</td>' +
                         '<td>' + dataBR(p.data) + '</td>' +
                         '<td><span class="badge ' + classeStatus(p.status) + '">' + p.status + '</span></td>' +
-                        '<td><button type="button" class="mais" data-editar="' + p.id + '" aria-label="Ações do painel ' + p.id + '">•••</button></td>' +
+                        '<td><button type="button" class="mais" data-permissao="equipamento" data-editar="' + p.id + '" aria-label="Ações do painel ' + p.id + '">•••</button></td>' +
                     '</tr>';
             }).join('');
         }

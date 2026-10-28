@@ -108,3 +108,6 @@ dialog.pop[open] { animation: pop-entra .18s ease-out; }
   .campo-busca { width: 100%; }
   .pop-btn { flex: 1; min-width: 0; }
 }
+
+/* operador: sem coluna de ações */
+.tabela.sem-acoes th:last-child, .tabela.sem-acoes td:last-child { width: auto; text-align: left; }
