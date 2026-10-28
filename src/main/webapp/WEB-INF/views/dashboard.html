@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Apollo | Dashboard</title>
+
+  <!-- Fonte do layout (Poppins); se não carregar, cai para Arial do Apollostyle.css -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap">
+
+  <!-- Arquivos enviados (mantenha na mesma pasta; ajuste os nomes se forem diferentes) -->
+  <link rel="stylesheet" href="../../docs/css/Apollostyle.css">
+  <link rel="stylesheet" href="../../docs/css/Logo Apollo.css">
+  <link rel="stylesheet" href="../../docs/css/pop-ups.css">
+  <!-- Complemento desta tela -->
+  <link rel="stylesheet" href="../../docs/css/dashboard.css">
+  <script src="../../docs/js/pop-ups.js" defer></script>
+    <link rel="stylesheet" href="../../docs/css/sidebar.css">
+</head>
+<body>
+<div class="pagina">
+
+    <!-- ===== Sidebar (montada por sidebar.js conforme o tipo de usuário) ===== -->
+    <aside class="sidebar" data-ativo="dashboard" data-tipo="tecnico,operador"></aside>
+    <script src="../../docs/js/sidebar.js?v=4"></script>
+
+  <!-- ===== Conteúdo ===== -->
+  <main class="conteudo">
+    <header class="topo">
+      <h1 class="titulo">Dashboard</h1>
+      <div class="usuario">
+        <button type="button" class="sino" aria-label="Notificações">
+          <svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
+        </button>
+        <span class="avatar" aria-hidden="true">NJ</span>
+        <span class="nome-usuario">Neymar júnior césar</span>
+      </div>
+    </header>
+
+    <span class="status-titulo laranja">Controle geral</span>
+
+    <div class="dash-grade">
+
+      <!-- Cards de resumo -->
+      <section class="resumo" aria-label="Resumo">
+        <article class="card">
+          <div class="card-titulo">
+            <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.5-4 3-6 6.5-6s6 2 6.5 6"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14c2.5 0 4 1.7 4.5 5"/></svg>
+            Total de membros
+          </div>
+          <div class="card-numero">58</div>
+          <span class="tag-verde">+3 novos membros</span>
+        </article>
+
+        <article class="card">
+          <div class="card-titulo">
+            <svg viewBox="0 0 24 24"><path d="M12 3 4 7v10l8 4 8-4V7l-8-4Z"/><path d="m4 7 8 4 8-4M12 11v10"/></svg>
+            Filiais
+          </div>
+          <div class="card-numero">6</div>
+        </article>
+
+        <article class="card">
+          <div class="card-titulo">
+            <svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></svg>
+            Potência total
+          </div>
+          <div class="card-numero">8,4 kWp</div>
+          <span class="tag-verde">Aumento de 10%</span>
+        </article>
+
+        <article class="card">
+          <div class="card-titulo">
+            <svg viewBox="0 0 24 24"><path d="m5 10 2-6h10l2 6H5Z"/><path d="M4 10h16v6H4zM12 4v12M8 10v6M16 10v6M12 16v4M8 20h8"/></svg>
+            Inversores totais
+          </div>
+          <div class="card-numero">128</div>
+          <span class="tag-verde">+10 novos inversores</span>
+        </article>
+      </section>
+
+      <!-- Gráfico -->
+      <section class="card grafico" aria-label="Energia gerada pelas filiais">
+        <div class="grafico-titulo">
+          <svg viewBox="0 0 24 24"><path d="M5 19C5 10 10 5 20 4c0 10-5 15-15 15Z"/><path d="M5 19c3-5 6-8 10-10"/></svg>
+          Aumento na energia gerada pelas filiais
+        </div>
+
+        <svg class="grafico-area" viewBox="0 0 330 130" preserveAspectRatio="none" role="img" aria-label="Gráfico de área da energia gerada de 01/1 a 12/1">
+          <defs>
+            <linearGradient id="grad-energia" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#ff8a2b" stop-opacity=".95"/>
+              <stop offset="100%" stop-color="#ffc58f" stop-opacity=".05"/>
+            </linearGradient>
+          </defs>
+          <path fill="url(#grad-energia)" d="M0,100 C18,98 28,96 40,84 C52,70 62,46 80,50 C96,54 100,60 112,44 C124,28 140,20 160,22 C180,24 190,38 210,28 C226,20 236,30 252,46 C268,64 280,82 296,84 C312,86 322,60 330,22 L330,130 L0,130 Z"/>
+        </svg>
+
+        <div class="grafico-eixo">
+          <span>01/1</span><span>02/1</span><span>03/1</span><span>04/1</span><span>05/1</span><span>06/1</span>
+          <span>07/1</span><span>08/1</span><span>09/1</span><span>10/1</span><span>11/1</span><span>12/1</span>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+
+</body>
+</html>
