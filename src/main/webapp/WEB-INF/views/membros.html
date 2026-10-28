@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apollo - Membros</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Arquivos do projeto (mesma pasta) -->
+    <link rel="stylesheet" href="../CSS/Apollostyle.css">
+    <link rel="stylesheet" href="../CSS/Logo Apollo.css">
+    <link rel="stylesheet" href="../CSS/membros.css">
+    <link rel="stylesheet" href="../CSS/sidebar.css">
+</head>
+<body>
+<div class="pagina">
+
+    <!-- ===== Sidebar (montada por sidebar.js conforme o tipo de usuário) ===== -->
+    <aside class="sidebar" data-ativo="usuarios"></aside>
+    <script src="../JS/sidebar.js"></script>
+
+    <main class="conteudo">
+
+        <header class="topo">
+            <div>
+                <h1 class="titulo">Membros</h1>
+                <nav class="breadcrumb" aria-label="Você está em">
+                    <a href="../HTML/detalhes-filial.html">Filial</a><span class="sep">&gt;</span>
+                    <a href="../HTML/detalhes-filial.html">Solaris Osasco</a><span class="sep">&gt;</span>
+                    <span>Usuários</span>
+                </nav>
+                <p class="subtitulo-pagina">Gerencie os usuários da sua empresa e acompanhe suas equipes.</p>
+            </div>
+            <div class="usuario">
+                <span class="avatar-usuario" aria-hidden="true">CM</span>
+                <span>Carlos Menezes</span>
+            </div>
+        </header>
+
+        <!-- Resumo -->
+        <section class="stats" aria-label="Resumo">
+            <article class="stat">
+                <span class="stat-icone"><svg class="ic" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.5-4 3-6 6.5-6s6 2 6.5 6"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14c2.5 0 4 1.7 4.5 5"/></svg></span>
+                <div><span class="rot">Total de membros</span><span class="num" id="st-total">0</span><small>Usuários cadastrados na empresa</small></div>
+            </article>
+            <article class="stat">
+                <span class="stat-icone"><svg class="ic" viewBox="0 0 24 24"><path d="M3 18h18M5 18v-3a7 7 0 0 1 14 0v3M12 8v4M9 10l1 2M15 10l-1 2"/></svg></span>
+                <div><span class="rot">Técnicos</span><span class="num" id="st-tec">0</span><small>Responsáveis pela manutenção e configuração</small></div>
+            </article>
+            <article class="stat">
+                <span class="stat-icone"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c.7-4.5 4-6 8-6s7.3 1.5 8 6"/></svg></span>
+                <div><span class="rot">Operadores</span><span class="num" id="st-ope">0</span><small>Membros e operação dos sistemas</small></div>
+            </article>
+            <article class="stat">
+                <span class="stat-icone"><svg class="ic" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
+                <div><span class="rot">Filiais com equipe</span><span class="num" id="st-fil">0</span><small>Filiais com membros cadastrados</small></div>
+            </article>
+        </section>
+
+        <!-- Lista -->
+        <section class="painel">
+            <div class="barra">
+                <div class="barra-esq">
+                    <label class="campo-busca">
+                        <svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                        <input type="search" id="busca" placeholder="Buscar por nome ou e-mail" aria-label="Buscar por nome ou e-mail" autocomplete="off">
+                    </label>
+                    <button type="button" class="btn-linha" id="btn-filtros" aria-haspopup="true">
+                        <svg class="ic" viewBox="0 0 24 24"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></svg>
+                        Filtros
+                        <svg class="ic" viewBox="0 0 24 24" style="width:12px;height:12px"><path d="m6 9 6 6 6-6"/></svg>
+                    </button>
+                </div>
+                <div class="barra-dir">
+                    <select class="select-linha" id="sel-filial" aria-label="Filtrar por filial"></select>
+                    <button type="button" class="btn-cadastrar-membro" id="btn-novo">
+                        <svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+                        Cadastrar membro
+                    </button>
+                </div>
+            </div>
+
+            <div class="chips" id="chips" role="group" aria-label="Filtrar por grupo"></div>
+
+            <div class="tabela-wrap">
+                <table class="tabela">
+                    <thead><tr><th>Membro</th><th>Filial</th><th>Cargo</th><th>E-mail</th><th>Status</th><th>Ações</th></tr></thead>
+                    <tbody id="corpo"></tbody>
+                </table>
+            </div>
+
+            <div class="rodape-tab">
+                <span id="contagem" aria-live="polite"></span>
+                <div class="pag" id="pag"></div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<div class="menu-flutuante" id="menu" role="menu" hidden></div>
+
+<!-- ===== Pop-up: cadastrar / editar membro ===== -->
+<dialog class="pop" id="dlg-membro" aria-labelledby="dlg-membro-t">
+    <form id="form-membro" novalidate>
+        <h2 class="pop-titulo">
+            <span class="pop-icone"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c.7-4.5 4-6 8-6s7.3 1.5 8 6"/></svg></span>
+            <span id="dlg-membro-t">Cadastrar membro</span>
+        </h2>
+        <div class="pop-grade">
+            <label class="pop-campo largo"><span>Nome completo *</span><input class="pop-input" name="nome" type="text" placeholder="Ex.: Ana Souza" autocomplete="off" required></label>
+            <label class="pop-campo largo"><span>E-mail *</span><input class="pop-input" name="email" type="email" placeholder="nome@empresa.com.br" autocomplete="off" required></label>
+            <label class="pop-campo"><span>Cargo *</span>
+                <select class="pop-select" name="cargo" required><option value="" selected></option><option>Técnico</option><option>Operador</option></select>
+            </label>
+            <label class="pop-campo"><span>Filial *</span>
+                <select class="pop-select" name="filial" id="sel-filial-form" required></select>
+            </label>
+            <label class="pop-campo"><span>Status *</span>
+                <select class="pop-select" name="status" required><option selected>Ativo</option><option>Inativo</option></select>
+            </label>
+        </div>
+        <div class="pop-rodape">
+            <button type="button" class="pop-btn contorno" id="dlg-cancelar">Cancelar</button>
+            <button type="submit" class="pop-btn cheio" id="dlg-salvar">Cadastrar</button>
+        </div>
+    </form>
+</dialog>
+
+<script src="../JS/membros.js"></script>
+</body>
+</html>
