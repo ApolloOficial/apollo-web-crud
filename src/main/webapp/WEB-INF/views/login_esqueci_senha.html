@@ -1,4 +1,3 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -8,13 +7,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<!-- login.css traz o que as duas telas têm em comum (banner, painel, campos, botão) -->
+<!-- login.css traz o que as telas têm em comum (banner, painel, campos, botão) -->
 <link rel="stylesheet" href="../../docs/css/login/login.css">
 <link rel="stylesheet" href="../../docs/css/login/login_esqueci_senha.css">
 </head>
 <body>
 <main class="tela">
-
 
   <section class="banner">
     <div class="logo">
@@ -25,28 +23,26 @@
     <p class="legal"><a href="#">Termos de serviço</a> / <a href="#">políticas de privacidade</a></p>
   </section>
 
-
   <section class="painel">
     <div class="form-wrap">
       <h1 class="titulo">Esqueci a senha</h1>
       <p class="instrucao">Digite seu email<br>enviaremos um código.</p>
 
-
       <form id="form-esqueci" action="login_codigo.html" method="get" novalidate>
         <input class="campo" type="email" name="email" placeholder="Email" autocomplete="username" aria-label="Email" required>
-        <button class="entrar" type="submit">Enviar</button>
+        <button class="entrar" type="submit">
+          <span class="spinner" aria-hidden="true"></span>
+          <span class="entrar-txt">Enviar</span>
+        </button>
         <p class="erro" id="erro" role="alert"></p>
       </form>
-
 
       <a class="voltar" href="login.html">Voltar</a>
     </div>
   </section>
 
-
 </main>
 
-
-<script src="../../js/esqueci-senha.js"></script>
+<script src="../../docs/js/esqueci-senha.js"></script>
 </body>
 </html>

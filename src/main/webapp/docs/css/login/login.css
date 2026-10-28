@@ -5,9 +5,11 @@
   --texto:#111111;
   --borda:#8C8C8C;
   --erro:#B3261E;
+  --aviso:#8A5A00;
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none !important}
 
 body{
   font-family:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
@@ -25,7 +27,7 @@ body{
 
 /* ---------- Lado esquerdo: banner ---------- */
 /* A foto é um PNG semitransparente, então a cor laranja vem por baixo dela.
-   Caminho relativo a ESTE arquivo (css/login.css -> ../img/fundo.png). */
+   Caminho relativo a ESTE arquivo (docs/css/login/login.css -> docs/img/). */
 .banner{
   position:relative;
   display:flex;
@@ -35,7 +37,7 @@ body{
   border-top-left-radius:26px;
   color:#fff;
   background:
-    url('../../img/image\ 7.png') center / cover no-repeat,
+    url("../../img/image%207.png") center / cover no-repeat,
     #D66026;
 }
 
@@ -45,13 +47,13 @@ body{
   gap:10px;
 }
 
-.logo-texto{height:2.6rem;width:auto}
+.logo-texto,
 .logo-seta{height:2.6rem;width:auto}
 
 .banner h2{
   max-width:17ch;
   margin-top:34px;
-  font-size:1.35rem;
+  font-size:1.6rem;
   font-weight:500;
   line-height:1.3;
 }
@@ -59,12 +61,13 @@ body{
 .legal{
   margin-top:auto;
   text-align:center;
-  font-size:.62rem;
-  color:rgba(255,255,255,.75);
+  font-size:.72rem;
+  color:rgba(255,255,255,.8);
 }
 
 .legal a{color:inherit;text-decoration:none}
-.legal a:hover{text-decoration:underline}
+.legal a:hover,
+.legal a:focus-visible{text-decoration:underline}
 
 /* ---------- Lado direito: formulário ---------- */
 .painel{
@@ -77,108 +80,229 @@ body{
 
 .form-wrap{
   width:100%;
-  max-width:260px;
+  max-width:330px;
+  animation:entra .4s ease-out both;
 }
 
 .titulo{
   margin-bottom:10px;
-  font-size:1.45rem;
+  font-size:1.9rem;
   font-weight:600;
+  line-height:1.2;
 }
 
 .sub{
-  margin-bottom:44px;
-  font-size:.62rem;
+  margin-bottom:32px;
+  font-size:.85rem;
+  color:#444;
 }
 
-/* Botões de área (Gerente, Técnico, Operador) */
+.instrucao{
+  margin-bottom:22px;
+  font-size:.85rem;
+  line-height:1.6;
+  color:#444;
+}
+
+/* ---------- Botões de área (Gerente, Técnico, Operador) ---------- */
 .areas{
   display:flex;
   gap:8px;
-  margin-bottom:40px;
+  margin-bottom:28px;
 }
 
 .area{
   flex:1;
-  padding:6px 8px;
+  padding:9px 8px;
   border:1px solid var(--laranja);
   border-radius:999px;
   background:transparent;
   color:var(--texto);
   font:inherit;
-  font-size:.55rem;
+  font-size:.78rem;
   font-weight:600;
   cursor:pointer;
-  transition:background .15s,color .15s;
+  transition:background .15s,color .15s,transform .1s;
 }
 
 .area:hover{background:rgba(255,107,53,.1)}
+.area:active{transform:scale(.97)}
 
-.area[aria-pressed="true"]{
+.area[aria-checked="true"]{
   background:var(--laranja);
   color:#fff;
 }
 
-/* Campos */
+/* ---------- Campos ---------- */
 .campo{
   display:block;
   width:100%;
-  margin-bottom:8px;
-  padding:6px 10px;
+  margin-bottom:12px;
+  padding:11px 14px;
   border:1px solid var(--borda);
-  border-radius:4px;
+  border-radius:8px;
   background:#fff;
+  color:var(--texto);
   font:inherit;
-  font-size:.62rem;
+  font-size:.9rem;
+  transition:border-color .15s,box-shadow .15s;
 }
 
 .campo::placeholder{
-  color:var(--texto);
+  color:#555;
   opacity:1;
+}
+
+.campo:hover{border-color:#6f6f6f}
+
+.campo:focus{
+  outline:0;
+  border-color:var(--laranja);
+  box-shadow:0 0 0 3px rgba(255,107,53,.18);
+}
+
+.campo[aria-invalid="true"]{
+  border-color:var(--erro);
+  box-shadow:0 0 0 3px rgba(179,38,30,.12);
+}
+
+/* Campo de senha com botão de mostrar/ocultar */
+.campo-wrap{
+  position:relative;
+  margin-bottom:12px;
+}
+
+.campo-wrap .campo{
+  margin-bottom:0;
+  padding-right:46px;
+}
+
+.ver-senha{
+  position:absolute;
+  top:0;
+  right:0;
+  bottom:0;
+  width:44px;
+  display:grid;
+  place-items:center;
+  border:0;
+  border-radius:0 8px 8px 0;
+  background:none;
+  color:#555;
+  cursor:pointer;
+}
+
+.ver-senha:hover{color:var(--laranja)}
+
+.ver-senha svg{
+  width:20px;
+  height:20px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+.ver-senha .riscado{display:none}
+.ver-senha[aria-pressed="true"] .riscado{display:inline}
+
+.aviso{
+  margin:-4px 0 8px 2px;
+  font-size:.75rem;
+  color:var(--aviso);
 }
 
 .esqueci{
   display:inline-block;
-  margin:2px 0 22px 6px;
-  font-size:.5rem;
+  margin:2px 0 24px 4px;
+  font-size:.78rem;
   color:var(--texto);
   text-decoration:none;
 }
 
 .esqueci:hover{text-decoration:underline}
 
+/* ---------- Botão principal ---------- */
 .entrar{
-  display:block;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
   width:100%;
-  padding:7px 10px;
+  padding:12px 10px;
   border:0;
   border-radius:999px;
   background:var(--laranja);
   color:#fff;
   font:inherit;
-  font-size:.6rem;
-  font-weight:500;
+  font-size:.9rem;
+  font-weight:600;
   cursor:pointer;
-  transition:background .15s;
+  transition:background .15s,transform .1s,opacity .15s;
 }
 
 .entrar:hover{background:var(--laranja-escuro)}
+.entrar:active{transform:scale(.985)}
 
+.entrar:disabled{
+  opacity:.8;
+  cursor:progress;
+}
+
+.spinner{
+  display:none;
+  width:14px;
+  height:14px;
+  border:2px solid rgba(255,255,255,.45);
+  border-top-color:#fff;
+  border-radius:50%;
+  animation:gira .7s linear infinite;
+}
+
+.entrar.carregando .spinner{display:inline-block}
+
+/* ---------- Mensagens e links de apoio ---------- */
 .erro{
-  min-height:1em;
-  margin-top:10px;
-  font-size:.58rem;
+  min-height:1.2em;
+  margin-top:12px;
+  text-align:center;
+  font-size:.8rem;
   color:var(--erro);
 }
 
+.voltar{
+  display:block;
+  margin-top:20px;
+  text-align:center;
+  font-size:.8rem;
+  font-weight:600;
+  color:var(--texto);
+  text-decoration:none;
+}
+
+.voltar:hover{text-decoration:underline}
+
 /* Foco visível para teclado */
-.campo:focus-visible,
 .area:focus-visible,
 .entrar:focus-visible,
-.esqueci:focus-visible{
+.esqueci:focus-visible,
+.voltar:focus-visible,
+.ver-senha:focus-visible,
+.legal a:focus-visible{
   outline:2px solid var(--laranja);
   outline-offset:2px;
 }
+
+/* ---------- Animações ---------- */
+@keyframes entra{from{opacity:0;transform:translateY(10px)}}
+@keyframes gira{to{transform:rotate(360deg)}}
+@keyframes tremer{
+  20%,60%{transform:translateX(-6px)}
+  40%,80%{transform:translateX(6px)}
+}
+
+.form-wrap.tremer{animation:tremer .35s}
 
 /* ---------- Celular e telas estreitas ---------- */
 @media (max-width:820px){
@@ -192,19 +316,22 @@ body{
     border-radius:0;
   }
 
-  .banner h2{margin-top:16px}
+  .banner h2{margin-top:16px;font-size:1.35rem}
   .legal{display:none}
 
   .painel{padding:40px 24px 56px}
-  .form-wrap{max-width:340px}
+  .form-wrap{max-width:360px}
 
-  .titulo{font-size:1.6rem}
-  .sub,.campo,.entrar{font-size:.8rem}
-  .area{font-size:.72rem}
-  .esqueci{font-size:.7rem}
-  .erro{font-size:.75rem}
+  .titulo{font-size:1.7rem}
+  /* 16px nos campos evita o zoom automático do iOS */
+  .campo,.entrar{font-size:1rem}
+  .area{font-size:.85rem}
+  .esqueci,.voltar,.erro{font-size:.9rem}
 }
 
 @media (prefers-reduced-motion:reduce){
-  .area,.entrar{transition:none}
+  .form-wrap,
+  .form-wrap.tremer,
+  .spinner{animation:none}
+  .area,.entrar,.campo{transition:none}
 }

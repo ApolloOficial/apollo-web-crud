@@ -1,21 +1,33 @@
 /* Só o que é específico da tela "Código via email".
    O resto vem de login.css, que precisa ser carregado antes. */
 
-.titulo{margin-bottom:34px}
-
-.instrucao{
-  margin-bottom:18px;
-  font-size:.62rem;
-  line-height:1.6;
-}
+.titulo{margin-bottom:14px}
 
 /* e-mails longos quebram em vez de estourar a coluna */
-#email-destino{overflow-wrap:anywhere}
+#email-destino{
+  font-weight:600;
+  color:var(--texto);
+  overflow-wrap:anywhere;
+}
 
-#form-codigo .campo{margin-bottom:26px}
+/* campo do código: números grandes e espaçados */
+.campo-codigo{
+  margin-bottom:24px;
+  padding-left:calc(14px + .5em);
+  text-align:center;
+  font-size:1.5rem;
+  font-weight:600;
+  letter-spacing:.5em;
+  font-variant-numeric:tabular-nums;
+}
 
-.erro{text-align:center}
+.campo-codigo::placeholder{
+  font-size:.9rem;
+  font-weight:400;
+  letter-spacing:normal;
+}
 
 @media (max-width:820px){
-  .instrucao{font-size:.8rem}
+  .campo-codigo{font-size:1.5rem}
+  .campo-codigo::placeholder{font-size:1rem}
 }
