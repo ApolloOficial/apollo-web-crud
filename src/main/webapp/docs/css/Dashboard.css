@@ -1,236 +1,104 @@
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+/* ===== Dashboard (Gerente e Técnico/Operador) ===== */
 :root {
-  --laranja: #ff9000;
-  --laranja-borda: #ff9100;
-  --laranja-nav: #fe9732;
-  --verde-fundo: #9fffad;
-  --verde-texto: #006e1a;
-  --verde-linha: #00b026;
-  --amarelo-linha: #ffdd00;
-  --cinza-borda: #d9d9d9;
-  --cinza-nav: #f7f7f7;
-  --cinza-item: #f9f9f9;
-  --cinza-mes: #8f8f8f;
-  --texto: #000;
+  --dash-laranja: #ff9000;
+  --dash-verde-fundo: #9fffad;
+  --dash-verde-texto: #006e1a;
+  --dash-borda: #d9d9d9;
+  --dash-mes: #8f8f8f;
 }
 
-html, body { height: 100%; background: #fff; overflow: hidden; }
-button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
-a { color: inherit; text-decoration: none; }
-img { display: block; max-width: none; }
+/* mesma fonte da sidebar */
+.conteudo, .conteudo * { font-family: 'Poppins', Arial, Helvetica, sans-serif; }
 
-.viewport { width: 100vw; height: 100vh; overflow: hidden; background: #fff; }
-
-.tela {
-  position: relative;
-  width: 1440px;
-  height: 732px;
-  transform-origin: top left;
-  background-color: #000;
-  background-image: linear-gradient(to bottom, #fff 0%, rgba(255, 255, 254, 0.97) 48.077%, rgba(255, 255, 254, 0.97) 100%);
-  font-family: 'Manrope', sans-serif;
-  color: var(--texto);
-  overflow: hidden;
+/* ---------- Topo ---------- */
+.usuario { gap: 12px; }
+.sino {
+  display: grid; place-items: center;
+  width: 40px; height: 40px; border-radius: 50%;
+  background: transparent; border: 0; cursor: pointer; color: #111;
 }
-.tela > *, .tela p, .tela h1 { position: absolute; }
-
-.titulo {
-  left: 317px; top: 40px;
-  font: 600 28px/32px 'Plus Jakarta Sans', sans-serif;
-  white-space: nowrap;
+.sino:hover { background: #fff3e9; }
+.sino svg, .card-titulo svg, .grafico-titulo svg {
+  fill: none; stroke: currentColor; stroke-width: 1.8;
+  stroke-linecap: round; stroke-linejoin: round;
 }
-.card-valor {
-  font: 600 28px/32px 'Plus Jakarta Sans', sans-serif;
-  height: 28px; white-space: nowrap;
-}
-.card-label { font: 700 12px/14px 'Manrope', sans-serif; white-space: nowrap; }
-
-.tag-controle {
-  left: 317px; top: 112px; width: 107px; height: 21px;
-  border: 1px solid var(--laranja-borda); border-radius: 20px;
-}
-.tag-controle span {
-  position: absolute; left: 11px; top: 1px; width: 84px; height: 14px;
-  font: 700 12px/14px 'Manrope', sans-serif; color: var(--laranja);
-}
-
-.btn-notificacao { left: 1138px; top: 32px; width: 49px; height: 49px; overflow: hidden; }
-.btn-notificacao .sino {
-  position: absolute; left: 18px; top: 16px; width: 12.73px; height: 17px; overflow: hidden;
-}
-.btn-notificacao .sino img {
-  position: absolute; left: -41.62%; top: -8.82%; width: 183.25%; height: 137.25%;
-}
-.btn-notificacao .notif-ponto { position: absolute; left: 25.35px; top: 18.01px; width: 5.682px; height: 5.682px; }
-
+.sino svg { width: 20px; height: 20px; }
 .avatar {
-  left: 1199px; top: 36px; width: 41px; height: 41px;
-  border: 3px solid #b4b4b4; border-radius: 60px;
-  background: var(--cinza-borda); object-fit: cover;
+  display: grid; place-items: center; flex-shrink: 0;
+  width: 41px; height: 41px; border-radius: 50%;
+  background: var(--dash-borda); border: 3px solid #b4b4b4;
+  font-size: 12px; font-weight: 600; color: #444;
 }
-.usuario-nome {
-  left: 1249px; top: 48px; width: 120px; height: 18px;
-  font: 700 12px/14px 'Manrope', sans-serif;
-}
-.btn-menu { left: 1388px; top: 45px; width: 24px; height: 24px; }
-.btn-menu img { width: 24px; height: 24px; transition: transform .2s; }
-.btn-menu[aria-expanded="true"] img { transform: rotate(180deg); }
+.nome-usuario { font-size: 12px; font-weight: 600; }
 
-.menu-usuario {
-  left: 1249px; top: 74px; width: 163px; padding: 8px;
-  background: #fff; border: 1px solid var(--cinza-borda); border-radius: 10px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, .08); z-index: 10;
-}
-.menu-usuario[hidden] { display: none; }
-.menu-usuario a { display: block; padding: 8px 10px; border-radius: 8px; font: 600 14px/18px 'Manrope', sans-serif; }
-.menu-usuario a:hover { background: var(--cinza-item); }
-
-.card { background: #fff; border-radius: 10px; }
-.card > * { position: absolute; }
-
-.c-membros  { left: 319px; top: 176px; width: 200px; height: 150px; }
-.c-lotes    { left: 549px; top: 176px; width: 200px; height: 150px; }
-.c-potencia { left: 319px; top: 337px; width: 200px; height: 150px; }
-.c-paineis  { left: 549px; top: 337px; width: 200px; height: 150px; }
-.c-grafico  { left: 804px; top: 177px; width: 550px; height: 300px; }
-.c-alcancadas { left: 319px; top: 529px; width: 430px; height: 170px; }
-.c-pendentes  { left: 804px; top: 529px; width: 550px; height: 170px; }
-
-.ico-membros { left: 18px; top: 18px; width: 23px; height: 23px; }
-.l-membros { left: 49px; top: 23px; width: 124px; height: 13px; }
-.v-membros { left: 20px; top: 61px; width: 35px; }
-.b-membros { left: 18px; top: 114px; width: 121px; }
-
-.ico-lotes-wrap { left: 18px; top: 18px; width: 20px; height: 20px; overflow: hidden; }
-.ico-lotes-wrap img { position: absolute; left: 4.36%; top: 4.35%; width: 89.58%; height: 89.58%; }
-.l-lotes { left: 46px; top: 21px; width: 93px; height: 14px; }
-.v-lotes { left: 20px; top: 61px; width: 16px; }
-
-.ico-potencia { left: 17.96px; top: 18px; width: 14.1px; height: 23px; }
-.ico-potencia img { position: absolute; left: -1px; top: -1px; width: 16.1px; height: 25px; }
-.l-potencia { left: 40px; top: 22px; width: 96px; }
-.v-potencia { left: 20px; top: 61px; width: 112px; }
-.b-potencia { left: 18px; top: 114px; width: 109px; }
-
-.ico-paineis { left: 18px; top: 18.2px; width: 24px; height: 21.6px; }
-.l-paineis { left: 50px; top: 23px; width: 80px; height: 13px; }
-.v-paineis { left: 20px; top: 61px; width: 46px; }
-.b-paineis { left: 18px; top: 114px; width: 113px; }
-
-.badge {
-  height: 18px; border-radius: 20px; background: var(--verde-fundo);
-}
-.badge span {
-  position: absolute; left: 8px; top: 0; height: 13px; white-space: nowrap;
-  font: 400 12px/16px 'Manrope', sans-serif; color: var(--verde-texto);
+/* ---------- Etiqueta "Controle geral" ---------- */
+.status-titulo.laranja {
+  border-color: var(--dash-laranja);
+  color: var(--dash-laranja);
+  font-weight: 600;
+  padding: 4px 14px;
 }
 
-.ico-folha { left: 25px; top: 35px; width: 17px; height: 18px; }
-.grafico-titulo {
-  left: 77px; top: 35px; white-space: nowrap;
-  font: 600 16px/18px 'Manrope', sans-serif;
+/* ---------- Grade ---------- */
+.dash-grade {
+  display: grid;
+  grid-template-columns: minmax(0, 480px) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
 }
-.grafico-area { left: 9px; top: 80px; width: 532px; height: 181.98px; }
-.grafico-linha { left: 9px; top: 267px; width: 532px; height: 1px; background: var(--cinza-borda); }
-.grafico-meses { left: 27px; top: 276px; width: 500px; height: 14px; }
-.grafico-meses span {
-  position: absolute; top: 0; white-space: nowrap;
-  font: 700 12px/14px 'Manrope', sans-serif; color: var(--cinza-mes);
-}
-
-.ico-meta { width: 20px; height: 20px; }
-.meta-titulo { font: 600 16px/18px 'Manrope', sans-serif; white-space: nowrap; }
-.meta-item {
-  height: 75px; border-radius: 10px; background: var(--cinza-item);
-  display: flex; align-items: center; justify-content: center;
-  font: 600 16px/18px 'Manrope', sans-serif;
-  transition: background .15s, transform .15s;
-}
-.meta-item:hover { background: #f1f1f1; transform: translateY(-1px); }
-
-.ico-alcancadas { left: 17px; top: 21px; }
-.t-alcancadas { left: 47px; top: 22px; }
-.linha-verde { left: 193px; top: 32px; width: 220px; height: 2px; background: var(--verde-linha); }
-.c-alcancadas .m1 { left: 36px; top: 75px; width: 175px; }
-.c-alcancadas .m2 { left: 219px; top: 75px; width: 175px; }
-
-.ico-pendentes { left: 26px; top: 21px; width: 19.4px; }
-.t-pendentes { left: 58.85px; top: 23px; }
-.linha-amarela { left: 204.8px; top: 30px; width: 319.7px; height: 1px; background: var(--amarelo-linha); }
-.c-pendentes .m3 { left: 12px; top: 76px; width: 170px; }
-.c-pendentes .m4 { left: 190px; top: 76px; width: 170px; }
-.c-pendentes .m5 { left: 368px; top: 76px; width: 170px; }
-
-.sidebar {
-  left: 0; top: 0; width: 271px; height: 732px;
-  background: #fff; border: 1px solid var(--cinza-borda);
-}
-.sidebar > * { position: absolute; }
-.sidebar > nav { left: 0; top: 0; width: 0; height: 0; }
-.logo { left: 51px; top: 31px; width: 166.789px; height: 50.228px; }
-
-.nav-item {
-  position: absolute; display: block;
-  left: 53px; width: 163px; height: 45px;
-  border: 1px solid var(--cinza-nav); border-radius: 20px;
-  transition: background .15s;
-}
-.nav-item:hover { background: #fff4e8; }
-.nav-item.ativo, .nav-item.ativo:hover { background: var(--laranja-nav); color: #fff; }
-.nav-item span {
-  position: absolute; white-space: nowrap;
-  font: 600 16px/18px 'Manrope', sans-serif;
-}
-.nav-item .nav-ico { position: absolute; }
-.i-dashboard { left: 14px; top: 13px; width: 18px; height: 18px; }
-.i-lotes     { left: 14px; top: 12px; width: 22.1px; height: 20px; }
-.i-manut     { left: 14px; top: 13px; width: 18px; height: 18px; }
-.i-filial    { left: 14px; top: 13px; width: 18px; height: 18.7px; }
-.i-usuarios  { left: 14px; top: 13px; width: 20px; height: 14.5px; }
-.i-contrato  { left: 13px; top: 11px; width: 16.4px; height: 21.2px; }
-.i-empresa   { left: 13px; top: 11px; width: 21px; height: 22px; }
-.n-dashboard { top: 148px; } .n-lotes { top: 213px; } .n-manut { top: 278px; } .n-filial { top: 343px; }
-.n-usuarios { top: 408px; } .n-contrato { top: 473px; } .n-empresa { top: 538px; }
-.n-dashboard span { left: 42px; top: 13px; }
-.n-lotes span     { left: 46px; top: 14px; }
-.n-manut span     { left: 42px; top: 13px; }
-.n-filial span    { left: 42px; top: 13px; }
-.n-usuarios span  { left: 44px; top: 13px; }
-.n-contrato span  { left: 39px; top: 13px; }
-
-.n-empresa span   { 
-  left: 43px; 
-  top: 13px; 
+.resumo {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
 }
 
-.nav-config {
-  left: 62px; 
-  top: 676px; 
-  width: 150px; 
-  height: 24px;
+.card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 18px;
 }
-.nav-config img { 
-  position: absolute; 
-  left: 0; 
-  top: 0; 
-  width: 22px; 
-  height: 23px; 
-}
+.resumo .card { min-height: 150px; display: flex; flex-direction: column; align-items: flex-start; }
 
-.nav-config span {
-  position: absolute; 
-  left: 29px; 
-  top: 3px; 
+.card-titulo {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 600; color: #111;
+}
+.card-titulo svg { width: 20px; height: 20px; flex-shrink: 0; }
+.card-numero {
+  font-size: 28px; font-weight: 600; line-height: 1.15;
+  margin: 14px 0 auto;
   white-space: nowrap;
-  font: 600 16px/18px 'Manrope', sans-serif;
+}
+.tag-verde {
+  display: inline-block; margin-top: 14px;
+  padding: 2px 10px; border-radius: 20px;
+  background: var(--dash-verde-fundo); color: var(--dash-verde-texto);
+  font-size: 12px; font-weight: 400; white-space: nowrap;
 }
 
-.nav-config:hover span { 
-  color: var(--laranja); 
+/* ---------- Gráfico ---------- */
+.grafico { padding: 24px 20px 16px; }
+.grafico-titulo {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 15px; font-weight: 600; margin-bottom: 24px;
+}
+.grafico-titulo svg { width: 20px; height: 20px; flex-shrink: 0; }
+.grafico-area {
+  display: block; width: 100%; height: 180px;
+  border-bottom: 1px solid var(--dash-borda);
+}
+.grafico-eixo {
+  display: flex; justify-content: space-between; gap: 4px;
+  padding-top: 10px;
+  font-size: 11px; font-weight: 600; color: var(--dash-mes);
 }
 
-a:focus-visible, button:focus-visible { 
-  outline: 2px solid var(--laranja); 
-  outline-offset: 2px; 
+/* ---------- Responsivo ---------- */
+@media (max-width: 1200px) {
+  .dash-grade { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 600px) {
+  .resumo { grid-template-columns: minmax(0, 1fr); }
+  .nome-usuario { display: none; }
+  .grafico-eixo span:nth-child(even) { display: none; }
 }

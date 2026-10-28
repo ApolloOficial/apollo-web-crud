@@ -16,15 +16,6 @@ body {
     min-height: 100vh;
 }
 
-<<<<<<< HEAD
-.sidebar {
-    width: 245px;
-    background: #ffffff;
-    border-right: 1px solid #e5e5e5;
-    padding: 30px 30px;
-    flex-shrink: 0;
-=======
-
 /* =========================
    SIDEBAR
 ========================= */
@@ -34,13 +25,13 @@ body {
   --ap-texto:#1C1C1C;
   --ap-borda:#EDEDED;
   --ap-fundo:#FFFFFF;
->>>>>>> f339a6b5fbf4225e150c1d3f596f666995d7fe43
 }
 
 *{box-sizing:border-box}
 body{margin:0;font-family:Manrope,Arial,sans-serif;background:#f5f5f5}
 
 .sidebar{
+  flex-shrink:0;
   width:271px;
   height:100vh;
   display:flex;
