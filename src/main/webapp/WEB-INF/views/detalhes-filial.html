@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apollo - Detalhes da Filial</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../../docs/css/detalhes-filial.css">
+    <link rel="stylesheet" href="../../docs/css/sidebar.css">
+</head>
+<body>
+
+<div class="pagina">
+
+    <!-- ===== Sidebar (montada por sidebar.js conforme o tipo de usuário) ===== -->
+    <aside class="sidebar" data-ativo="filial"></aside>
+    <script src="../../docs/js/sidebar.js"></script>
+
+    <main class="conteudo" id="tela-filial">
+
+        <header class="topo topo-detalhes">
+            <div>
+                <h1 class="titulo">Detalhes da Filial</h1>
+                <nav class="breadcrumb" aria-label="Você está em">
+                    <a href="detalhes-filial.html">Filial</a><span class="sep">&gt;</span>
+                    <span class="atual">Solaris Osasco</span>
+                </nav>
+            </div>
+
+            <div class="usuario">
+                <svg class="sino" viewBox="0 0 24 24" aria-label="Notificações"><path d="M12 2a6 6 0 0 0-6 6v4l-2 3h16l-2-3V8a6 6 0 0 0-6-6zM10 19a2 2 0 0 0 4 0z"/></svg>
+                <div class="avatar-usuario" aria-hidden="true"></div>
+                <span>Neymar júnior césar</span>
+                <span class="seta" aria-hidden="true">▾</span>
+            </div>
+        </header>
+
+        <!-- Cabeçalho da filial -->
+        <section class="card-inversor">
+            <div class="inversor-info">
+                <div class="avatar">SO</div>
+                <div>
+                    <div class="linha-nome">
+                        <h2>Solaris Osasco</h2>
+                        <span class="badge badge-ativo" data-status-filial>Ativo</span>
+                    </div>
+                    <p class="subtitulo">Solaris Industria S.A. · Segmento: Indústria</p>
+                </div>
+            </div>
+
+            <div class="acoes">
+                <button type="button" class="btn btn-editar" data-abrir="dlg-editar-filial">Editar filial</button>
+                <button type="button" class="btn btn-inativar" data-abrir="dlg-inativar-filial">Inativar filial</button>
+                <button type="button" class="btn btn-excluir" data-abrir="dlg-excluir-filial" aria-label="Excluir filial">
+                    <svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+            </div>
+        </section>
+
+        <!-- Métricas -->
+        <section class="metricas-filial">
+            <div class="metrica-card">
+                <span class="rotulo">Inversores</span>
+                <strong>1</strong>
+                <span class="badge badge-ativo badge-mini">250 kW</span>
+            </div>
+            <div class="metrica-card">
+                <span class="rotulo">Strings</span>
+                <strong>2</strong>
+                <span class="badge badge-amarelo badge-mini">MPPT 1</span>
+            </div>
+            <div class="metrica-card">
+                <span class="rotulo">Painéis</span>
+                <strong>48</strong>
+                <span class="badge badge-amarelo badge-mini">1 inativo</span>
+            </div>
+            <div class="metrica-card">
+                <span class="rotulo">Manutenções em aberto</span>
+                <strong>3</strong>
+                <span class="badge badge-amarelo badge-mini">2 em andamento</span>
+            </div>
+        </section>
+
+        <!-- Dados / Endereço / Equipe -->
+        <section class="info-trio">
+            <article class="painel-info">
+                <h3>Dados da filial</h3>
+                <ul class="lista-dados">
+                    <li><span class="chave">Nome</span><span class="valor-dado">Solaris Osasco</span></li>
+                    <li><span class="chave">CNPJ</span><span class="valor-dado">11.222.333/0002-62</span></li>
+                    <li><span class="chave">E-mail</span><span class="valor-dado">osasco@solarisindustria.com.br</span></li>
+                    <li><span class="chave">Telefone</span><span class="valor-dado">(11) 3456-7893</span></li>
+                    <li><span class="chave">Segmento</span><span class="valor-dado">Indústria</span></li>
+                    <li><span class="chave">Empresa</span><span class="valor-dado">Solaris Industria S.A.</span></li>
+                </ul>
+            </article>
+
+            <article class="painel-info">
+                <h3>Endereço</h3>
+                <ul class="lista-dados">
+                    <li><span class="chave">Logradouro</span><span class="valor-dado">Rua Antônio Agú, 330</span></li>
+                    <li><span class="chave">Complemento</span><span class="valor-dado">Galpão 2</span></li>
+                    <li><span class="chave">Bairro</span><span class="valor-dado">Centro</span></li>
+                    <li><span class="chave">Cidade / UF</span><span class="valor-dado">Osasco / SP</span></li>
+                    <li><span class="chave">CEP</span><span class="valor-dado">06018-001</span></li>
+                </ul>
+            </article>
+
+            <article class="painel-info">
+                <h3>Equipe da filial</h3>
+                <ul class="lista-equipe">
+                    <li>
+                        <div class="avatar-mini">AS</div>
+                        <div>
+                            <span class="membro-nome">Ana Souza <span class="cargo cargo-azul">Técnico</span></span>
+                            <span class="membro-email">ana.souza@solarisindustria.com.br</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="avatar-mini">AS</div>
+                        <div>
+                            <span class="membro-nome">Ana Souza <span class="cargo cargo-azul">Técnico</span></span>
+                            <span class="membro-email">ana.souza@solarisindustria.com.br</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="avatar-mini">DL</div>
+                        <div>
+                            <span class="membro-nome">Diego Lima <span class="cargo cargo-amarelo">Operador</span></span>
+                            <span class="membro-email">diego.lima@solarisindustria.com.br</span>
+                        </div>
+                    </li>
+                </ul>
+                <div class="equipe-rodape">
+                    <button type="button" class="btn btn-mais" id="btnCadastrarUsuario" data-abrir="dlg-cadastrar-usuario">Cadastrar usuário</button>
+                    <a href="membros.html" class="btn btn-mais">Ver mais</a>
+                </div>
+            </article>
+        </section>
+
+        <!-- Monitoramento -->
+        <section class="card-monitor">
+            <div>
+                <h3>Monitoramento do inversor</h3>
+                <p>Potência, energia gerada, temperatura e status em tempo real aparecerão aqui após a integração com a API do inversor.</p>
+            </div>
+            <span class="badge badge-amarelo">Aguardando integração com a API</span>
+        </section>
+
+        <!-- Inversores -->
+        <section class="grade-strings" id="listaInversores"></section>
+
+        <div class="rodape-detalhes rodape-filial">
+            <button type="button" class="btn btn-cadastrar" data-abrir="dlg-cadastrar-inversor">Cadastrar inversor</button>
+        </div>
+
+    </main>
+
+</div>
+
+<!-- ===== Pop-ups ===== -->
+<dialog class="pop" id="dlg-editar-filial" aria-labelledby="dlg-editar-filial-t">
+    <form method="dialog">
+
+        <div class="pop-bloco">
+            <h2 class="pop-secao com-linha" id="dlg-editar-filial-t">Informações da filial</h2>
+            <div class="pop-grade">
+                <label class="pop-campo"><span>Empresa à qual pertence *</span><input class="pop-input" name="empresa" type="text" placeholder="Ex.: Acme" value="Solaris Industria S.A." required></label>
+                <label class="pop-campo"><span>Telefone *</span><input class="pop-input" name="telefone" type="tel" placeholder="(11) 99999-9999" value="(11) 3456-7893" required></label>
+                <label class="pop-campo"><span>E-mail de contato *</span><input class="pop-input" name="email" type="email" placeholder="nome@empresa.com" value="osasco@solarisindustria.com.br" required></label>
+                <label class="pop-campo"><span>CNPJ *</span><input class="pop-input" name="cnpj" type="text" value="11.222.333/0002-62" disabled></label>
+                <label class="pop-campo"><span>Segmento *</span><input class="pop-input" name="segmento" type="text" placeholder="Ex.: Indústria" value="Indústria" required></label>
+                <label class="pop-campo"><span>Nome da filial *</span><input class="pop-input" name="nome" type="text" placeholder="Ex.: Centro" value="Solaris Osasco" required></label>
+                <label class="pop-campo"><span>CEP *</span><input class="pop-input curto" name="cep" type="text" inputmode="numeric" placeholder="00000-000" value="06018-001" required></label>
+            </div>
+        </div>
+
+        <div class="pop-bloco">
+            <h2 class="pop-secao com-linha">Endereço da filial</h2>
+            <div class="pop-grade">
+                <label class="pop-campo largo">
+                    <select class="pop-select" name="endereco" aria-label="Endereço já cadastrado">
+                        <option value="" selected>Selecione um endereço já cadastrado</option>
+                        <option>Rua Antônio Agú, 330 - Centro, Osasco / SP</option>
+                    </select>
+                </label>
+                <label class="pop-campo largo"><span>Complemento</span><input class="pop-input" name="complemento" type="text" placeholder="Ex.: Sala 101 (opcional)" value="Galpão 2"></label>
+            </div>
+        </div>
+
+        <div class="pop-rodape">
+            <div class="grupo">
+                <button class="pop-btn contorno" value="cancel" formnovalidate>Cancelar</button>
+                <button class="pop-btn cheio" value="ok">Salvar</button>
+            </div>
+        </div>
+
+    </form>
+</dialog>
+<dialog class="pop" id="dlg-cadastrar-inversor" aria-labelledby="dlg-cadastrar-inversor-t">
+    <form method="dialog">
+
+        <div class="pop-bloco">
+            <h2 class="pop-secao" id="dlg-cadastrar-inversor-t">
+                <span class="pop-icone"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M13 7l-3 5h4l-3 5"/></svg></span>
+                Dados do inversor
+            </h2>
+            <div class="pop-grade">
+                <label class="pop-campo"><span>Código do inversor *</span><input class="pop-input" name="codigo" type="text" autocomplete="off" required></label>
+                <label class="pop-campo"><span>Filial *</span>
+                    <select class="pop-select" name="filial" required>
+                        <option value="" selected></option>
+                        <option>Solaris Osasco</option>
+                    </select>
+                </label>
+                <label class="pop-campo"><span>Número de série *</span><input class="pop-input" name="serie" type="text" autocomplete="off" required></label>
+                <label class="pop-campo"><span>Marca *</span><input class="pop-input" name="marca" type="text" autocomplete="off" required></label>
+                <label class="pop-campo"><span>Modelo *</span><input class="pop-input" name="modelo" type="text" autocomplete="off" required></label>
+                <label class="pop-campo"><span>Potência (kW)</span><input class="pop-input" name="potencia" type="number" min="0" step="0.01"></label>
+                <label class="pop-campo"><span>Status *</span>
+                    <select class="pop-select" name="status" required>
+                        <option value="" selected></option>
+                        <option>Ativo</option>
+                        <option>Inativo</option>
+                    </select>
+                </label>
+                <label class="pop-campo"><span>Data de instalação</span><input class="pop-input" name="data" type="date"></label>
+            </div>
+        </div>
+
+        <div class="pop-bloco">
+            <h2 class="pop-secao">
+                <span class="pop-icone"><svg viewBox="0 0 24 24"><path d="M9 4h6v3H9z"/><path d="M7 5H6a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1"/><path d="M8 12h8M8 16h5"/></svg></span>
+                Resumo do inversor
+            </h2>
+            <dl class="resumo-lista" aria-live="polite">
+                <dt>Código</dt><dd data-resumo="codigo">—</dd>
+                <dt>Marca</dt><dd data-resumo="marca">—</dd>
+                <dt>Modelo</dt><dd data-resumo="modelo">—</dd>
+                <dt>Potência total</dt><dd data-resumo="potencia">—</dd>
+                <dt>Status</dt><dd data-resumo="status">—</dd>
+                <dt>Data de instalação</dt><dd data-resumo="data">—</dd>
+            </dl>
+        </div>
+
+        <div class="pop-rodape">
+            <div class="grupo">
+                <button class="pop-btn contorno" value="cancel" formnovalidate>Cancelar</button>
+                <button class="pop-btn cheio" value="ok">Cadastrar</button>
+            </div>
+        </div>
+
+    </form>
+</dialog>
+<dialog class="pop" id="dlg-cadastrar-usuario" aria-labelledby="dlg-cadastrar-usuario-t">
+    <form method="dialog">
+        <h2 class="pop-titulo" id="dlg-cadastrar-usuario-t"><span class="pop-icone"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><span id="tituloCadastrarUsuario">Cadastrar usuário</span></h2>
+        <div class="pop-grade">
+            <label class="pop-campo"><span>Nome completo *</span><input class="pop-input" name="nome" type="text" autocomplete="off" required></label>
+            <label class="pop-campo"><span>E-mail *</span><input class="pop-input" name="email" type="email" autocomplete="off" required></label>
+            <label class="pop-campo"><span>Telefone</span><input class="pop-input" name="telefone" type="tel" placeholder="(11) 99999-9999"></label>
+            <label class="pop-campo"><span>Cargo *</span><select class="pop-select" name="cargo" id="cargoNovoUsuario" required></select></label>
+            <div class="pop-rodape"><div class="grupo"><button class="pop-btn contorno" value="cancel" formnovalidate>Cancelar</button><button class="pop-btn cheio" value="ok">Cadastrar</button></div></div>
+        </div>
+    </form>
+</dialog>
+<dialog class="pop estreito" id="dlg-inativar-filial" aria-labelledby="dlg-inativar-filial-t">
+    <form method="dialog">
+        <h2 class="pop-titulo" id="dlg-inativar-filial-t">Inativar filial</h2>
+        <p class="pop-texto">A filial <strong>Solaris Osasco</strong> deixará de ser monitorada. Você pode reativá-la depois pela edição.</p>
+        <div class="pop-rodape"><div class="grupo">
+            <button class="pop-btn contorno" value="cancel" formnovalidate>Cancelar</button>
+            <button class="pop-btn cheio" value="ok">Inativar</button>
+        </div></div>
+    </form>
+</dialog>
+<dialog class="pop estreito" id="dlg-excluir-filial" aria-labelledby="dlg-excluir-filial-t">
+    <form method="dialog">
+        <h2 class="pop-titulo" id="dlg-excluir-filial-t">Excluir filial</h2>
+        <p class="pop-texto">Tem certeza que deseja excluir a filial <strong>Solaris Osasco</strong>? Os inversores, strings e painéis vinculados também serão desativados.</p>
+        <div class="pop-rodape"><div class="grupo">
+            <button class="pop-btn contorno" value="cancel" formnovalidate>Cancelar</button>
+            <button class="pop-btn perigo" value="ok">Excluir</button>
+        </div></div>
+    </form>
+</dialog>
+
+<script src="../JS/detalhes-filial.js"></script>
+<script src="../JS/permissoes.js"></script>
+</body>
+</html>

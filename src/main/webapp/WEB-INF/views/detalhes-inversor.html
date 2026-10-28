@@ -1,357 +1,161 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apollo | Detalhes do inversor</title>
-  <link rel="stylesheet" href="../../docs/css/detalhes-inversor.css">
-  <link rel="stylesheet" href="../../docs/css/pop-ups.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apollo - Detalhes do Inversor</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../../docs/css/detalhes-inversor.css">
+    <link rel="stylesheet" href="../../docs/css/sidebar.css">
 </head>
 <body>
-  <aside class="sidebar">
-    <a class="brand" href="#" aria-label="Apollo">
-      <span>apollo</span><span class="brand-mark">›</span>
-    </a>
 
-    <nav class="navigation" aria-label="Navegação principal">
-      <a class="nav-item" href="#"><span class="nav-icon">▦</span>Dashboard</a>
-      <a class="nav-item" href="#"><span class="nav-icon">▧</span>Lotes</a>
-      <a class="nav-item" href="#"><span class="nav-icon">⌁</span>Manutenções</a>
-      <a class="nav-item active" href="#"><span class="nav-icon">⑂</span>Filial</a>
-      <a class="nav-item" href="#"><span class="nav-icon">♟</span>Usuários</a>
-      <a class="nav-item" href="#"><span class="nav-icon">♧</span>Contrato</a>
-      <a class="nav-item" href="#"><span class="nav-icon">⚙</span>Empresa</a>
-    </nav>
+<div class="pagina">
 
-    <a class="nav-item settings" href="#"><span class="nav-icon">⚙</span>Configurações</a>
-  </aside>
+    <!-- ===== Sidebar (montada por sidebar.js conforme o tipo de usuário) ===== -->
+    <aside class="sidebar" data-ativo="filial"></aside>
+    <script src="../../docs/js/sidebar.js"></script>
 
-  <main class="main-content">
-    <header class="page-heading">
-      <h1>Detalhes do inversor</h1>
-      <nav class="breadcrumbs" aria-label="Caminho">
-        <a href="#">Filial</a><span>›</span>
-        <a href="#">Solaris Osasco</a><span>›</span>
-        <a href="#">Inversores</a><span>›</span>
-        <span class="current">INV-OSA-01</span>
-      </nav>
-    </header>
+    <main class="conteudo" id="tela-inversor">
 
-    <section class="inverter-summary">
-      <div class="summary-left">
-        <div class="inverter-avatar">INV</div>
-        <div>
-          <div class="summary-title">
-            <h2>INV-OSA-01</h2>
-            <span class="status status-active">Ativo</span>
-          </div>
-          <p class="subtitle">Sungrow SG250HX · 250 kW</p>
+        <header class="topo topo-detalhes">
+            <div>
+                <h1 class="titulo">Detalhes do inversor</h1>
+                <nav class="breadcrumb" aria-label="Você está em">
+                    <a href="empresa.html">Filial</a><span class="sep">&gt;</span>
+                    <a href="detalhes-filial.html">Solaris Osasco</a><span class="sep">&gt;</span>
+                    <a href="detalhes-filial.html#listaInversores">Inversores</a><span class="sep">&gt;</span>
+                    <span class="atual">INV-OSA-01</span>
+                </nav>
+            </div>
+
+            <div class="usuario">
+                <svg class="sino" viewBox="0 0 24 24" aria-label="Notificações"><path d="M12 2a6 6 0 0 0-6 6v4l-2 3h16l-2-3V8a6 6 0 0 0-6-6zM10 19a2 2 0 0 0 4 0z"/></svg>
+                <div class="avatar-usuario" aria-hidden="true"></div>
+                <span>Neymar júnior césar</span>
+                <span class="seta" aria-hidden="true">▾</span>
+            </div>
+        </header>
+
+        <!-- Cabeçalho do inversor -->
+        <section class="card-inversor">
+            <div class="inversor-info">
+                <div class="avatar">INV</div>
+                <div>
+                    <div class="linha-nome">
+                        <h2 data-inv="codigo">INV-OSA-01</h2>
+                        <span class="badge badge-ativo" data-status-inversor>Ativo</span>
+                    </div>
+                    <p class="subtitulo" data-inv="subtitulo">Sungrow SG250HX · 250 kW</p>
+                </div>
+            </div>
+
+            <div class="acoes">
+                <button type="button" class="btn btn-editar" data-abrir="dlg-editar-inversor">Editar</button>
+                <button type="button" class="btn btn-inativar" data-abrir="dlg-inativar-inversor">Inativar</button>
+                <button type="button" class="btn btn-excluir" data-abrir="dlg-excluir-inversor" aria-label="Excluir inversor">
+                    <svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+            </div>
+        </section>
+
+        <!-- Campos -->
+        <section class="grade-info">
+            <div class="card-info">
+                <span class="rotulo">ID da filial</span>
+                <span class="valor vazio">Não informado</span>
+            </div>
+            <div class="card-info">
+                <span class="rotulo">Código</span>
+                <span class="valor" data-inv="codigo">INV-OSA-01</span>
+            </div>
+            <div class="card-info">
+                <span class="rotulo">N.º de série</span>
+                <span class="valor" data-inv="serie">A2310001234</span>
+            </div>
+            <div class="card-info">
+                <span class="rotulo">Marca</span>
+                <span class="valor" data-inv="marca">Sungrow</span>
+            </div>
+            <div class="card-info">
+                <span class="rotulo">Modelo</span>
+                <span class="valor" data-inv="modelo">SG250HX</span>
+            </div>
+            <div class="card-info">
+                <span class="rotulo">Potência (kW)</span>
+                <span class="valor" data-inv="potencia">250,00</span>
+            </div>
+            <div class="card-info card-status">
+                <span class="rotulo">Status</span>
+                <span class="badge badge-ativo badge-mini" data-status-inversor>Ativo</span>
+            </div>
+            <div class="card-info">
+                <span class="rotulo">Data de instalação</span>
+                <span class="valor" data-inv="data">10/03/2024</span>
+            </div>
+        </section>
+
+        <!-- Strings -->
+        <h3 class="titulo-secao">Strings</h3>
+        <section class="grade-strings" id="listaStrings"></section>
+
+        <div class="rodape-detalhes">
+            <a href="detalhes-filial.html" class="link-voltar">Voltar para filial</a>
+            <button type="button" class="btn btn-cadastrar" data-abrir="dlg-cadastrar-string">Cadastrar String</button>
         </div>
-      </div>
-      <div class="summary-actions">
-        <button id="btnEditarInversor" class="button button-primary" type="button">Editar</button>
-        <button id="btnInativarInversor" class="button button-outline" type="button">Inativar</button>
-        <button id="btnExcluirInversor" class="button button-delete" type="button" aria-label="Excluir inversor" title="Excluir">▤</button>
-      </div>
-    </section>
 
-    <section class="details-grid" aria-label="Informações do inversor">
-      <article class="detail-card">
-        <span class="field-label">ID da filial</span>
-        <span class="field-value muted">Não informado</span>
-      </article>
-      <article class="detail-card">
-        <span class="field-label">Código</span>
-        <span class="field-value">INV-OSA-01</span>
-      </article>
-      <article class="detail-card">
-        <span class="field-label">Nº de série</span>
-        <span class="field-value">A2310001234</span>
-      </article>
-      <article class="detail-card">
-        <span class="field-label">Marca</span>
-        <span class="field-value">Sungrow</span>
-      </article>
-      <article class="detail-card">
-        <span class="field-label">Modelo</span>
-        <span class="field-value">SG250HX</span>
-      </article>
-      <article class="detail-card">
-        <span class="field-label">Potência (kW)</span>
-        <span class="field-value">250,00</span>
-      </article>
-      <article class="detail-card status-card">
-        <span class="field-label">Status</span>
-        <span class="status status-active">Ativo</span>
-      </article>
-      <article class="detail-card">
-        <span class="field-label">Data de instalação</span>
-        <span class="field-value">10/03/2024</span>
-      </article>
-    </section>
+    </main>
 
-    <section class="strings-section">
-      <h2 class="section-title">Strings</h2>
-      <div class="strings-grid">
-        <article class="string-card">
-          <div class="string-label">String</div>
-          <div class="string-code">STR-OSA-01-01</div>
-          <div class="string-description">MPPT 1 - Entrada 1</div>
-          <div class="string-meta">24 painéis (1 inativo)</div>
-          <div class="string-installed">Instalada em 15/03/2024</div>
-          <span class="status status-active string-status">Ativo</span>
-          <div class="string-actions">
-            <button class="button button-delete btnExcluirString" type="button" aria-label="Excluir string STR-OSA-01-01" data-string="STR-OSA-01-01">Excluir</button>
-            <div class="string-actions">
-            <button class="button button-delete btnExcluirString" type="button" aria-label="Excluir string STR-OSA-01-02" data-string="STR-OSA-01-02">Excluir</button>
-            <div class="string-actions">
-            <button class="button button-delete btnExcluirString" type="button" aria-label="Excluir string STR-OSA-01-03" data-string="STR-OSA-01-03">Excluir</button>
-            <div class="string-actions">
-            <button class="button button-delete btnExcluirString" type="button" aria-label="Excluir string STR-OSA-01-04" data-string="STR-OSA-01-04">Excluir</button>
-            <button class="button button-outline string-button btnVerDetalhesString" type="button">Ver detalhes</button>
-          </div>
-          </div>
-          </div>
-          </div>
-        </article>
+</div>
 
-        <article class="string-card">
-          <div class="string-label">String</div>
-          <div class="string-code">STR-OSA-01-02</div>
-          <div class="string-description">MPPT 1 - Entrada 2</div>
-          <div class="string-meta">24 painéis</div>
-          <div class="string-installed">Instalada em 15/03/2024</div>
-          <span class="status status-active string-status">Ativo</span>
-          <button class="button button-outline string-button btnVerDetalhesString" type="button">Ver detalhes</button>
-        </article>
-
-        <article class="string-card">
-          <div class="string-label">String</div>
-          <div class="string-code">STR-OSA-01-03</div>
-          <div class="string-description">MPPT 2 - Entrada 1</div>
-          <div class="string-meta">24 painéis</div>
-          <div class="string-installed">Instalada em 15/03/2024</div>
-          <span class="status status-active string-status">Ativo</span>
-          <button class="button button-outline string-button btnVerDetalhesString" type="button">Ver detalhes</button>
-        </article>
-
-        <article class="string-card">
-          <div class="string-label">String</div>
-          <div class="string-code">STR-OSA-01-04</div>
-          <div class="string-description">MPPT 2 - Entrada 2</div>
-          <div class="string-meta">24 painéis</div>
-          <div class="string-installed">Instalada em 15/03/2024</div>
-          <span class="status status-active string-status">Ativo</span>
-          <button class="button button-outline string-button btnVerDetalhesString" type="button">Ver detalhes</button>
-        </article>
-      </div>
-    </section>
-
-    <footer class="page-footer">
-      <a class="back-link" href="#">Voltar para filial</a>
-      <button id="btnCadastrarString" class="button button-cta" type="button">Cadastrar String</button>
-    </footer>
-  </main>
-
-
-  <!-- Popup: cadastrar string -->
-  <div class="modal-overlay" id="cadastrarStringModal" aria-hidden="true">
-    <section class="modal-content" role="dialog" aria-modal="true" aria-labelledby="cadastrarStringTitle">
-      <header class="modal-header">
-        <div>
-          <h2 id="cadastrarStringTitle">Cadastrar string</h2>
-          <p>Preencha os dados da nova string vinculada a este inversor.</p>
+<!-- ===== Pop-ups ===== -->
+<dialog class="pop" id="dlg-cadastrar-string" aria-labelledby="dlg-cadastrar-string-t">
+    <form method="dialog">
+        <h2 class="pop-titulo" id="dlg-cadastrar-string-t"><span class="pop-icone"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="2.6"/><line x1="10.2" y1="11.2" x2="7.4" y2="8.4"/><line x1="13.8" y1="11.2" x2="16.6" y2="8.4"/><line x1="12" y1="15.6" x2="12" y2="18.4"/><circle cx="6" cy="7" r="1.6"/><circle cx="18" cy="7" r="1.6"/><circle cx="12" cy="20" r="1.6"/></svg></span>Dados da String</h2>
+        <div class="pop-grade">
+            <label class="pop-campo"><span>Código da String *</span><input class="pop-input" name="codigo" type="text" required></label>
+            <label class="pop-campo"><span>Inversor *</span><input class="pop-input" name="inversor" type="text" value="INV-OSA-01" required></label>
+            <label class="pop-campo"><span>MPPT *</span><input class="pop-input" name="mppt" type="number" required min="1"></label>
+            <label class="pop-campo"><span>Entrada *</span><input class="pop-input" name="entrada" type="number" required min="1"></label>
+            <label class="pop-campo"><span>Status *</span><select class="pop-select" name="status" required><option value="" selected></option><option>Ativo</option><option>Inativo</option></select></label>
+            <div class="pop-rodape"><div class="grupo"><button class="pop-btn contorno" value="cancel" formnovalidate>Cancelar</button><button class="pop-btn cheio" value="ok">Cadastrar</button></div></div>
         </div>
-        <button type="button" class="modal-close" data-close-modal="cadastrarStringModal" aria-label="Fechar">×</button>
-      </header>
-
-      <form class="modal-form" id="formCadastrarString">
-        <div class="form-grid">
-          <div class="form-field">
-            <label for="codigoString">Código da string <span>*</span></label>
-            <input id="codigoString" name="codigo" type="text" placeholder="Ex.: STR-OSA-01-05" required>
-          </div>
-          <div class="form-field">
-            <label for="mpptString">MPPT <span>*</span></label>
-            <select id="mpptString" name="mppt" required>
-              <option value="">Selecione o MPPT</option>
-              <option value="1">MPPT 1</option>
-              <option value="2">MPPT 2</option>
-              <option value="3">MPPT 3</option>
-              <option value="4">MPPT 4</option>
-            </select>
-          </div>
-          <div class="form-field">
-            <label for="entradaString">Entrada <span>*</span></label>
-            <select id="entradaString" name="entrada" required>
-              <option value="">Selecione a entrada</option>
-              <option value="1">Entrada 1</option>
-              <option value="2">Entrada 2</option>
-              <option value="3">Entrada 3</option>
-              <option value="4">Entrada 4</option>
-            </select>
-          </div>
-          <div class="form-field">
-            <label for="quantidadePaineis">Quantidade de painéis <span>*</span></label>
-            <input id="quantidadePaineis" name="quantidadePaineis" type="number" min="1" step="1" placeholder="Ex.: 24" required>
-          </div>
-          <div class="form-field">
-            <label for="dataInstalacaoString">Data de instalação</label>
-            <input id="dataInstalacaoString" name="dataInstalacao" type="date">
-          </div>
-          <div class="form-field">
-            <label for="statusString">Status</label>
-            <select id="statusString" name="status">
-              <option value="ATIVO" selected>Ativo</option>
-              <option value="INATIVO">Inativo</option>
-            </select>
-          </div>
+    </form>
+</dialog>
+<dialog class="pop" id="dlg-editar-inversor" aria-labelledby="dlg-editar-inversor-t">
+    <form method="dialog">
+        <h2 class="pop-titulo" id="dlg-editar-inversor-t"><span class="pop-icone"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M13 7l-3 5h4l-3 5"/></svg></span>Editar Inversor</h2>
+        <div class="pop-grade">
+            <label class="pop-campo"><span>Código do inversor *</span><input class="pop-input" name="codigo" type="text" value="INV-OSA-01" required autocomplete="off"></label>
+            <label class="pop-campo"><span>Número de série *</span><input class="pop-input" name="serie" type="text" value="A2310001234" required autocomplete="off"></label>
+            <label class="pop-campo"><span>Marca *</span><input class="pop-input" name="marca" type="text" value="Sungrow" required autocomplete="off"></label>
+            <label class="pop-campo"><span>Modelo *</span><input class="pop-input" name="modelo" type="text" value="SG250HX" required autocomplete="off"></label>
+            <label class="pop-campo"><span>Potência (kW)</span><input class="pop-input" name="potencia" type="number" value="250" min="0" step="0.01"></label>
+            <label class="pop-campo"><span>Data de instalação</span><input class="pop-input" name="data" type="date" value="2024-03-10" ></label>
+            <label class="pop-campo"><span>Status *</span><select class="pop-select" name="status" required><option selected>Ativo</option><option>Inativo</option></select></label>
+            <div class="pop-rodape"><div class="grupo"><button class="pop-btn contorno" value="cancel" formnovalidate>Cancelar</button><button class="pop-btn cheio" value="ok">Salvar</button></div></div>
         </div>
-        <div class="modal-actions">
-          <button type="button" class="button button-cancel" data-close-modal="cadastrarStringModal">Cancelar</button>
-          <button type="submit" class="button button-primary">Cadastrar string</button>
-        </div>
-      </form>
-    </section>
-  </div>
+    </form>
+</dialog>
+<dialog class="pop estreito" id="dlg-inativar-inversor" aria-labelledby="dlg-inativar-inversor-t">
+    <form method="dialog">
+        <h2 class="pop-titulo" id="dlg-inativar-inversor-t">Inativar inversor</h2>
+        <p class="pop-texto">O inversor <strong>INV-OSA-01</strong> deixará de ser monitorado. Você pode reativá-lo depois pela edição.</p>
+        <div class="pop-rodape"><div class="grupo"><button class="pop-btn contorno" value="cancel" formnovalidate>Cancelar</button><button class="pop-btn cheio" value="ok">Inativar</button></div></div>
+    </form>
+</dialog>
+<dialog class="pop estreito" id="dlg-excluir-inversor" aria-labelledby="dlg-excluir-inversor-t">
+    <form method="dialog">
+        <h2 class="pop-titulo" id="dlg-excluir-inversor-t">Excluir inversor</h2>
+        <p class="pop-texto">Tem certeza que deseja excluir o inversor <strong>INV-OSA-01</strong>? As strings e os painéis vinculados também serão desativados.</p>
+        <div class="pop-rodape"><div class="grupo"><button class="pop-btn contorno" value="cancel" formnovalidate>Cancelar</button><button class="pop-btn perigo" value="ok">Excluir</button></div></div>
+    </form>
+</dialog>
 
-  <!-- Popup: confirmar exclusão de string -->
-  <div class="modal-overlay" id="confirmarExclusaoStringModal" aria-hidden="true">
-    <section class="modal-content confirm-modal" role="alertdialog" aria-modal="true" aria-labelledby="confirmarExclusaoStringTitle">
-      <header class="modal-header">
-        <div>
-          <h2 id="confirmarExclusaoStringTitle">Excluir string?</h2>
-          <p>Tem certeza de que deseja excluir esta string? Essa ação não poderá ser desfeita.</p>
-        </div>
-        <button type="button" class="modal-close" data-close-modal="confirmarExclusaoStringModal" aria-label="Fechar">×</button>
-      </header>
-      <p class="delete-target">String selecionada: <strong id="nomeStringExcluir">STR-OSA-01-01</strong></p>
-      <div class="modal-actions">
-        <button type="button" class="button button-cancel" data-close-modal="confirmarExclusaoStringModal">Cancelar</button>
-        <button type="button" id="btnConfirmarExclusaoString" class="button button-delete">Sim, excluir</button>
-      </div>
-    </section>
-  </div>
-
-  <!-- Conteúdo do popup de edição. As classes do modal podem ser adaptadas
-       às classes que já existem no projeto. O CSS/JS do popup fica separado. -->
-  <div class="modal-overlay" id="editarInversorModal" aria-hidden="true">
-    <section class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <header class="modal-header">
-        <div>
-          <h2 id="modalTitle">Editar inversor</h2>
-          <p>Atualize os dados cadastrais deste inversor.</p>
-        </div>
-        <button type="button" class="modal-close" aria-label="Fechar">×</button>
-      </header>
-
-      <form class="modal-form">
-        <div class="form-grid">
-          <div class="form-field">
-            <label for="codigo">Código do inversor <span>*</span></label>
-            <input id="codigo" name="codigo" type="text" value="INV-OSA-01" placeholder="Ex.: INV-OSA-01" required>
-          </div>
-          <div class="form-field">
-            <label for="numeroSerie">Número de série <span>*</span></label>
-            <input id="numeroSerie" name="numeroSerie" type="text" value="A2310001234" placeholder="Informe o número de série" required>
-          </div>
-          <div class="form-field">
-            <label for="marca">Marca</label>
-            <input id="marca" name="marca" type="text" value="Sungrow" placeholder="Ex.: Sungrow">
-          </div>
-          <div class="form-field">
-            <label for="modelo">Modelo</label>
-            <input id="modelo" name="modelo" type="text" value="SG250HX" placeholder="Ex.: SG250HX">
-          </div>
-          <div class="form-field">
-            <label for="potencia">Potência (kW)</label>
-            <input id="potencia" name="potencia" type="number" min="0.01" step="0.01" value="250.00" placeholder="Ex.: 250,00">
-          </div>
-          <div class="form-field">
-            <label for="dataInstalacao">Data de instalação</label>
-            <input id="dataInstalacao" name="dataInstalacao" type="date" value="2024-03-10">
-          </div>
-          <div class="form-field">
-            <label for="filial">Filial vinculada</label>
-            <select id="filial" name="filial">
-              <option value="">Selecione uma filial</option>
-              <option value="1" selected>Solaris Osasco</option>
-              <option value="2">Solaris Campinas</option>
-            </select>
-          </div>
-          <div class="form-field">
-            <label for="status">Status</label>
-            <select id="status" name="status">
-              <option value="ATIVO" selected>Ativo</option>
-              <option value="INATIVO">Inativo</option>
-            </select>
-          </div>
-        </div>
-        <div class="modal-actions">
-          <button type="button" class="button button-cancel">Cancelar</button>
-          <button type="submit" class="button button-primary">Salvar alterações</button>
-        </div>
-      </form>
-    </section>
-  </div>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const cadastroModal = document.getElementById("cadastrarStringModal");
-      const exclusaoModal = document.getElementById("confirmarExclusaoStringModal");
-      const nomeStringExcluir = document.getElementById("nomeStringExcluir");
-      let stringSelecionada = "";
-
-      const abrirModal = (modal) => {
-        if (!modal) return;
-        modal.style.display = "flex";
-        modal.setAttribute("aria-hidden", "false");
-      };
-
-      const fecharModal = (modal) => {
-        if (!modal) return;
-        modal.style.display = "none";
-        modal.setAttribute("aria-hidden", "true");
-      };
-
-      document.getElementById("btnCadastrarString")?.addEventListener("click", () => {
-        abrirModal(cadastroModal);
-      });
-
-      document.querySelectorAll(".btnExcluirString").forEach((botao) => {
-        botao.addEventListener("click", () => {
-          stringSelecionada = botao.dataset.string || "";
-          nomeStringExcluir.textContent = stringSelecionada;
-          abrirModal(exclusaoModal);
-        });
-      });
-
-      document.querySelectorAll("[data-close-modal]").forEach((botao) => {
-        botao.addEventListener("click", () => {
-          fecharModal(document.getElementById(botao.dataset.closeModal));
-        });
-      });
-
-      [cadastroModal, exclusaoModal].forEach((modal) => {
-        modal?.addEventListener("click", (evento) => {
-          if (evento.target === modal) fecharModal(modal);
-        });
-      });
-
-      document.getElementById("formCadastrarString")?.addEventListener("submit", (evento) => {
-        evento.preventDefault();
-        // O formulário está pronto visualmente. Conecte aqui o cadastro ao backend/DAO/API.
-        fecharModal(cadastroModal);
-      });
-
-      document.getElementById("btnConfirmarExclusaoString")?.addEventListener("click", () => {
-        // A confirmação visual funciona; a exclusão real precisa ser conectada ao backend.
-        fecharModal(exclusaoModal);
-        console.info("Confirmação de exclusão solicitada para:", stringSelecionada);
-      });
-    });
-  </script>
-
-  <script src="../../docs/js/pop-ups.js" defer></script>
+<script src="../../docs/js/detalhes-inversor.js"></script>
 </body>
 </html>
