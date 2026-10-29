@@ -10,10 +10,12 @@
 
    QUEM MEXE EM QUÊ (mude aqui, em PODE, se as regras forem outras)
      filial       = editar / inativar / excluir a filial
-     equipamento  = cadastrar, editar, inativar e excluir inversor, string e painel
-     gerente  -> filial + equipamento
-     tecnico  -> equipamento
-     operador -> somente leitura (manutenções continuam liberadas)
+     equipamento  = editar, inativar e excluir inversor, string e painel
+     cadastro     = cadastrar inversor, string e painel
+     manutencao   = cadastrar manutenção
+     gerente  -> filial + equipamento (NÃO cadastra inversor, string nem manutenção)
+     tecnico  -> equipamento + cadastro + manutencao
+     operador -> somente leitura, mas cadastra manutenção
 
    COMO USAR NO HTML
      <button data-permissao="filial" ...>        some se o perfil não pode
@@ -28,9 +30,9 @@
     var perfil = (window.Apollo && window.Apollo.perfil()) || 'operador';
 
     var PODE = {
-        gerente:  { filial: true,  equipamento: true  },
-        tecnico:  { filial: false, equipamento: true  },
-        operador: { filial: false, equipamento: false }
+        gerente:  { filial: true,  equipamento: true,  cadastro: false, manutencao: false },
+        tecnico:  { filial: false, equipamento: true,  cadastro: true,  manutencao: true  },
+        operador: { filial: false, equipamento: false, cadastro: false, manutencao: true  }
     };
 
     var CADASTRA = {
@@ -212,6 +214,17 @@
         this.value = mascaraTelefone(this.value);
     });
 
+    // Primeiro acesso (modo demonstração): quem acabou de ser cadastrado
+    // precisa criar uma senha nova no primeiro login. O login.js confere esta lista.
+    function marcarPrimeiroAcesso(email) {
+        try {
+            var lista = JSON.parse(localStorage.getItem('apollo-primeiro-acesso')) || [];
+            email = String(email || '').toLowerCase();
+            if (email && lista.indexOf(email) < 0) lista.push(email);
+            localStorage.setItem('apollo-primeiro-acesso', JSON.stringify(lista));
+        } catch (e) {}
+    }
+
     function escapar(texto) {
         var div = document.createElement('div');
         div.textContent = texto;
@@ -246,6 +259,7 @@
 
         var nome = f.nome.value.trim();
         var email = f.email.value.trim();
+        marcarPrimeiroAcesso(email);
 
         var li = document.createElement('li');
         li.innerHTML =

@@ -26,7 +26,9 @@
   var enviando = false;
 
   /* ---------- Quem está trocando a senha ---------- */
-  var email = new URLSearchParams(location.search).get('email');
+  var params = new URLSearchParams(location.search);
+  var email = params.get('email');
+  var primeiroAcesso = params.get('primeiro') === '1';   // veio do login, ainda com a senha provisória
   var CHAVE_OK = 'apollo-codigo-ok:' + String(email || '').toLowerCase();
 
   function codigoFoiValidado() {
@@ -37,6 +39,20 @@
   if (!USAR_SERVIDOR && !codigoFoiValidado()) {
     location.replace(DESTINO_SEM_CODIGO);
     return;
+  }
+
+  if (primeiroAcesso) {
+    var instrucao = document.querySelector('.instrucao');
+    if (instrucao) instrucao.textContent = 'Este é o seu primeiro acesso. Crie uma nova senha para continuar.';
+  }
+
+  // modo demonstração: depois de trocar, o email deixa de ser "primeiro acesso"
+  function tirarDosPrimeirosAcessos() {
+    try {
+      var lista = JSON.parse(localStorage.getItem('apollo-primeiro-acesso')) || [];
+      var i = lista.indexOf(String(email || '').toLowerCase());
+      if (i > -1) { lista.splice(i, 1); localStorage.setItem('apollo-primeiro-acesso', JSON.stringify(lista)); }
+    } catch (e) {}
   }
 
   if (email) {
@@ -127,6 +143,7 @@
 
     // modo demonstração: nada é gravado de verdade
     try { sessionStorage.removeItem(CHAVE_OK); } catch (err) {}
+    tirarDosPrimeirosAcessos();
     setTimeout(function () {
       erro.textContent = 'Senha alterada! Voltando para o login…';
       erro.classList.add('ok');

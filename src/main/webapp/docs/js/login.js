@@ -6,7 +6,9 @@
      false -> não existe servidor de login ainda: valida o formulário
               no navegador e redireciona para o dashboard da área.
      true  -> envia o formulário (POST em "login") para o servidor Java,
-              que decide para onde redirecionar.
+              que decide para onde redirecionar. PRIMEIRO ACESSO: se o usuário
+              ainda não trocou a senha provisória, o servidor deve redirecionar
+              para login_nova_senha.html (e só liberar o dashboard depois).
      --------------------------------------------------------------- */
   var USAR_SERVIDOR = false;
 
@@ -19,6 +21,8 @@
 
   var CHAVE_PERFIL = 'apollo-perfil';        // lida pelo sidebar.js
   var CHAVE_AREA   = 'apollo-ultima-area';   // só para lembrar a última escolha
+  var CHAVE_PRIMEIRO = 'apollo-primeiro-acesso';  // emails que ainda não trocaram a senha (modo demonstração)
+  var PAGINA_NOVA_SENHA = 'login_nova_senha.html';
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   var $ = function (id) { return document.getElementById(id); };
@@ -33,6 +37,11 @@
   var aviso = $('aviso-caps');
   var verSenha = $('ver-senha');
   var enviando = false;
+
+  function ehPrimeiroAcesso(email) {
+    try { return (JSON.parse(localStorage.getItem(CHAVE_PRIMEIRO)) || []).indexOf(email.toLowerCase()) > -1; }
+    catch (e) { return false; }
+  }
 
   function guardar(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
   function ler(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -139,6 +148,15 @@
     if (USAR_SERVIDOR) {
       campoEmail.value = email;
       form.submit();
+      return;
+    }
+
+    // primeiro acesso: antes de entrar, precisa criar uma senha nova
+    if (ehPrimeiroAcesso(email)) {
+      try { sessionStorage.setItem('apollo-codigo-ok:' + email.toLowerCase(), '1'); } catch (err) {}   // libera a tela de nova senha
+      setTimeout(function () {
+        location.href = PAGINA_NOVA_SENHA + '?primeiro=1&email=' + encodeURIComponent(email);
+      }, 450);
       return;
     }
 

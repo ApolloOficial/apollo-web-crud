@@ -33,6 +33,17 @@
     var temAcoes = cargos.length > 0;
     function podeGerir(m) { return cargos.indexOf(m.c) > -1; }   // só mexe em quem pode cadastrar
 
+    // Primeiro acesso (modo demonstração): quem acabou de ser cadastrado
+    // precisa criar uma senha nova no primeiro login. O login.js confere esta lista.
+    function marcarPrimeiroAcesso(email) {
+        try {
+            var lista = JSON.parse(localStorage.getItem('apollo-primeiro-acesso')) || [];
+            email = String(email || '').toLowerCase();
+            if (email && lista.indexOf(email) < 0) lista.push(email);
+            localStorage.setItem('apollo-primeiro-acesso', JSON.stringify(lista));
+        } catch (e) {}
+    }
+
     function esc(t) { var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
     function iniciais(n) { var p = n.trim().split(/\s+/); return (p[0][0] + (p.length > 1 ? p[p.length - 1][0] : '')).toUpperCase(); }
 
@@ -276,6 +287,7 @@
             Object.assign(editando, dados);
         } else {
             membros.push(dados);
+            marcarPrimeiroAcesso(dados.e);
             st.grupo = 'todos'; st.filial = ''; st.busca = ''; $('busca').value = ''; $('sel-filial').value = '';
             st.pagina = Math.ceil(membros.length / POR_PAGINA);   // vai para a página do novo membro
         }
