@@ -1,0 +1,11 @@
+/* Só o que é específico da tela "Nova senha".
+   O resto vem de login.css, que precisa ser carregado antes. */
+
+.titulo{margin-bottom:14px}
+
+/* espaço antes do botão */
+#form-nova .campo-wrap + .campo-wrap{margin-bottom:24px}
+#form-nova .aviso{margin:-16px 0 20px 2px}
+
+/* mensagem de sucesso (usa o mesmo <p id="erro">) */
+.erro.ok{color:#1B6B3A}
