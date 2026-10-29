@@ -210,6 +210,8 @@
     setTimeout(function () {
       var r = conferirLocal(codigo);
       if (r.ok) {
+        // libera a tela de nova senha (que confere esta marca)
+        try { sessionStorage.setItem('apollo-codigo-ok:' + String(email || '').toLowerCase(), '1'); } catch (err) {}
         location.href = DESTINO_OK + (email ? '?email=' + encodeURIComponent(email) : '');
         return;
       }

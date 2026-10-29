@@ -34,7 +34,7 @@
   }
 
   // sem passar pelo código, não tem por que ver esta tela
-  if (!USAR_SERVIDOR && (!email || !codigoFoiValidado())) {
+  if (!USAR_SERVIDOR && !codigoFoiValidado()) {
     location.replace(DESTINO_SEM_CODIGO);
     return;
   }
