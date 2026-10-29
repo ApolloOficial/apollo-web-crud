@@ -1,0 +1,33 @@
+/* Pop-up "Cadastrar técnico / usuário" (detalhes-filial.html)
+   Carregar DEPOIS de detalhes-filial.css e detalhes-melhorias.css. */
+
+/* título só para leitor de tela (o visual começa direto nas seções) */
+.so-leitor {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+dialog.pop.pop-usuario {
+    width: min(860px, 94vw);
+    padding: 24px 28px 24px;
+}
+
+/* linha laranja depois do título de cada seção */
+dialog.pop-usuario .pop-secao.com-linha::after {
+    background: #ff6e2f;
+}
+
+dialog.pop-usuario .pop-rodape {
+    margin-top: 24px;
+}
+
+@media (max-width: 750px) {
+    dialog.pop.pop-usuario { padding: 18px 16px 20px; }
+}

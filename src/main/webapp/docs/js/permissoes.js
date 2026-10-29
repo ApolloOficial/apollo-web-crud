@@ -139,10 +139,78 @@
     var select = document.getElementById('cargoNovoUsuario');
 
     // com um único cargo possível ele já vem selecionado
-    select.innerHTML = (cargos.length > 1 ? '<option value="" selected></option>' : '') +
+    select.innerHTML = (cargos.length > 1 ? '<option value="" selected>Selecione o perfil</option>' : '') +
         cargos.map(function (c, i) {
             return '<option' + (cargos.length === 1 && i === 0 ? ' selected' : '') + '>' + c + '</option>';
         }).join('');
+
+    /* ---------- Máscaras e validação do pop-up de cadastro ---------- */
+    var MIN_SENHA = 8;
+
+    function mascaraCpf(v) {
+        var d = v.replace(/\D/g, '').slice(0, 11);
+        return d.replace(/^(\d{3})(\d)/, '$1.$2')
+                .replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3')
+                .replace(/\.(\d{3})(\d)/, '.$1-$2');
+    }
+
+    function mascaraTelefone(v) {
+        var d = v.replace(/\D/g, '').slice(0, 11);
+        if (d.length > 10) return d.replace(/^(\d{2})(\d{5})(\d{0,4}).*/, '($1) $2-$3');
+        if (d.length > 6)  return d.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
+        if (d.length > 2)  return d.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
+        if (d.length > 0)  return '(' + d;
+        return '';
+    }
+
+    function cpfValido(v) {
+        var d = v.replace(/\D/g, '');
+        if (d.length !== 11 || /^(\d)\1{10}$/.test(d)) return false;
+        for (var t = 9; t < 11; t++) {
+            var soma = 0;
+            for (var i = 0; i < t; i++) soma += Number(d.charAt(i)) * (t + 1 - i);
+            if (((soma * 10) % 11) % 10 !== Number(d.charAt(t))) return false;
+        }
+        return true;
+    }
+
+    function erroNoCampo(input, msg) {
+        var pai = input.closest('.pop-campo');
+        if (!pai) return;
+        pai.classList.add('invalido');
+        var aviso = pai.querySelector('.pop-erro');
+        if (!aviso) {
+            aviso = document.createElement('small');
+            aviso.className = 'pop-erro';
+            pai.appendChild(aviso);
+        }
+        aviso.textContent = msg;
+    }
+
+    // devolve true se está tudo certo (o "Preencha o campo" é do pop-ups.js)
+    function dadosValidos() {
+        var f = form.elements;
+        var primeiro = null;
+
+        function falha(campo, msg) {
+            erroNoCampo(campo, msg);
+            if (!primeiro) primeiro = campo;
+        }
+
+        if (!cpfValido(f.cpf.value)) falha(f.cpf, 'CPF inválido');
+        if (f.telefone.value.replace(/\D/g, '').length > 0 && f.telefone.value.replace(/\D/g, '').length < 10) falha(f.telefone, 'Telefone inválido');
+        if (f.senha.value.length < MIN_SENHA) falha(f.senha, 'A senha precisa ter pelo menos ' + MIN_SENHA + ' caracteres');
+
+        if (primeiro) primeiro.focus();
+        return !primeiro;
+    }
+
+    form.elements.cpf.addEventListener('input', function () {
+        this.value = mascaraCpf(this.value);
+    });
+    form.elements.telefone.addEventListener('input', function () {
+        this.value = mascaraTelefone(this.value);
+    });
 
     function escapar(texto) {
         var div = document.createElement('div');
@@ -160,6 +228,12 @@
     form.addEventListener('submit', function (e) {
         if (e.defaultPrevented) return;                        // faltou campo / e-mail inválido
         if (!e.submitter || e.submitter.value !== 'ok') return;
+
+        // CPF, telefone e senha
+        if (!dadosValidos()) {
+            e.preventDefault();
+            return;
+        }
 
         var f = form.elements;
         var cargo = f.cargo.value;
