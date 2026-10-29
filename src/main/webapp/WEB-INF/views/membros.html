@@ -104,25 +104,43 @@
 <div class="menu-flutuante" id="menu" role="menu" hidden></div>
 
 <!-- ===== Pop-up: cadastrar / editar membro ===== -->
-<dialog class="pop" id="dlg-membro" aria-labelledby="dlg-membro-t">
+<dialog class="pop pop-usuario" id="dlg-membro" aria-labelledby="dlg-membro-t">
     <form id="form-membro" novalidate>
-        <h2 class="pop-titulo">
-            <span class="pop-icone"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c.7-4.5 4-6 8-6s7.3 1.5 8 6"/></svg></span>
-            <span id="dlg-membro-t">Cadastrar membro</span>
-        </h2>
-        <div class="pop-grade">
-            <label class="pop-campo largo"><span>Nome completo *</span><input class="pop-input" name="nome" type="text" placeholder="Ex.: Ana Souza" autocomplete="off" required></label>
-            <label class="pop-campo largo"><span>E-mail *</span><input class="pop-input" name="email" type="email" placeholder="nome@empresa.com.br" autocomplete="off" required></label>
-            <label class="pop-campo"><span>Cargo *</span>
-                <select class="pop-select" name="cargo" required><option value="" selected></option><option>Técnico</option><option>Operador</option></select>
-            </label>
-            <label class="pop-campo"><span>Filial *</span>
-                <select class="pop-select" name="filial" id="sel-filial-form" required></select>
-            </label>
-            <label class="pop-campo"><span>Status *</span>
-                <select class="pop-select" name="status" required><option selected>Ativo</option><option>Inativo</option></select>
-            </label>
+        <h2 class="so-leitor" id="dlg-membro-t">Cadastrar membro</h2>
+
+        <div class="pop-bloco">
+            <h3 class="pop-secao">
+                <span class="pop-icone"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span>
+                Dados pessoais
+            </h3>
+            <div class="pop-grade">
+                <label class="pop-campo"><span>Nome completo *</span><input class="pop-input" name="nome" type="text" placeholder="Ex.: Mason Mount" autocomplete="off" required></label>
+                <label class="pop-campo"><span>Telefone</span><input class="pop-input" name="telefone" type="tel" inputmode="tel" placeholder="(11) 99999-9999" autocomplete="off" maxlength="15"></label>
+                <label class="pop-campo"><span>Email *</span><input class="pop-input" name="email" type="email" placeholder="nome@empresa.com" autocomplete="off" required></label>
+                <label class="pop-campo"><span id="rot-cpf">CPF *</span><input class="pop-input" name="cpf" type="text" inputmode="numeric" placeholder="000.000.000-00" autocomplete="off" maxlength="14" required></label>
+            </div>
         </div>
+
+        <div class="pop-bloco" id="bloco-acesso">
+            <h3 class="pop-secao">
+                <span class="pop-icone"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>
+                Acesso
+            </h3>
+            <div class="pop-grade">
+                <label class="pop-campo"><span>Senha *</span><input class="pop-input" name="senha" type="password" placeholder="Digite a senha" autocomplete="new-password" required></label>
+            </div>
+        </div>
+
+        <div class="pop-bloco">
+            <h3 class="pop-secao">
+                <span class="pop-icone"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 21v-4h6v4"/></svg></span>
+                Empresa
+            </h3>
+            <div class="pop-grade">
+                <label class="pop-campo"><span>Perfil / Tipo de usuário *</span><select class="pop-select" name="cargo" required></select></label>
+            </div>
+        </div>
+
         <div class="pop-rodape">
             <button type="button" class="pop-btn contorno" id="dlg-cancelar">Cancelar</button>
             <button type="submit" class="pop-btn cheio" id="dlg-salvar">Cadastrar</button>

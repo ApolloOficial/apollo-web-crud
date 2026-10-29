@@ -146,7 +146,6 @@
 
     /* ---------- Controles ---------- */
     $('sel-filial').innerHTML = '<option value="">Todas as filiais</option>' + FILIAIS.map(function (f) { return '<option>' + f + '</option>'; }).join('');
-    $('sel-filial-form').innerHTML = '<option value="" selected></option>' + FILIAIS.map(function (f) { return '<option>' + f + '</option>'; }).join('');
 
     $('sel-filial').addEventListener('change', function () { st.filial = this.value; st.pagina = 1; render(); });
     $('busca').addEventListener('input', function () { st.busca = this.value; st.pagina = 1; render(); });
@@ -159,6 +158,62 @@
         if (b && !b.disabled) { st.pagina = Number(b.getAttribute('data-p')); render(); }
     });
 
+    /* ---------- Máscaras e validação do formulário ---------- */
+    var MIN_SENHA = 8;
+
+    function mascaraCpf(v) {
+        var d = v.replace(/\D/g, '').slice(0, 11);
+        return d.replace(/^(\d{3})(\d)/, '$1.$2')
+                .replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3')
+                .replace(/\.(\d{3})(\d)/, '.$1-$2');
+    }
+
+    function mascaraTelefone(v) {
+        var d = v.replace(/\D/g, '').slice(0, 11);
+        if (d.length > 10) return d.replace(/^(\d{2})(\d{5})(\d{0,4}).*/, '($1) $2-$3');
+        if (d.length > 6)  return d.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
+        if (d.length > 2)  return d.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
+        if (d.length > 0)  return '(' + d;
+        return '';
+    }
+
+    function cpfValido(v) {
+        var d = v.replace(/\D/g, '');
+        if (d.length !== 11 || /^(\d)\1{10}$/.test(d)) return false;
+        for (var t = 9; t < 11; t++) {
+            var soma = 0;
+            for (var i = 0; i < t; i++) soma += Number(d.charAt(i)) * (t + 1 - i);
+            if (((soma * 10) % 11) % 10 !== Number(d.charAt(t))) return false;
+        }
+        return true;
+    }
+
+    function erroNoCampo(input, msg) {
+        var p = input.closest('.pop-campo');
+        if (!p) return;
+        p.classList.add('invalido');
+        var er = p.querySelector('.pop-erro');
+        if (!er) { er = document.createElement('small'); er.className = 'pop-erro'; p.appendChild(er); }
+        er.textContent = msg;
+    }
+
+    // true se CPF, telefone e senha estão certos (o "Preencha o campo" é conferido antes)
+    function dadosValidos() {
+        var f = form.elements, primeiro = null;
+        function falha(campo, msg) { erroNoCampo(campo, msg); if (!primeiro) primeiro = campo; }
+
+        if (f.cpf.value.trim() && !cpfValido(f.cpf.value)) falha(f.cpf, 'CPF inválido');
+        var tel = f.telefone.value.replace(/\D/g, '');
+        if (tel.length > 0 && tel.length < 10) falha(f.telefone, 'Telefone inválido');
+        if (!editando && f.senha.value.length < MIN_SENHA) falha(f.senha, 'A senha precisa ter pelo menos ' + MIN_SENHA + ' caracteres');
+
+        if (primeiro) primeiro.focus();
+        return !primeiro;
+    }
+
+    form.elements.cpf.addEventListener('input', function () { this.value = mascaraCpf(this.value); });
+    form.elements.telefone.addEventListener('input', function () { this.value = mascaraTelefone(this.value); });
+
     /* ---------- Pop-up cadastrar / editar ---------- */
     function limparErros() {
         form.querySelectorAll('.pop-campo.invalido').forEach(function (c) { c.classList.remove('invalido'); });
@@ -170,9 +225,13 @@
         var f = form.elements;
         $('dlg-membro-t').textContent = m ? 'Editar membro' : 'Cadastrar membro';
         $('dlg-salvar').textContent = m ? 'Salvar' : 'Cadastrar';
+        $('bloco-acesso').hidden = !!m;            // senha só no cadastro
+        f.senha.required = !m;
+        f.cpf.required = !m;                       // membros antigos ainda não têm CPF
+        $('rot-cpf').textContent = m ? 'CPF' : 'CPF *';
         if (m) {
             f.nome.value = m.n; f.email.value = m.e; f.cargo.value = m.c;
-            f.filial.value = m.f; f.status.value = m.a ? 'Ativo' : 'Inativo';
+            f.telefone.value = m.t || ''; f.cpf.value = m.cpf || '';
         }
         dlg.showModal();
     }
@@ -201,10 +260,17 @@
         });
         if (primeiro) { primeiro.focus(); return; }
         if (jaBarrado) return;
+        if (!dadosValidos()) return;
 
         var f = form.elements;
         if (cargos.indexOf(f.cargo.value) < 0) return;   // confere o cargo de novo
-        var dados = { n: f.nome.value.trim(), e: f.email.value.trim(), c: f.cargo.value, f: f.filial.value, a: f.status.value === 'Ativo' };
+        // sem campo de filial/status no formulário: novo membro entra ativo, na filial filtrada (ou na primeira)
+        var dados = {
+            n: f.nome.value.trim(), e: f.email.value.trim(), c: f.cargo.value,
+            t: f.telefone.value.trim(), cpf: f.cpf.value.trim(),
+            f: editando ? editando.f : (st.filial || FILIAIS[0]),
+            a: editando ? editando.a : true
+        };   // a senha não é guardada aqui: quem grava é o servidor
 
         if (editando) {
             Object.assign(editando, dados);
@@ -226,7 +292,7 @@
         document.querySelector('.tabela thead th:last-child').remove();
     } else {
         // só aparecem os cargos que o perfil pode cadastrar
-        form.elements.cargo.innerHTML = (cargos.length > 1 ? '<option value="" selected></option>' : '') +
+        form.elements.cargo.innerHTML = (cargos.length > 1 ? '<option value="" selected>Selecione o perfil</option>' : '') +
             cargos.map(function (c) { return '<option' + (cargos.length === 1 ? ' selected' : '') + '>' + c + '</option>'; }).join('');
     }
 

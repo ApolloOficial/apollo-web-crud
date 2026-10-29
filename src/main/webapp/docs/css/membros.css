@@ -111,3 +111,13 @@ dialog.pop[open] { animation: pop-entra .18s ease-out; }
 
 /* operador: sem coluna de ações */
 .tabela.sem-acoes th:last-child, .tabela.sem-acoes td:last-child { width: auto; text-align: left; }
+
+/* ---------- Pop-up de cadastro (seções: Dados pessoais / Acesso / Empresa) ---------- */
+.so-leitor { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+dialog.pop.pop-usuario { width: min(860px, 94vw); padding: 24px 28px; }
+.pop-bloco + .pop-bloco { margin-top: 24px; }
+.pop-secao { display: flex; align-items: center; gap: 10px; margin: 0 0 16px; font-size: 14px; font-weight: 600; }
+.pop-secao::after { content: ""; flex: 1; height: 1px; background: var(--laranja); }
+.pop-secao .pop-icone { width: 28px; height: 28px; border-radius: 8px; }
+.pop-secao .pop-icone .ic { width: 17px; height: 17px; }
+@media (max-width: 750px) { dialog.pop.pop-usuario { padding: 18px 16px 20px; } }
