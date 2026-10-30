@@ -21,7 +21,8 @@ public class PainelDAO extends ApolloConnection {
         painel.setNumeroSerie(rs.getString("numero_serie"));
         painel.setMarca(rs.getString("marca"));
         painel.setModelo(rs.getString("modelo"));
-        painel.setPotenciaW(rs.getObject("potencia_w", Double.class));
+        double potenciaW = rs.getDouble("potencia_w");
+        painel.setPotenciaW(rs.wasNull() ? null : potenciaW);
         painel.setNotaFiscal(rs.getString("nota_fiscal"));
         painel.setStatus(StatusGeral.valueOf(rs.getString("status")));
         Date dataInstalacao = rs.getDate("data_instalacao");

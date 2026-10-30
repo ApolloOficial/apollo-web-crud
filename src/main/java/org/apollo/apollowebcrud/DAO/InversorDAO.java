@@ -22,7 +22,8 @@ public class InversorDAO extends ApolloConnection {
         inversor.setNumeroSerie(rs.getString("numero_serie"));
         inversor.setMarca(rs.getString("marca"));
         inversor.setModelo(rs.getString("modelo"));
-        inversor.setPotenciaKw(rs.getObject("potencia_kw", Double.class));
+        double potenciaKw = rs.getDouble("potencia_kw");
+        inversor.setPotenciaKw(rs.wasNull() ? null : potenciaKw);
         inversor.setStatus(StatusGeral.valueOf(rs.getString("status")));
         Date dataInstalacao = rs.getDate("data_instalacao");
         inversor.setDataInstalacao(dataInstalacao != null ? dataInstalacao.toLocalDate() : null);
