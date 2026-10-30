@@ -23,16 +23,26 @@ public class UsuarioService {
     private final InativacaoDAO inativacaoDAO = new InativacaoDAO();
     private final TipoUsuarioService tipoUsuarioService = new TipoUsuarioService();
 
+    // Hash usado quando o email não existe, para o tempo de resposta ser parecido com o de um email válido
+    private final String hashFicticio = SenhaUtils.gerarHash("senha-ficticia-para-tempo-de-resposta");
+
     // ---------- LOGIN ----------
 
     public Usuario validarLogin(String email, String senha, TipoUsuEnum areaSelecionada) {
-        if (areaSelecionada == null || !dadosLoginPreenchidos(email, senha)) {
+        String emailLimpo = email == null ? null : email.trim();
+
+        if (areaSelecionada == null || !dadosLoginPreenchidos(emailLimpo, senha)) {
             return null;
         }
 
-        Usuario usuario = usuarioDAO.buscarParaLogin(email.trim());
+        Usuario usuario = usuarioDAO.buscarParaLogin(emailLimpo);
 
-        if (usuario == null || !SenhaUtils.verificar(senha, usuario.getSenhaHash()) || !estaAtivo(usuario)) {
+        if (usuario == null) {
+            SenhaUtils.verificar(senha, hashFicticio); // gasta o mesmo tempo que uma senha real
+            return null;
+        }
+
+        if (!SenhaUtils.verificar(senha, usuario.getSenhaHash()) || !estaAtivo(usuario)) {
             return null;
         }
 
