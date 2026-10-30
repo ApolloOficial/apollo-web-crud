@@ -1,12 +1,13 @@
 package org.apollo.apollowebcrud.util;
 
-import org.apollo.apollowebcrud.dao.EmpresaDAO;
-
 public final class CnpjUtils {
-    public static final EmpresaDAO empresaDAO = new EmpresaDAO();
 
     private CnpjUtils() {
         throw new UnsupportedOperationException("Esta é uma classe utilitária e não pode ser instanciada.");
+    }
+
+    public static String removerMascara(String cnpj) {
+        return cnpj == null ? "" : cnpj.replaceAll("\\D", "");
     }
 
     /*

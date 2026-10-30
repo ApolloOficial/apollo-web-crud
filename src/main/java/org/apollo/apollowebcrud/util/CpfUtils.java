@@ -1,56 +1,32 @@
 package org.apollo.apollowebcrud.util;
 
-import org.apollo.apollowebcrud.dao.UsuarioDAO;
-
 public final class CpfUtils {
-    public static final UsuarioDAO usuarioDAO = new UsuarioDAO();
 
     private CpfUtils() {
         throw new UnsupportedOperationException("Esta é uma classe utilitária e não pode ser instanciada.");
     }
 
-    public static boolean verificarCpfExist(String cpf) {
-        return usuarioDAO.buscarPorCpf(cpf) != null;
+    public static String removerMascara(String cpf) {
+        return cpf == null ? "" : cpf.trim().replaceAll("[^0-9]", "");
     }
-/*
-      Valida o CPF de verdade: formato + dígitos verificadores +
-      rejeita sequências repetidas (111.111.111-11 etc, que passam no formato mas são inválidas)
- */
-    public static boolean isCpfValido(String cpf) {
-        if (cpf == null) return false;
 
-        // Remove tudo que não for dígito
-        String digits = cpf.replaceAll("\\D", "");
+    // Formato + dígitos verificadores; rejeita sequências repetidas (111.111.111-11)
+    public static boolean isValido(String cpf) {
+        String digitos = removerMascara(cpf);
 
-        // Precisa ter exatamente 11 dígitos
-        if (digits.length() != 11) return false;
-
-        // Rejeita sequências tipo 00000000000, 11111111111, 22222222222 ...
-        if (digits.matches("(\\d)\\1{10}")) return false;
-
-        int[] nums = new int[11];
-        for (int i = 0; i < 11; i++) {
-            nums[i] = digits.charAt(i) - '0';
+        if (digitos.length() != 11 || digitos.matches("(\\d)\\1{10}")) {
+            return false;
         }
 
-        // --- Cálculo do 1º dígito verificador ---
-        int soma1 = 0;
-        for (int i = 0; i < 9; i++) {
-            soma1 += nums[i] * (10 - i);
+        return digitoVerificador(digitos, 9) == digitos.charAt(9) - '0'
+                && digitoVerificador(digitos, 10) == digitos.charAt(10) - '0';
+    }
+
+    private static int digitoVerificador(String digitos, int tamanho) {
+        int soma = 0;
+        for (int i = 0; i < tamanho; i++) {
+            soma += (digitos.charAt(i) - '0') * (tamanho + 1 - i);
         }
-        int resto1 = soma1 % 11;
-        int dv1 = (resto1 < 2) ? 0 : 11 - resto1;
-
-        if (dv1 != nums[9]) return false;
-
-        // --- Cálculo do 2º dígito verificador ---
-        int soma2 = 0;
-        for (int i = 0; i < 10; i++) {
-            soma2 += nums[i] * (11 - i);
-        }
-        int resto2 = soma2 % 11;
-        int dv2 = (resto2 < 2) ? 0 : 11 - resto2;
-
-        return dv2 == nums[10];
+        return (soma * 10 % 11) % 10;
     }
 }
