@@ -2005,7 +2005,6 @@ main.conteudo .btn.btn-cadastrar,
 main.conteudo .btn.btn-editar,
 main.conteudo .btn.btn-atualizar,
 dialog.pop .pop-btn.cheio,
-dialog.pop .pop-btn.verde,
 dialog.pop .pop-btn.perigo {
     background: var(--btn-apollo);
     border-color: var(--btn-apollo);
@@ -2016,7 +2015,6 @@ main.conteudo .btn.btn-cadastrar:hover,
 main.conteudo .btn.btn-editar:hover,
 main.conteudo .btn.btn-atualizar:hover,
 dialog.pop .pop-btn.cheio:hover,
-dialog.pop .pop-btn.verde:hover,
 dialog.pop .pop-btn.perigo:hover {
     background: var(--btn-apollo-hover);
     border-color: var(--btn-apollo-hover);
@@ -2045,6 +2043,10 @@ dialog.pop .pop-btn.contorno:hover {
 }
 main.conteudo .btn.btn-excluir svg { stroke: var(--btn-apollo); }
 dialog.pop .pop-link { color: var(--btn-apollo); }
+
+/* "Concluir" mantém o verde original */
+dialog.pop .pop-btn.verde { background: #14b886; border-color: #14b886; color: #fff; }
+dialog.pop .pop-btn.verde:hover { background: #0fa476; border-color: #0fa476; }
 
 /* ---------- Cadastrar: mesmo tamanho dos demais botões ---------- */
 main.conteudo .btn.btn-cadastrar {
