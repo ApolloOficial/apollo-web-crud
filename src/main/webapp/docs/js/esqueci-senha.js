@@ -55,7 +55,7 @@
     limparErro();
     campo.value = email;
     ocupado(true);
-    form.submit();                         // GET para login_codigo.html?email=...
+    form.submit();                         // GET para login_codigo.jsp?email=...
   });
 
   window.addEventListener('pageshow', function (e) { if (e.persisted) ocupado(false); });

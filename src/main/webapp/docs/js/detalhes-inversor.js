@@ -214,7 +214,7 @@
                     '</div>' +
                     '<div class="lado-direito">' +
                         '<span class="badge ' + classeStatus(s.status) + '">' + escapar(s.status) + '</span>' +
-                        '<a href="detalhes-string.html" class="btn btn-detalhes">Ver detalhes</a>' +
+                        '<a href="detalhes-string.jsp" class="btn btn-detalhes">Ver detalhes</a>' +
                     '</div>' +
                 '</article>';
         }).join('');

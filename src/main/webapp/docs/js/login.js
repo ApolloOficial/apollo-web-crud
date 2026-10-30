@@ -8,7 +8,7 @@
      true  -> envia o formulário (POST em "login") para o servidor Java,
               que decide para onde redirecionar. PRIMEIRO ACESSO: se o usuário
               ainda não trocou a senha provisória, o servidor deve redirecionar
-              para login_nova_senha.html (e só liberar o dashboard depois).
+              para login_nova_senha.jsp (e só liberar o dashboard depois).
      --------------------------------------------------------------- */
   var USAR_SERVIDOR = false;
 
@@ -22,7 +22,7 @@
   var CHAVE_PERFIL = 'apollo-perfil';        // lida pelo sidebar.js
   var CHAVE_AREA   = 'apollo-ultima-area';   // só para lembrar a última escolha
   var CHAVE_PRIMEIRO = 'apollo-primeiro-acesso';  // emails que ainda não trocaram a senha (modo demonstração)
-  var PAGINA_NOVA_SENHA = 'login_nova_senha.html';
+  var PAGINA_NOVA_SENHA = 'login_nova_senha.jsp';
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   var $ = function (id) { return document.getElementById(id); };

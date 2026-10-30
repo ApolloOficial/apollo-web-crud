@@ -243,7 +243,7 @@
             dlgExcluir.showModal();
         }
         if (acao === 'ver') {
-            window.location.href = 'detalhes-filial.html';   // abre a tela de detalhes da filial
+            window.location.href = 'detalhes-filial.jsp';   // abre a tela de detalhes da filial
         }
     });
 

@@ -19,7 +19,7 @@
   var TAMANHO        = 6;                  // quantidade de números do código
   var VALIDADE_MIN   = 10;                 // minutos até o código expirar (modo demonstração)
   var MAX_TENTATIVAS = 5;                  // erros permitidos (modo demonstração)
-  var DESTINO_OK     = 'login_nova_senha.html';  // para onde ir quando o código estiver certo
+  var DESTINO_OK     = 'login_nova_senha.jsp';  // para onde ir quando o código estiver certo
 
   var MSG = {
     vazio:      'Digite o código que você recebeu.',

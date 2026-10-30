@@ -7,7 +7,20 @@
    data-tipo  = (opcional) tipos que podem abrir a tela: "gerente" ou "tecnico,operador".
                 Quem não estiver na lista é levado para o início do próprio perfil.
 
+<<<<<<< Updated upstream
    Menus:
+=======
+   Tipo por página (automático, não precisa de data-tipo nessas telas):
+     Gerente            → dashboard-crud, contrato, empresa, perfil-gerente
+     Técnico / Operador → dashboard, detalhes-filial, detalhes, membros, perfil-tecnico
+   (data-tipo, se existir, tem prioridade sobre essa lista.)
+
+   Telas que mudam conforme o tipo:
+     Dashboard → Gerente: dashboard-crud.html  | Técnico / Operador: dashboard.html
+     Perfil    → Gerente: perfil-gerente.jsp  | Técnico / Operador: perfil-tecnico.jsp
+
+   Tipos de usuário e menus:
+>>>>>>> Stashed changes
      Técnico / Operador → Dashboard, Filial e Usuários
      Gerente            → Dashboard, Contrato e Empresa
    (Perfil fica sempre no rodapé.)
@@ -31,7 +44,7 @@
     var CHAVE = 'apollo-perfil';          // lembrado no navegador (modo teste)
     var CHAVE_LOGIN = 'apollo_perfil';    // gravado pelo login.js (sessionStorage)
     var EXIGIR_LOGIN = false;             // true = sem login, volta para o login
-    var PAGINA_LOGIN = 'login.html';
+    var PAGINA_LOGIN = 'login.jsp';
 
     var ICONES = {
         dashboard: '<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>',

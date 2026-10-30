@@ -193,7 +193,7 @@
                     '</div>' +
                     '<div class="lado-direito">' +
                         '<span class="badge ' + classeStatus(inv.status) + '">' + escapar(inv.status) + '</span>' +
-                        '<a href="detalhes-inversor.html" class="btn btn-detalhes">Ver detalhes</a>' +
+                        '<a href="detalhes-inversor.jsp" class="btn btn-detalhes">Ver detalhes</a>' +
                     '</div>' +
                 '</article>';
         }).join('');
