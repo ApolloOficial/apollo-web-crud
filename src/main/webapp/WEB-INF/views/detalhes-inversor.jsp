@@ -13,7 +13,7 @@
 
     <link rel="stylesheet" href="../../docs/css/detalhes-inversor.css">
     <link rel="stylesheet" href="../../docs/css/sidebar.css">
-    <link rel="stylesheet" href="../../docs/css/detalhes-melhoria.css">
+    <link rel="stylesheet" href="../../docs/css/detalhes-melhorias.css">
 </head>
 <body>
 
@@ -58,9 +58,9 @@
             </div>
 
             <div class="acoes">
-                <button type="button" class="btn btn-editar" data-abrir="dlg-editar-inversor">Editar</button>
-                <button type="button" class="btn btn-inativar" data-abrir="dlg-inativar-inversor">Inativar</button>
-                <button type="button" class="btn btn-excluir" data-abrir="dlg-excluir-inversor" aria-label="Excluir inversor">
+                <button type="button" class="btn btn-editar" data-abrir="dlg-editar-inversor" data-permissao="equipamento">Editar</button>
+                <button type="button" class="btn btn-inativar" data-abrir="dlg-inativar-inversor" data-permissao="equipamento">Inativar</button>
+                <button type="button" class="btn btn-excluir" data-abrir="dlg-excluir-inversor" data-permissao="equipamento" aria-label="Excluir inversor">
                     <svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                 </button>
             </div>
@@ -103,12 +103,14 @@
         </section>
 
         <!-- Strings -->
-        <h3 class="titulo-secao">Strings</h3>
+        <div class="secao-topo">
+            <h3 class="titulo-secao">Strings</h3>
+            <button type="button" class="btn btn-cadastrar" data-abrir="dlg-cadastrar-string" data-permissao="cadastro">Cadastrar String</button>
+        </div>
         <section class="grade-strings" id="listaStrings"></section>
 
         <div class="rodape-detalhes">
             <a href="detalhes-filial.jsp" class="link-voltar">Voltar para filial</a>
-            <button type="button" class="btn btn-cadastrar" data-abrir="dlg-cadastrar-string">Cadastrar String</button>
         </div>
 
     </main>

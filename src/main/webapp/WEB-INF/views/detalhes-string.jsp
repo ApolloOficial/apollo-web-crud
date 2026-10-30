@@ -95,7 +95,7 @@
         <section class="secao-paineis">
             <div class="paineis-topo">
                 <h3>Painéis da String</h3>
-                <button type="button" class="btn btn-cadastrar" data-abrir="dlg-add-painel" data-permissao="equipamento">Adicionar painel</button>
+                <button type="button" class="btn btn-cadastrar" data-abrir="dlg-add-painel" data-permissao="cadastro">Adicionar painel</button>
             </div>
 
             <div class="metricas">
@@ -141,12 +141,14 @@
         </section>
 
         <!-- Manutenções -->
-        <h3 class="titulo-secao">Manutenções</h3>
+        <div class="secao-topo">
+            <h3 class="titulo-secao">Manutenções</h3>
+            <button type="button" class="btn btn-cadastrar" data-abrir="dlg-cadastrar-manut" data-permissao="manutencao">Cadastrar manutenção</button>
+        </div>
         <section class="lista-manut" id="listaManut"></section>
 
         <div class="rodape-detalhes">
             <a href="detalhes-inversor.jsp" class="link-voltar">Voltar para o inversor</a>
-            <button type="button" class="btn btn-cadastrar" data-abrir="dlg-cadastrar-manut">Cadastrar manutenção</button>
         </div>
 
     </main>
@@ -178,40 +180,55 @@
         </div>
     </form>
 </dialog>
-<dialog class="pop" id="dlg-atualizar-manut" aria-label="Atualizar manutenção">
+<dialog class="pop" id="dlg-atualizar-manut" aria-labelledby="dlg-atualizar-manut-t">
     <form method="dialog">
+        <h2 class="pop-titulo" id="dlg-atualizar-manut-t"><span class="pop-icone"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/></svg></span>Atualizar manutenção</h2>
         <label class="pop-campo">
-            <select class="pop-select" name="tipo" aria-label="Tipo de manutenção" required>
+            <span>Tipo de manutenção *</span>
+            <select class="pop-select" name="tipo" required>
                 <option value="" selected>Selecione o tipo de manutenção</option>
                 <option>Preventiva</option><option>Corretiva</option><option>Preditiva</option>
             </select>
         </label>
         <label class="pop-campo">
-            <textarea class="pop-area" name="descricao" placeholder="Escreva a descrição da manutenção..." aria-label="Descrição" required></textarea>
+            <span>Descrição *</span>
+            <textarea class="pop-area" name="descricao" placeholder="Escreva a descrição da manutenção..." required></textarea>
         </label>
         <label class="pop-campo">
-            <span>Selecione a data prevista da conclusão:</span>
+            <span>Data prevista da conclusão</span>
             <input class="pop-input pop-data" name="previsao" type="date">
         </label>
         <div class="pop-rodape">
-            <button class="pop-btn verde" value="concluir">Concluir</button>
             <div class="grupo">
                 <button class="pop-btn contorno" value="cancel" formnovalidate>Voltar</button>
                 <button class="pop-btn cheio" value="salvar">Salvar</button>
+                <button class="pop-btn verde" value="concluir">Concluir</button>
             </div>
         </div>
     </form>
 </dialog>
-<dialog class="pop" id="dlg-detalhes-manut" aria-label="Detalhes da manutenção">
+<dialog class="pop" id="dlg-detalhes-manut" aria-labelledby="dlg-detalhes-manut-t">
     <form method="dialog">
-        <label class="pop-campo"><input class="pop-input" id="det-tipo" readonly aria-label="Tipo"></label>
-        <label class="pop-campo"><textarea class="pop-area" id="det-descricao" readonly aria-label="Descrição"></textarea></label>
-        <label class="pop-campo"><span>Data prevista da conclusão:</span><input class="pop-input pop-data" id="det-previsao" readonly></label>
-        <div class="pop-campo">
-            <span class="pop-rotulo">Usuário que cadastrou:</span>
-            <div class="pop-linha-usuario">
-                <input class="pop-input" id="det-usuario" readonly aria-label="Usuário que cadastrou">
-                <button class="pop-link" value="cancel" formnovalidate>Voltar</button>
+        <h2 class="pop-titulo" id="dlg-detalhes-manut-t"><span class="pop-icone"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/></svg></span>Detalhes da manutenção</h2>
+        <label class="pop-campo">
+            <span>Tipo de manutenção</span>
+            <input class="pop-input" id="det-tipo" readonly>
+        </label>
+        <label class="pop-campo">
+            <span>Descrição</span>
+            <textarea class="pop-area" id="det-descricao" readonly></textarea>
+        </label>
+        <label class="pop-campo">
+            <span>Data prevista da conclusão</span>
+            <input class="pop-input pop-data" id="det-previsao" readonly>
+        </label>
+        <label class="pop-campo">
+            <span>Usuário que cadastrou</span>
+            <input class="pop-input" id="det-usuario" readonly>
+        </label>
+        <div class="pop-rodape">
+            <div class="grupo">
+                <button class="pop-btn cheio" value="cancel" formnovalidate>Voltar</button>
             </div>
         </div>
     </form>

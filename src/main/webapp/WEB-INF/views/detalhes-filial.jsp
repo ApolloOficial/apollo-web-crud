@@ -115,7 +115,10 @@
             </article>
 
             <article class="painel-info">
-                <h3>Equipe da filial</h3>
+                <div class="painel-topo">
+                    <h3>Equipe da filial</h3>
+                    <button type="button" class="btn btn-cadastrar mini" id="btnCadastrarUsuario" data-abrir="dlg-cadastrar-usuario">Cadastrar usuário</button>
+                </div>
                 <ul class="lista-equipe">
                     <li>
                         <div class="avatar-mini">AS</div>
@@ -140,8 +143,7 @@
                     </li>
                 </ul>
                 <div class="equipe-rodape">
-                    <button type="button" class="btn btn-mais" id="btnCadastrarUsuario" data-abrir="dlg-cadastrar-usuario">Cadastrar usuário</button>
-                    <a href="membros.jsp" class="btn btn-mais">Ver mais</a>
+                    <a href="membros.html" class="btn btn-mais">Ver mais</a>
                 </div>
             </article>
         </section>
@@ -155,12 +157,12 @@
             <span class="badge badge-amarelo">Aguardando integração com a API</span>
         </section>
 
-        <!-- Inversores -->
-        <section class="grade-strings" id="listaInversores"></section>
-
-        <div class="rodape-detalhes rodape-filial">
+        <!-- Inversores (botão de cadastro no topo da seção) -->
+        <div class="secao-topo">
+            <h3 class="titulo-secao">Inversores</h3>
             <button type="button" class="btn btn-cadastrar" data-abrir="dlg-cadastrar-inversor" data-permissao="cadastro">Cadastrar inversor</button>
         </div>
+        <section class="grade-strings" id="listaInversores"></section>
 
     </main>
 
