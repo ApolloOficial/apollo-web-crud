@@ -90,7 +90,7 @@
 .grafico-eixo {
   display: flex; justify-content: space-between; gap: 4px;
   padding-top: 10px;
-  font-size: 11px; font-weight: 600; color: var(--dash-mes);
+  font-size: 12px; font-weight: 600; color: var(--dash-mes);
 }
 
 /* ---------- Responsivo ---------- */
