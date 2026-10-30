@@ -1,3 +1,5 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -27,10 +29,10 @@
             <div>
                 <h1 class="titulo">Detalhes da String</h1>
                 <nav class="breadcrumb" aria-label="Você está em">
-                    <a href="empresa.html">Filial</a><span class="sep">&gt;</span>
-                    <a href="detalhes-filial.html">Solaris Osasco</a><span class="sep">&gt;</span>
-                    <a href="detalhes-filial.html#listaInversores">Inversores</a><span class="sep">&gt;</span>
-                    <a href="detalhes-inversor.html">INV-OSA-01</a><span class="sep">&gt;</span>
+                    <a href="empresa.jsp">Filial</a><span class="sep">&gt;</span>
+                    <a href="detalhes-filial.jsp">Solaris Osasco</a><span class="sep">&gt;</span>
+                    <a href="detalhes-filial.jsp#listaInversores">Inversores</a><span class="sep">&gt;</span>
+                    <a href="detalhes-inversor.jsp">INV-OSA-01</a><span class="sep">&gt;</span>
                     <span class="atual">STR-OSA-01-01</span>
                 </nav>
             </div>
@@ -93,7 +95,7 @@
         <section class="secao-paineis">
             <div class="paineis-topo">
                 <h3>Painéis da String</h3>
-                <button type="button" class="btn btn-cadastrar" data-abrir="dlg-add-painel" data-permissao="cadastro">Adicionar painel</button>
+                <button type="button" class="btn btn-cadastrar" data-abrir="dlg-add-painel" data-permissao="equipamento">Adicionar painel</button>
             </div>
 
             <div class="metricas">
@@ -143,8 +145,8 @@
         <section class="lista-manut" id="listaManut"></section>
 
         <div class="rodape-detalhes">
-            <a href="detalhes-inversor.html" class="link-voltar">Voltar para o inversor</a>
-            <button type="button" class="btn btn-cadastrar" data-abrir="dlg-cadastrar-manut" data-permissao="manutencao">Cadastrar manutenção</button>
+            <a href="detalhes-inversor.jsp" class="link-voltar">Voltar para o inversor</a>
+            <button type="button" class="btn btn-cadastrar" data-abrir="dlg-cadastrar-manut">Cadastrar manutenção</button>
         </div>
 
     </main>

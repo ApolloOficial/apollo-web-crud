@@ -1,3 +1,5 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -10,8 +12,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Arquivos do projeto (mesma pasta) -->
-    <link rel="stylesheet" href="../../docs/css/Apollostyle.css">
-    <link rel="stylesheet" href="../../docs/css/Logo Apollo.css">
+    <link rel="stylesheet" href="../../docs/css/apollostyle.css">
+    <link rel="stylesheet" href="../../docs/css/logoApollo.css">
     <link rel="stylesheet" href="../../docs/css/contrato.css">
     <link rel="stylesheet" href="../../docs/css/sidebar.css">
 </head>

@@ -1,3 +1,5 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -10,17 +12,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Arquivos do projeto (mesma pasta) -->
-    <link rel="stylesheet" href="../../docs/css/Apollostyle.css">
-    <link rel="stylesheet" href="../../docs/css/Logo Apollo.css">
-    <link rel="stylesheet" href="../../docs/css/membros.css">
-    <link rel="stylesheet" href="../../docs/css/sidebar.css">
+    <link rel="stylesheet" href="../docs/css/Apollostyle.css">
+    <link rel="stylesheet" href="../docs/css/Logo Apollo.css">
+    <link rel="stylesheet" href="../docs/css/membros.css">
+    <link rel="stylesheet" href="../docs/css/sidebar.css">
 </head>
 <body>
 <div class="pagina">
 
     <!-- ===== Sidebar (montada por sidebar.js conforme o tipo de usuário) ===== -->
     <aside class="sidebar" data-ativo="usuarios"></aside>
-    <script src="../../docs/js/sidebar.js?v=5"></script>
+    <script src="../JS/sidebar.js"></script>
 
     <main class="conteudo">
 
@@ -28,8 +30,8 @@
             <div>
                 <h1 class="titulo">Membros</h1>
                 <nav class="breadcrumb" aria-label="Você está em">
-                    <a href="detalhes-filial.html">Filial</a><span class="sep">&gt;</span>
-                    <a href="detalhes-filial.html">Solaris Osasco</a><span class="sep">&gt;</span>
+                    <a href="detalhes-filial.jsp">Filial</a><span class="sep">&gt;</span>
+                    <a href="detalhes-filial.jsp">Solaris Osasco</a><span class="sep">&gt;</span>
                     <span>Usuários</span>
                 </nav>
                 <p class="subtitulo-pagina">Gerencie os usuários da sua empresa e acompanhe suas equipes.</p>
@@ -148,7 +150,6 @@
     </form>
 </dialog>
 
-<script src="../../docs/js/validar-email.js"></script>
-<script src="../../docs/js/membros.js"></script>
+<script src="../JS/membros.js"></script>
 </body>
 </html>

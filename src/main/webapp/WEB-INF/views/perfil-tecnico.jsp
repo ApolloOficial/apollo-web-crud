@@ -1,3 +1,5 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -7,8 +9,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <title>Apollo – Meu Perfil</title>
-<link rel="stylesheet" href="../../docs/css/perfil-gerente.css">
-    <link rel="stylesheet" href="../../docs/css/sidebar.css">
+<link rel="stylesheet" href="../docs/css/perfil-tecnico.css">
+    <link rel="stylesheet" href="../docs/css/sidebar.css">
 </head>
 <body>
 
@@ -34,21 +36,21 @@
 <div class="pagina">
 
     <!-- ===== Sidebar (montada por sidebar.js conforme o tipo de usuário) ===== -->
-    <aside class="sidebar" data-ativo="perfil" data-tipo="gerente"></aside>
-    <script src="../../docs/js/sidebar.js"></script>
+    <aside class="sidebar" data-ativo="perfil" data-tipo="tecnico,operador"></aside>
+    <script src="../JS/sidebar.js"></script>
 
   <main class="conteudo">
 
     <header class="topo">
       <div class="topo-esq">
-        <a class="voltar" href="dashboard-gerente.html" aria-label="Voltar para o Dashboard"><svg class="ic"><use href="#i-back"/></svg></a>
+        <a class="voltar" href="dashboard.jsp" aria-label="Voltar para o Dashboard"><svg class="ic"><use href="#i-back"/></svg></a>
         <h1 class="titulo">Meu Perfil</h1>
       </div>
       <div class="topo-acoes">
         <button class="sino" aria-label="Notificações"><svg class="ic"><use href="#i-bell"/></svg><i></i></button>
         <div class="usuario">
-          <span class="avatar-foto" data-foto>NJ</span>
-          Neymar Júnior César
+          <span class="avatar-foto" data-foto>RA</span>
+          Rafael Almeida Santos
           <svg class="ic ic-12"><use href="#i-chev"/></svg>
         </div>
       </div>
@@ -57,16 +59,16 @@
     <section class="card cab-perfil">
       <div class="cab-lado">
         <div class="foto">
-          <div class="foto-img" data-foto>NJ</div>
+          <div class="foto-img" data-foto>RA</div>
           <button class="foto-btn" id="foto-btn" aria-label="Alterar foto"><svg class="ic"><use href="#i-camera"/></svg></button>
           <input type="file" id="foto-input" accept="image/*" hidden>
         </div>
         <div class="cab-nome">
-          <h2>Neymar Júnior César</h2>
-          <span class="selo-cargo">Gerente</span>
+          <h2>Rafael Almeida Santos</h2>
+          <span class="selo-cargo">Técnico</span>
           <div class="cab-contato">
-            <p><svg class="ic"><use href="#i-mail"/></svg>neymar.cesar@solartech.com.br</p>
-            <p><svg class="ic"><use href="#i-phone"/></svg>(11) 98765-4321</p>
+            <p><svg class="ic"><use href="#i-mail"/></svg>rafael.santos@solartech.com.br</p>
+            <p><svg class="ic"><use href="#i-phone"/></svg>(11) 91234-5678</p>
           </div>
         </div>
       </div>
@@ -80,13 +82,13 @@
       <section class="card">
         <h3 class="card-titulo escuro"><svg class="ic"><use href="#i-user"/></svg>Informações pessoais</h3>
         <div class="linhas sep">
-          <div class="linha"><span>Nome completo</span><b>Neymar Júnior César</b></div>
-          <div class="linha"><span>E-mail</span><b>neymar.cesar@solartech.com.br</b></div>
-          <div class="linha"><span>Telefone</span><b>(11) 98765-4321</b></div>
-          <div class="linha"><span>CPF</span><b>123.456.789-00</b></div>
-          <div class="linha"><span>Tipo de usuário</span><b>Gerente</b></div>
+          <div class="linha"><span>Nome completo</span><b>Rafael Almeida Santos</b></div>
+          <div class="linha"><span>E-mail</span><b>rafael.santos@solartech.com.br</b></div>
+          <div class="linha"><span>Telefone</span><b>(11) 91234-5678</b></div>
+          <div class="linha"><span>CPF</span><b>987.654.321-00</b></div>
+          <div class="linha"><span>Tipo de usuário</span><b>Técnico</b></div>
           <div class="linha"><span>Senha</span><b>-</b></div>
-          <div class="linha"><span>Filial</span><b>-</b></div>
+          <div class="linha"><span>Filial</span><b>Filial Matriz</b></div>
           <div class="linha"><span>Status</span><b><span class="selo-status">Ativo</span></b></div>
         </div>
       </section>
@@ -118,6 +120,6 @@
   </main>
 </div>
 
-<script src="../../docs/js/perfil-gerente.js"></script>
+<script src="../docs/js/perfil-tecnico.js"></script>
 </body>
 </html>

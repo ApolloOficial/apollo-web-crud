@@ -9,7 +9,7 @@
 </head>
 <body>
 <h1>Cadastrar usuário</h1>
-<form action="usuarios" method="POST">
+<form action="cadastro" method="POST">
     <table>
         <tr>
             <td><input type="text" name="nome" value="${param.nome}" placeholder="Nome"></td>
@@ -25,6 +25,22 @@
         </tr>
         <tr>
             <td><input type="text" name="tipo" value="${param.tipo}" placeholder="Tipo"></td>
+        </tr>
+        <tr>
+            <td><input type="text" name="empresa" value="${param.empresa}" placeholder="Empresa"></td>
+        </tr>
+        <tr>
+            <!-- pega uma lista de filiais-->
+            <td><input type="text" name="filial" value="${param.filial}" placeholder="Filial"></td>
+        </tr>
+        <tr>
+            <td><input type="text" name="telefone" value="${param.telefone}" placeholder="Telefone"></td>
+        </tr>
+        <tr>
+            <td><input type="text" name="status" value="${param.status}" placeholder="Status"></td>
+        </tr>
+        <tr>
+            <td><input type="text" name="urlFoto" value="${param.urlFoto}" placeholder="URL da foto"></td>
         </tr>
         <tr>
             <td><button type="submit">Cadastrar</button></td>

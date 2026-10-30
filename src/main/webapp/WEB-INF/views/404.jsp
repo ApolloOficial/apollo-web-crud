@@ -1,3 +1,5 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -10,13 +12,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
     <!-- Logo do projeto (mesma pasta) -->
-    <link rel="stylesheet" href="../../docs/css/Logo Apollo.css">
+    <link rel="stylesheet" href="../../docs/css/logoApollo.css">
 
     <link rel="stylesheet" href="../../docs/css/404.css">
 </head>
 <body>
 
-    <a class="logo" href="dashboard.html" aria-label="Apollo - ir para o Dashboard">
+    <a class="logo" href="dashboard.jsp" aria-label="Apollo - ir para o Dashboard">
         <div class="logo-apollo">
             <div class="nome">
                 <i class="a-anel"></i><i class="a-haste"></i>

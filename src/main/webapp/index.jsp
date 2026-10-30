@@ -25,7 +25,7 @@
         </tr>
     </table>
     <p>Novo acesso?</p>
-    <a href="usuarios?action=cadastrar">Clique aqui</a>
+    <a href="cadastro">Clique aqui</a>
 </form>
 <c:if test="${not empty ErroNoLogin}">
     <script>

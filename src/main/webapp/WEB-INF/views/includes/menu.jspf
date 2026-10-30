@@ -1,15 +1,36 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <c:set var="raiz" value="${pageContext.request.contextPath}"/>
+<%--
+  Fragmento de menu. Ainda não está incluído em nenhuma tela entregue (as telas
+  atuais montam o menu no client, via sidebar.js, sem relação com a sessão real) —
+  ver o documento de contexto, seção 7.5. Quando as telas passarem a usar este
+  fragmento (via <jsp:include> ou <%@ include %>), os links já saem filtrados
+  pelo perfil de quem está logado, seguindo a mesma matriz do Autorizacao.java.
+--%>
 <header>
     <nav>
         <a href="${raiz}/dashboard">Dashboard</a>
-        <a href="${raiz}/string">Lotes</a>
-        <a href="${raiz}/painel">Painéis</a>
-        <a href="${raiz}/inversor">Inversores</a>
-        <a href="${raiz}/manutencao">Manutenções</a>
-        <a href="${raiz}/empresa">Empresas</a>
-        <a href="${raiz}/filial">Filiais</a>
-        <a href="${raiz}/membros">Membros</a>
+
+        <c:if test="${usuarioLogado.perfil == 'GERENTE'}">
+            <a href="${raiz}/contrato">Contrato</a>
+        </c:if>
+
+        <a href="${raiz}/empresa">Empresa</a>
+
+        <c:if test="${usuarioLogado.perfil != 'GERENTE' || usuarioLogado.idEmpresa != null}">
+            <a href="${raiz}/filial">Filiais</a>
+        </c:if>
+
+        <c:if test="${usuarioLogado.perfil == 'GERENTE' || usuarioLogado.perfil == 'TECNICO'}">
+            <a href="${raiz}/membros">Membros</a>
+        </c:if>
+
+        <c:if test="${usuarioLogado.perfil == 'TECNICO' || usuarioLogado.perfil == 'OPERADOR'}">
+            <a href="${raiz}/inversor">Inversores</a>
+            <a href="${raiz}/string">Strings</a>
+            <a href="${raiz}/painel">Painéis</a>
+            <a href="${raiz}/manutencao">Manutenções</a>
+        </c:if>
     </nav>
     <span><c:out value="${usuarioLogado.nome}"/></span>
     <form action="${raiz}/logout" method="post"><button type="submit">Sair</button></form>

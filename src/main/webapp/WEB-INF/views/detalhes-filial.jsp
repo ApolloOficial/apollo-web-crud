@@ -1,3 +1,5 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -28,7 +30,7 @@
             <div>
                 <h1 class="titulo">Detalhes da Filial</h1>
                 <nav class="breadcrumb" aria-label="Você está em">
-                    <a href="empresa.html">Filial</a><span class="sep">&gt;</span>
+                    <a href="empresa.jsp">Filial</a><span class="sep">&gt;</span>
                     <span class="atual">Solaris Osasco</span>
                 </nav>
             </div>
@@ -139,7 +141,7 @@
                 </ul>
                 <div class="equipe-rodape">
                     <button type="button" class="btn btn-mais" id="btnCadastrarUsuario" data-abrir="dlg-cadastrar-usuario">Cadastrar usuário</button>
-                    <a href="membros.html" class="btn btn-mais">Ver mais</a>
+                    <a href="membros.jsp" class="btn btn-mais">Ver mais</a>
                 </div>
             </article>
         </section>

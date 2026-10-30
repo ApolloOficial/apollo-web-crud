@@ -1,3 +1,5 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -20,7 +22,7 @@
     <!-- ========== SIDEBAR ========== -->
     <!-- ===== Sidebar (montada por sidebar.js conforme o tipo de usuário) ===== -->
     <aside class="sidebar" data-ativo="empresa"></aside>
-    <script src="../../docs/js/sidebar.js"></script>
+    <script src="../docs/js/sidebar.js"></script>
 
 
     <!-- ========== CONTEÚDO ========== -->
@@ -145,7 +147,6 @@
     </form>
 </dialog>
 
-<script src="../../docs/js/validar-email.js"></script>
-<script src="../../docs/js/empresa.js"></script>
+<script src="../JS/empresa.js"></script>
 </body>
 </html>
