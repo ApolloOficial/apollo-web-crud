@@ -1,6 +1,6 @@
 /* =====================================================
    APOLLO — MEMBROS
-   Depende de: Apollostyle.css, Logo Apollo.css e (por último) sidebar.css
+   Depende de: apollostyle.css, logoApollo.css e (por último) sidebar.css
    ===================================================== */
 :root { --laranja: #ff6e2f; --laranja-claro: #ff8f3c; --suave: #fff3e9; --borda: #e6e6e6; --cinza: #8a8a8a; }
 * { font-family: 'Poppins', Arial, Helvetica, sans-serif; }
