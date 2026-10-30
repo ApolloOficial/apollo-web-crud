@@ -129,7 +129,7 @@ body {
 }
 
 .seta {
-    font-size: 10px;
+    font-size: 12px;
 }
 
 
@@ -375,7 +375,7 @@ th {
 td {
     height: 47px;
 
-    font-size: 11px;
+    font-size: 12px;
 
     padding: 0 12px;
 
@@ -419,7 +419,7 @@ th:nth-child(5) {
 
     border-radius: 10px;
 
-    font-size: 9px;
+    font-size: 12px;
 }
 
 .engenheiro {
@@ -734,7 +734,7 @@ svg {
 
 .breadcrumb .sep {
     color: #333;
-    font-size: 11px;
+    font-size: 12px;
 }
 
 .breadcrumb .atual {
@@ -755,7 +755,7 @@ svg {
 
     border-radius: 12px;
 
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 500;
     line-height: 1.4;
 }
@@ -772,7 +772,7 @@ svg {
 
 .badge-mini {
     padding: 1px 10px;
-    font-size: 8px;
+    font-size: 12px;
     font-weight: 600;
 }
 
@@ -834,7 +834,7 @@ svg {
 .subtitulo {
     margin-top: 3px;
 
-    font-size: 11px;
+    font-size: 12px;
     color: #333;
 }
 
@@ -854,7 +854,7 @@ svg {
 
     border-radius: 14px;
 
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 500;
 
     cursor: pointer;
@@ -917,7 +917,7 @@ svg {
     border: none;
     color: #fff;
 
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 500;
 }
 
@@ -959,7 +959,7 @@ svg {
 }
 
 .card-info .rotulo {
-    font-size: 11px;
+    font-size: 12px;
     color: #555;
 }
 
@@ -1025,7 +1025,7 @@ svg {
 .card-string .tipo {
     display: block;
 
-    font-size: 11px;
+    font-size: 12px;
     color: #666;
 }
 
@@ -1043,7 +1043,7 @@ svg {
 
     margin-top: 6px;
 
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
 }
 
@@ -1052,7 +1052,7 @@ svg {
 
     margin-top: 6px;
 
-    font-size: 9px;
+    font-size: 12px;
     color: #9a9a9a;
 }
 
@@ -1061,7 +1061,7 @@ svg {
 
     margin-top: 6px;
 
-    font-size: 9px;
+    font-size: 12px;
     color: #222;
 }
 
@@ -1084,7 +1084,7 @@ svg {
     border: 1px solid var(--laranja);
     color: var(--laranja);
 
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .btn-detalhes:hover {
@@ -1111,7 +1111,7 @@ svg {
 .link-voltar {
     margin-top: 18px;
 
-    font-size: 11px;
+    font-size: 12px;
     color: var(--laranja);
     text-decoration: none;
 }
@@ -1395,7 +1395,7 @@ dialog.pop[open] {
 
     padding-left: 14px;
 
-    font-size: 10px;
+    font-size: 12px;
     color: #ff4f4f;
 }
 
@@ -1517,7 +1517,7 @@ dialog.pop[open] {
     padding: 6px;
 
     font-family: inherit;
-    font-size: 11px;
+    font-size: 12px;
     color: #ff6e2f;
 
     cursor: pointer;

@@ -16,13 +16,12 @@ body{
   background:#fff;
   color:var(--texto);
   min-height:100vh;
-  padding:20px 0 0 20px;
 }
 
 .tela{
   display:grid;
   grid-template-columns:1fr 1fr;
-  min-height:calc(100vh - 20px);
+  min-height:100vh
 }
 
 /* ---------- Lado esquerdo: banner ---------- */
@@ -34,11 +33,10 @@ body{
   flex-direction:column;
   overflow:hidden;
   padding:56px 68px 28px;
-  border-top-left-radius:26px;
   color:#fff;
   background:
     url("../../img/image%207.png") center / cover no-repeat,
-    #D66026;
+  #D66026;
 }
 
 .logo{
