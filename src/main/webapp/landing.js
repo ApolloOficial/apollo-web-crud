@@ -168,4 +168,104 @@
     animationFrame = window.requestAnimationFrame(animate);
   }
 
+  // Carrossel dos diferenciais: IS <-> ApolloIA (setas, bolinhas, swipe e rotação automática).
+  const diffCarousel = document.getElementById('diff-carousel');
+  if (diffCarousel) {
+    const dTrack = document.getElementById('diff-track');
+    const dSlides = Array.from(dTrack.querySelectorAll('.diff-slide'));
+    const dDots = Array.from(diffCarousel.querySelectorAll('.diff-dot'));
+    const dPrev = document.getElementById('diff-prev');
+    const dNext = document.getElementById('diff-next');
+    const dViewport = diffCarousel.querySelector('.diff-viewport');
+    const autoDelay = 12000;
+    let dIndex = 0;
+    let autoTimer = 0;
+    let autoStopped = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let hovering = false;
+    let visible = true;
+    const goTo = (index) => {
+      dIndex = (index + dSlides.length) % dSlides.length;
+      dTrack.style.transform = `translateX(${-100 * dIndex}%)`;
+      dSlides.forEach((slide, i) => {
+        const on = i === dIndex;
+        slide.classList.toggle('is-current', on);
+        slide.setAttribute('aria-hidden', String(!on));
+        slide.toggleAttribute('inert', !on);
+      });
+      dDots.forEach((dot, i) => {
+        const on = i === dIndex;
+        dot.classList.toggle('is-on', on);
+        if (on) dot.setAttribute('aria-current', 'true'); else dot.removeAttribute('aria-current');
+      });
+    };
+    const clearAuto = () => { window.clearTimeout(autoTimer); autoTimer = 0; };
+    const scheduleAuto = () => {
+      clearAuto();
+      if (autoStopped || hovering || !visible || document.hidden) return;
+      autoTimer = window.setTimeout(() => { goTo(dIndex + 1); scheduleAuto(); }, autoDelay);
+    };
+    // Depois que a pessoa usa os controles, a rotação automática para de vez.
+    const userGo = (index) => { autoStopped = true; clearAuto(); goTo(index); };
+    dPrev?.addEventListener('click', () => userGo(dIndex - 1));
+    dNext?.addEventListener('click', () => userGo(dIndex + 1));
+    dDots.forEach((dot) => dot.addEventListener('click', () => userGo(Number(dot.dataset.slide))));
+    diffCarousel.addEventListener('keydown', (event) => {
+      if (event.target.closest('.is-options')) return; // setas ↑/↓ já navegam entre os critérios do IS
+      if (event.key === 'ArrowLeft') { event.preventDefault(); userGo(dIndex - 1); }
+      if (event.key === 'ArrowRight') { event.preventDefault(); userGo(dIndex + 1); }
+    });
+    // Swipe em telas de toque.
+    let swipeX = null;
+    dViewport.addEventListener('pointerdown', (event) => {
+      if (event.pointerType === 'mouse') return;
+      swipeX = event.clientX;
+    });
+    dViewport.addEventListener('pointerup', (event) => {
+      if (swipeX === null) return;
+      const dx = event.clientX - swipeX;
+      swipeX = null;
+      if (Math.abs(dx) > 50) userGo(dIndex + (dx < 0 ? 1 : -1));
+    });
+    dViewport.addEventListener('pointercancel', () => { swipeX = null; });
+    // Pausa enquanto o mouse está sobre o carrossel, a aba está oculta ou ele está fora da tela.
+    diffCarousel.addEventListener('mouseenter', () => { hovering = true; clearAuto(); });
+    diffCarousel.addEventListener('mouseleave', () => { hovering = false; scheduleAuto(); });
+    diffCarousel.addEventListener('focusin', () => { hovering = true; clearAuto(); });
+    diffCarousel.addEventListener('focusout', () => { hovering = false; scheduleAuto(); });
+    document.addEventListener('visibilitychange', scheduleAuto);
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; scheduleAuto(); }, { threshold: 0.35 }).observe(diffCarousel);
+    }
+    goTo(0);
+    scheduleAuto();
+  }
+
+  // ApolloIA: clicar em Analisar / Orientar / Ajudar troca o texto; clicar no robô volta ao texto inicial.
+  const iaContent = document.getElementById('ia-content');
+  if (iaContent) {
+    const iaHello = { from: 'bot', text: 'Olá! Como posso te ajudar na gestão do seu sistema solar?' };
+    const iaTexts = {
+      analisar: { title: 'Analisar', chat: [iaHello,
+        { from: 'user', text: 'A eficiência da filial está caindo, analise possíveis falhas' },
+        { from: 'bot', text: 'Analisando... Há vários inversores desativados, o que pode ter afetado.' }] },
+      orientar: { title: 'Orientar', chat: [iaHello,
+        { from: 'user', text: 'Porque é preciso fazer uma manutenção preventiva?' },
+        { from: 'bot', text: 'Porque ela previne possíveis danos do seu painel.' }] },
+      ajudar: { title: 'Ajudar', chat: [iaHello,
+        { from: 'user', text: 'Como posso melhorar a eficiência dos meus painéis?' },
+        { from: 'bot', text: 'Posso ajudar! Vamos analisar o histórico e identificar possíveis melhorias.' }] }
+    };
+    const iaInitial = iaContent.innerHTML;
+    const iaTags = Array.from(document.querySelectorAll('.ia-tag'));
+    const showIa = (key) => {
+      const item = iaTexts[key];
+      iaTags.forEach((tag) => tag.setAttribute('aria-pressed', String(!!item && tag.dataset.ia === key)));
+      iaContent.innerHTML = item
+        ? `<h3><span>${item.title}</span><i class="is-rule" aria-hidden="true"></i></h3><div class="ia-chat">${item.chat.map((m, i) => `<div class="ia-msg ia-msg-${m.from}" style="animation-delay:${i * 0.5}s">${m.text}</div>`).join('')}</div>`
+        : iaInitial;
+    };
+    iaTags.forEach((tag) => tag.addEventListener('click', () => showIa(tag.dataset.ia)));
+    document.getElementById('ia-emblem')?.addEventListener('click', () => showIa(null));
+  }
+
 })();
