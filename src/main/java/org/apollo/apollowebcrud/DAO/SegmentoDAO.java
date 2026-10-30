@@ -27,7 +27,7 @@ public class SegmentoDAO extends ApolloConnection {
         String sql = "INSERT INTO segmento (nome, descricao) VALUES (?, ?)";
 
         // retorna o id gerado pelo banco
-        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, segmento.getNome());
             stmt.setString(2, segmento.getDescricao());
 
@@ -52,7 +52,7 @@ public class SegmentoDAO extends ApolloConnection {
     public Segmento buscarPorId(int id) {
         String sql = "SELECT * FROM segmento WHERE id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
 
             try (ResultSet rs = stmt.executeQuery()) {
@@ -74,7 +74,7 @@ public class SegmentoDAO extends ApolloConnection {
         List<Segmento> lista = new ArrayList<>();
         String sql = "SELECT * FROM segmento ORDER BY nome";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql);
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
@@ -93,7 +93,7 @@ public class SegmentoDAO extends ApolloConnection {
     public boolean atualizar(Segmento segmento) {
         String sql = "UPDATE segmento SET nome = ?, descricao = ? WHERE id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, segmento.getNome());
             stmt.setString(2, segmento.getDescricao());
             stmt.setInt(3, segmento.getId());
@@ -111,7 +111,7 @@ public class SegmentoDAO extends ApolloConnection {
     public boolean excluir(int id) {
         String sql = "DELETE FROM segmento WHERE id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
             return stmt.executeUpdate() > 0;
 

@@ -1,6 +1,7 @@
 package org.apollo.apollowebcrud.dao;
 
 import org.apollo.apollowebcrud.model.Usuario;
+import org.apollo.apollowebcrud.model.TipoUsuEnum;
 import org.apollo.apollowebcrud.util.ApolloConnection;
 
 import java.sql.*;
@@ -18,28 +19,34 @@ public class UsuarioDAO extends ApolloConnection {
         usuario.setId(rs.getInt("id"));
         usuario.setNome(rs.getString("nome"));
         usuario.setIdTipoUsuario(rs.getInt("id_tipo_usuario"));
-        usuario.setIdFilial(rs.getInt("id_filial"));
+        usuario.setIdEmpresa(rs.getObject("id_empresa", Integer.class));
+        usuario.setIdFilial(rs.getObject("id_filial", Integer.class));
         usuario.setEmail(rs.getString("email"));
         usuario.setTelefone(rs.getString("telefone"));
         usuario.setCpf(rs.getString("cpf"));
         usuario.setStatus(rs.getString("ativo"));
+        usuario.setUrlFoto(rs.getString("url_foto"));
+        usuario.setIdUsuarioCadastro(rs.getObject("id_usuario_cadastro", Integer.class));
         return usuario;
     }
 
     // CREATE
 
     public int inserir(Usuario usuario) {
-        String sql = "INSERT INTO usuario (nome, id_tipo_usuario, id_filial, email, telefone, cpf, senha_hash, ativo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO usuario (nome, id_tipo_usuario, id_empresa, id_filial, email, telefone, cpf, senha_hash, ativo, url_foto, id_usuario_cadastro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         // retorna o id gerado pelo banco
-        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, usuario.getNome());
             stmt.setInt(2, usuario.getIdTipoUsuario());
-            stmt.setInt(3, usuario.getIdFilial());
-            stmt.setString(4, usuario.getEmail());
-            stmt.setString(5, usuario.getTelefone());
-            stmt.setString(6, usuario.getCpf());
-            stmt.setString(7, usuario.getSenhaHash());
-            stmt.setString(8, "ATIVO");
+            stmt.setObject(3, usuario.getIdEmpresa(), Types.INTEGER);
+            stmt.setObject(4, usuario.getIdFilial(), Types.INTEGER);
+            stmt.setString(5, usuario.getEmail());
+            stmt.setString(6, usuario.getTelefone());
+            stmt.setString(7, usuario.getCpf());
+            stmt.setString(8, usuario.getSenhaHash());
+            stmt.setString(9, "ATIVO");
+            stmt.setString(10, usuario.getUrlFoto());
+            stmt.setObject(11, usuario.getIdUsuarioCadastro(), Types.INTEGER);
 
             return stmt.executeUpdate();
 
@@ -54,7 +61,7 @@ public class UsuarioDAO extends ApolloConnection {
     public Usuario buscarPorId(int id) {
         String sql = "SELECT * FROM usuario WHERE id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
 
             try (ResultSet rs = stmt.executeQuery()) {
@@ -70,10 +77,37 @@ public class UsuarioDAO extends ApolloConnection {
         return null;
     }
 
+    // Leitura específica do principal da sessão; a exceção diferencia falha de banco de usuário ausente.
+    public Usuario buscarParaRevalidarSessao(int id) throws SQLException {
+        String sql = "SELECT u.*, t.nome AS perfil_sessao FROM usuario u "
+                + "JOIN tipo_usuario t ON t.id = u.id_tipo_usuario WHERE u.id = ?";
+
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (!rs.next()) {
+                    return null;
+                }
+
+                Usuario usuario = montar(rs);
+                String perfil = rs.getString("perfil_sessao");
+                if (perfil != null) {
+                    try {
+                        usuario.setPerfil(TipoUsuEnum.valueOf(perfil));
+                    } catch (IllegalArgumentException ignorado) {
+                        usuario.setPerfil(null);
+                    }
+                }
+                return usuario;
+            }
+        }
+    }
+
     public Usuario buscarPorCpf(String cpf) {
         String sql = "SELECT * FROM usuario WHERE cpf = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, cpf);
 
             try (ResultSet rs = stmt.executeQuery()) {
@@ -92,7 +126,7 @@ public class UsuarioDAO extends ApolloConnection {
     public Usuario buscarPorEmail(String email) {
         String sql = "SELECT * FROM usuario WHERE email = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, email);
 
             try (ResultSet rs = stmt.executeQuery()) {
@@ -114,7 +148,7 @@ public class UsuarioDAO extends ApolloConnection {
         List<Usuario> lista = new ArrayList<>();
         String sql = "SELECT * FROM usuario ORDER BY nome";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql);
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
@@ -131,17 +165,19 @@ public class UsuarioDAO extends ApolloConnection {
     // UPDATE
 
     public boolean atualizar(Usuario usuario) {
-        String sql = "UPDATE usuario SET nome = ?, id_tipo_usuario = ?, id_filial = ?, email = ?, telefone = ?, cpf = ?, ativo = ? WHERE id = ?";
+        String sql = "UPDATE usuario SET nome = ?, id_tipo_usuario = ?, id_empresa = ?, id_filial = ?, email = ?, telefone = ?, cpf = ?, ativo = ?, url_foto = ? WHERE id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, usuario.getNome());
             stmt.setInt(2, usuario.getIdTipoUsuario());
-            stmt.setInt(3, usuario.getIdFilial());
-            stmt.setString(4, usuario.getEmail());
-            stmt.setString(5, usuario.getTelefone());
-            stmt.setString(6, usuario.getCpf());
-            stmt.setString(7, usuario.getStatus());
-            stmt.setInt(8, usuario.getId());
+            stmt.setObject(3, usuario.getIdEmpresa(), Types.INTEGER);
+            stmt.setObject(4, usuario.getIdFilial(), Types.INTEGER);
+            stmt.setString(5, usuario.getEmail());
+            stmt.setString(6, usuario.getTelefone());
+            stmt.setString(7, usuario.getCpf());
+            stmt.setString(8, usuario.getStatus());
+            stmt.setString(9, usuario.getUrlFoto());
+            stmt.setInt(10, usuario.getId());
 
             return stmt.executeUpdate() > 0;
 
@@ -151,40 +187,96 @@ public class UsuarioDAO extends ApolloConnection {
         }
     }
 
-    // DELETE
+    // BUSCA PARA LOGIN (traz o hash para o Service conferir)
 
-    public boolean excluir(int id) {
-        String sql = "DELETE FROM usuario WHERE id = ?";
+    public Usuario buscarParaLogin(String email) {
+        String sql = "SELECT * FROM usuario WHERE email = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            return stmt.executeUpdate() > 0;
-
-        } catch (SQLException e) {
-            System.err.println("Erro ao excluir usuário: " + e.getMessage());
-            return false;
-        }
-    }
-
-    // VALIDADOR
-
-    public Usuario validarLogin (String email, String cpf, String senha) {
-        String sql = "SELECT * FROM usuario WHERE email = ? AND cpf = ? AND senha_hash = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, email);
-            stmt.setString(2, cpf);
-            stmt.setString(3, senha);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return montar(rs);
+                    Usuario usuario = montar(rs);
+                    usuario.setSenhaHash(rs.getString("senha_hash"));
+                    return usuario;
                 }
             }
 
         } catch (SQLException e) {
-            System.err.println("Erro ao buscar usuário: " + e.getMessage());
+            System.err.println("Erro ao buscar usuário para login: " + e.getMessage());
         }
 
         return null;
+    }
+
+    // READ filtrado
+    public List<Usuario> listarPorEmpresaETipo(int idEmpresa, String tipo) {
+        List<Usuario> lista = new ArrayList<>();
+        String sql = "SELECT u.* FROM usuario u JOIN tipo_usuario t ON t.id = u.id_tipo_usuario WHERE u.id_empresa = ? AND t.nome = ? ORDER BY u.nome";
+
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, idEmpresa);
+            stmt.setString(2, tipo);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(montar(rs));
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao listar usuários da empresa: " + e.getMessage());
+        }
+
+        return lista;
+    }
+
+    // READ filtrado
+    public List<Usuario> listarPorFilialETipo(int idFilial, String tipo) {
+        List<Usuario> lista = new ArrayList<>();
+        String sql = "SELECT u.* FROM usuario u JOIN tipo_usuario t ON t.id = u.id_tipo_usuario WHERE u.id_filial = ? AND t.nome = ? ORDER BY u.nome";
+
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, idFilial);
+            stmt.setString(2, tipo);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(montar(rs));
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao listar usuários da filial: " + e.getMessage());
+        }
+
+        return lista;
+    }
+
+    // Liga o gerente à empresa que ele acabou de cadastrar (só se ele ainda não tiver empresa)
+    public boolean vincularEmpresaNaConexao(Connection connection, int idUsuario, int idEmpresa) throws SQLException {
+        String sql = "UPDATE usuario SET id_empresa = ? WHERE id = ? AND id_empresa IS NULL";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, idEmpresa);
+            stmt.setInt(2, idUsuario);
+            return stmt.executeUpdate() > 0;
+        }
+    }
+
+    // Troca só a senha (já em hash)
+    public boolean atualizarSenha(int id, String senhaHash) {
+        String sql = "UPDATE usuario SET senha_hash = ? WHERE id = ?";
+
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, senhaHash);
+            stmt.setInt(2, id);
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao atualizar senha: " + e.getMessage());
+            return false;
+        }
     }
 }

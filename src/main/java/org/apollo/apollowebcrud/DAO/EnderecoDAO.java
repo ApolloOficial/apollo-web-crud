@@ -26,9 +26,9 @@ public class EnderecoDAO extends ApolloConnection {
         return endereco;
     }
 
-    // Métodos estáticos usados pelo EmpresaDAO dentro da transação
+    // Usados pelo EmpresaDAO e pelo FilialDAO dentro da transação (recebem a conexão da transação)
 
-    public static int inserirNaConexao(Endereco endereco, Connection conn) throws SQLException {
+    public int inserirNaConexao(Endereco endereco, Connection conn) throws SQLException {
         String sql = "INSERT INTO endereco (cep, logradouro, numero, complemento, bairro, cidade, estado) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql, new String[]{"id"})) {
@@ -54,7 +54,7 @@ public class EnderecoDAO extends ApolloConnection {
         throw new SQLException("Não foi possível obter o id do endereço inserido.");
     }
 
-    public static boolean atualizarNaConexao(Endereco endereco, Connection conn) throws SQLException {
+    public boolean atualizarNaConexao(Endereco endereco, Connection conn) throws SQLException {
         String sql = "UPDATE endereco SET cep = ?, logradouro = ?, numero = ?, complemento = ?, bairro = ?, cidade = ?, estado = ? WHERE id = ?";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -73,10 +73,8 @@ public class EnderecoDAO extends ApolloConnection {
 
     // CREATE
 
-// CREATE
-
     public int inserir(Endereco endereco) {
-        try {
+        try (Connection connection = abrirConexao()) {
             return inserirNaConexao(endereco, connection);
         } catch (SQLException e) {
             System.err.println("Erro ao inserir endereço: " + e.getMessage());
@@ -89,7 +87,7 @@ public class EnderecoDAO extends ApolloConnection {
     public Endereco buscarPorId(int id) {
         String sql = "SELECT * FROM endereco WHERE id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
 
             try (ResultSet rs = stmt.executeQuery()) {
@@ -111,7 +109,7 @@ public class EnderecoDAO extends ApolloConnection {
         List<Endereco> lista = new ArrayList<>();
         String sql = "SELECT * FROM endereco ORDER BY cidade, logradouro";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql);
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
@@ -128,7 +126,7 @@ public class EnderecoDAO extends ApolloConnection {
     // UPDATE
 
     public boolean atualizar(Endereco endereco) {
-        try {
+        try (Connection connection = abrirConexao()) {
             return atualizarNaConexao(endereco, connection);
         } catch (SQLException e) {
             System.err.println("Erro ao atualizar endereço: " + e.getMessage());
@@ -141,7 +139,7 @@ public class EnderecoDAO extends ApolloConnection {
     public boolean excluir(int id) {
         String sql = "DELETE FROM endereco WHERE id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
             return stmt.executeUpdate() > 0;
 

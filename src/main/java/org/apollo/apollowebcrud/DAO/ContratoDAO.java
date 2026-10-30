@@ -28,21 +28,26 @@ public class ContratoDAO extends ApolloConnection {
     // CREATE
 
     public int inserir(Contrato contrato) {
+        try (Connection connection = abrirConexao()) {
+            return inserirNaConexao(connection, contrato);
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao inserir contrato: " + e.getMessage());
+            return -1;
+        }
+    }
+
+    // Usado dentro de transações (a conexão é da transação, quem chama é que fecha)
+    public int inserirNaConexao(Connection connection, Contrato contrato) throws SQLException {
         String sql = "INSERT INTO contrato (id_empresa, data_inicio, valor_mensal, status, id_usuario_cadastro) VALUES (?, ?, ?, ?, ?)";
 
         // retorna o id gerado pelo banco
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
             stmt.setInt(1, contrato.getIdEmpresa());
             stmt.setDate(2, Date.valueOf(contrato.getDataInicio()));
             stmt.setBigDecimal(3, contrato.getValorMensal());
             stmt.setString(4, StatusGeral.ATIVO.name());
-
-            if (contrato.getIdUsuarioCadastro() != null) {
-                stmt.setInt(5, contrato.getIdUsuarioCadastro());
-            } else {
-                stmt.setNull(5, Types.INTEGER);
-            }
+            stmt.setObject(5, contrato.getIdUsuarioCadastro(), Types.INTEGER);
 
             stmt.executeUpdate();
 
@@ -51,13 +56,9 @@ public class ContratoDAO extends ApolloConnection {
                     return rs.getInt(1);
                 }
             }
-
-            return -1;
-
-        } catch (SQLException e) {
-            System.err.println("Erro ao inserir contrato: " + e.getMessage());
-            return -1;
         }
+
+        throw new SQLException("Não foi possível obter o id do contrato inserido.");
     }
 
     // READ por id
@@ -65,7 +66,7 @@ public class ContratoDAO extends ApolloConnection {
     public Contrato buscarPorId(int id) {
         String sql = "SELECT * FROM contrato WHERE id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
 
@@ -82,13 +83,32 @@ public class ContratoDAO extends ApolloConnection {
         return null;
     }
 
+    public Contrato buscarPorEmpresa(int idEmpresa) {
+        String sql = "SELECT * FROM contrato WHERE id_empresa = ?";
+
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, idEmpresa);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return montar(rs);
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar contrato da empresa: " + e.getMessage());
+        }
+
+        return null;
+    }
+
     // READ todos
 
     public List<Contrato> listarTodos() {
         List<Contrato> lista = new ArrayList<>();
         String sql = "SELECT * FROM contrato ORDER BY data_inicio DESC";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql);
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
@@ -107,7 +127,7 @@ public class ContratoDAO extends ApolloConnection {
     public boolean atualizar(Contrato contrato) {
         String sql = "UPDATE contrato SET id_empresa = ?, data_inicio = ?, valor_mensal = ?, status = ? WHERE id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
 
             stmt.setInt(1, contrato.getIdEmpresa());
             stmt.setDate(2, Date.valueOf(contrato.getDataInicio()));
@@ -128,7 +148,7 @@ public class ContratoDAO extends ApolloConnection {
     public boolean excluir(int id) {
         String sql = "DELETE FROM contrato WHERE id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             return stmt.executeUpdate() > 0;

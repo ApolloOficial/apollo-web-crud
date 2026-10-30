@@ -28,7 +28,7 @@ public class TipoUsuarioDAO extends ApolloConnection {
         String sql = "INSERT INTO tipo_usuario (nome, descricao) VALUES (?, ?)";
 
         // retorna o id gerado pelo banco
-        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, tipoUsuario.getNome().name());
             stmt.setString(2, tipoUsuario.getDescricao());
 
@@ -53,7 +53,7 @@ public class TipoUsuarioDAO extends ApolloConnection {
     public TipoUsuario buscarPorId(int id) {
         String sql = "SELECT * FROM tipo_usuario WHERE id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
 
             try (ResultSet rs = stmt.executeQuery()) {
@@ -72,7 +72,7 @@ public class TipoUsuarioDAO extends ApolloConnection {
     public TipoUsuario buscarPorNome(String nome) {
         String sql = "SELECT * FROM tipo_usuario WHERE nome = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, nome);
 
             try (ResultSet rs = stmt.executeQuery()) {
@@ -94,7 +94,7 @@ public class TipoUsuarioDAO extends ApolloConnection {
         List<TipoUsuario> lista = new ArrayList<>();
         String sql = "SELECT * FROM tipo_usuario ORDER BY nome";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql);
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
@@ -113,7 +113,7 @@ public class TipoUsuarioDAO extends ApolloConnection {
     public boolean atualizar(TipoUsuario tipoUsuario) {
         String sql = "UPDATE tipo_usuario SET nome = ?, descricao = ? WHERE id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, tipoUsuario.getNome().name());
             stmt.setString(2, tipoUsuario.getDescricao());
             stmt.setInt(3, tipoUsuario.getId());
@@ -131,7 +131,7 @@ public class TipoUsuarioDAO extends ApolloConnection {
     public boolean excluir(int id) {
         String sql = "DELETE FROM tipo_usuario WHERE id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
             return stmt.executeUpdate() > 0;
 

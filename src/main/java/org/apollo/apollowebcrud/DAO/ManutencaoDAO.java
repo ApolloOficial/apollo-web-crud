@@ -40,7 +40,7 @@ public class ManutencaoDAO extends ApolloConnection {
         String sql = "INSERT INTO manutencao (id_painel, tipo_manutencao, descricao, status, data_abertura, data_prevista, data_conclusao, id_usuario_responsavel) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         // retorna o id gerado pelo banco
-        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, manutencao.getIdPainel());
             stmt.setString(2, manutencao.getTipoManutencao().name());
             stmt.setString(3, manutencao.getDescricao());
@@ -86,7 +86,7 @@ public class ManutencaoDAO extends ApolloConnection {
     public Manutencao buscarPorId(int id) {
         String sql = "SELECT * FROM manutencao WHERE id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
 
             try (ResultSet rs = stmt.executeQuery()) {
@@ -108,7 +108,7 @@ public class ManutencaoDAO extends ApolloConnection {
         List<Manutencao> lista = new ArrayList<>();
         String sql = "SELECT * FROM manutencao ORDER BY data_abertura DESC";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql);
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
@@ -127,7 +127,7 @@ public class ManutencaoDAO extends ApolloConnection {
     public boolean atualizar(Manutencao manutencao) {
         String sql = "UPDATE manutencao SET id_painel = ?, tipo_manutencao = ?, descricao = ?, status = ?, data_abertura = ?, data_prevista = ?, data_conclusao = ?, id_usuario_responsavel = ? WHERE id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, manutencao.getIdPainel());
             stmt.setString(2, manutencao.getTipoManutencao().name());
             stmt.setString(3, manutencao.getDescricao());
@@ -167,7 +167,7 @@ public class ManutencaoDAO extends ApolloConnection {
     public boolean excluir(int id) {
         String sql = "DELETE FROM manutencao WHERE id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
             return stmt.executeUpdate() > 0;
 
@@ -175,5 +175,26 @@ public class ManutencaoDAO extends ApolloConnection {
             System.err.println("Erro ao excluir manutenção: " + e.getMessage());
             return false;
         }
+    }
+
+    // READ filtrado
+    public List<Manutencao> listarPorFilial(int idFilial) {
+        List<Manutencao> lista = new ArrayList<>();
+        String sql = "SELECT m.* FROM manutencao m JOIN painel p ON p.id = m.id_painel JOIN string s ON s.id = p.id_string JOIN inversor i ON i.id = s.id_inversor WHERE i.id_filial = ? ORDER BY m.data_abertura DESC";
+
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, idFilial);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(montar(rs));
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao listar manutenções da filial: " + e.getMessage());
+        }
+
+        return lista;
     }
 }
