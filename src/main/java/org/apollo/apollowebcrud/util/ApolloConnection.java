@@ -8,6 +8,14 @@ import java.sql.SQLException;
 
 public abstract class ApolloConnection {
 
+    static {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
+
     private static final String DIRETORIO_ENV =
             System.getProperty("user.dir", ".") + "/src/main/resources";
 
