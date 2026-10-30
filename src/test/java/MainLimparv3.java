@@ -48,11 +48,7 @@ public class MainLimparv3 {
             System.out.println("Inversor: " + inversorDAO.excluir(i.getId()));
         }
 
-        // LIMPAR USUARIO
-        List<Usuario> usuarios = usuarioDAO.listarTodos();
-        for (Usuario u : usuarios) {
-            System.out.println("Usuario: " + usuarioDAO.excluir(u.getId()));
-        }
+        // LIMPAR USUARIO: o CRUD não apaga mais (exclusão lógica). Para zerar o banco de testes, rode o script SQL do banco.
 
         // LIMPAR TIPO USUARIO
         List<TipoUsuario> tipos = tipoUsuarioDAO.listarTodos();
@@ -60,17 +56,9 @@ public class MainLimparv3 {
             System.out.println("TipoUsuario: " + tipoUsuarioDAO.excluir(t.getId()));
         }
 
-        // LIMPAR FILIAL
-        List<Filial> filiais = filialDAO.listarTodos();
-        for (Filial f : filiais) {
-            System.out.println("Filial: " + filialDAO.excluir(f.getId()));
-        }
+        // LIMPAR FILIAL: o CRUD não apaga mais (exclusão lógica). Para zerar o banco de testes, rode o script SQL do banco.
 
-        // LIMPAR EMPRESA
-        List<Empresa> empresas = empresaDAO.listarTodos();
-        for (Empresa e : empresas) {
-            System.out.println("Empresa: " + empresaDAO.excluir(e.getId()));
-        }
+        // LIMPAR EMPRESA: o CRUD não apaga mais (exclusão lógica). Para zerar o banco de testes, rode o script SQL do banco.
 
         // LIMPAR SEGMENTO
         List<Segmento> segmentos = segmentoDAO.listarTodos();

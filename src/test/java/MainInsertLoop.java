@@ -32,7 +32,7 @@ public class MainInsertLoop {
 //            Cria os três tipos de usuário nos primeiros loops
 
             if(i==0) {
-                TipoUsuario tipoUsuario = new TipoUsuario(0, TipoUsuEnum.ADMINISTRADOR, "Acesso total");
+                TipoUsuario tipoUsuario = new TipoUsuario(0, TipoUsuEnum.TECNICO, "O caba cuida da filial");
                 int idTipoUsuario = tipoUsuarioDAO.inserir(tipoUsuario);
                 System.out.println("TipoUsuario: " + idTipoUsuario);
             } else if(i==1) {
