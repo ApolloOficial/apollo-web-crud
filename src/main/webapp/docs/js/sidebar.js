@@ -22,6 +22,11 @@
      2) ?perfil=gerente|tecnico|operador na URL → só para testes, e só sem login
      3) último perfil lembrado (localStorage)  → padrão: gerente
 
+   NOME NO TOPO DIREITO: o sidebar.js também troca o nome (e as iniciais do avatar)
+   de <header> ... <div class="usuario"> conforme o perfil:
+     Gerente → Neymar Júnior César | Operador → Carlos Menezes | Técnico → Rafael Almeida Santos
+   Para um nome fora do topo, use data-usuario-nome / data-usuario-iniciais no elemento.
+
    ATENÇÃO: isto é só a parte visual. O servidor precisa conferir o perfil
    em toda requisição.
    ===================================================== */
@@ -76,6 +81,14 @@
     // detalhes-inversor, detalhes-string, detalhes, membros → não entram em PAGINAS.
 
     var NOMES = { tecnico: 'Técnico', operador: 'Operador', gerente: 'Gerente' };
+
+    // Nome que aparece no topo direito de TODAS as telas, conforme o perfil.
+    // (Enquanto não há servidor, os nomes são fixos; depois, vêm do login.)
+    var USUARIOS = {
+        gerente:  'Neymar Júnior César',
+        operador: 'Carlos Menezes',
+        tecnico:  'Rafael Almeida Santos'
+    };
     var ALIAS = { adm: 'tecnico' };   // nome antigo
 
     function nomeDaPagina() {
@@ -168,10 +181,58 @@
             item('perfil', ativo, ' menu-baixo', tipo);
     }
 
+    /* ---------- Nome do usuário no topo direito ---------- */
+    function iniciais(nome) {
+        var p = nome.split(/\s+/).filter(Boolean);
+        return ((p[0] || '').charAt(0) + (p[1] || '').charAt(0)).toUpperCase();
+    }
+
+    // acha o nome dentro de <header> ... <div class="usuario">:
+    // marcado com data-usuario-nome / .nome-usuario, <span> sem classe, ou texto solto
+    function acharNome(box) {
+        var marcado = box.querySelector('[data-usuario-nome], .nome-usuario');
+        if (marcado) return marcado;
+
+        for (var i = 0; i < box.children.length; i++) {
+            var c = box.children[i];
+            if (c.tagName === 'SPAN' && !c.className && c.textContent.trim()) return c;
+        }
+        for (var j = 0; j < box.childNodes.length; j++) {
+            var n = box.childNodes[j];
+            if (n.nodeType === 3 && n.nodeValue.trim()) return n;
+        }
+        return null;
+    }
+
+    function aplicarUsuario() {
+        var nome = USUARIOS[perfilAtual()];
+        if (!nome) return;
+        var sigla = iniciais(nome);
+        var cada = function (lista, fn) { Array.prototype.forEach.call(lista, fn); };
+
+        // marcações explícitas em qualquer lugar da tela
+        cada(document.querySelectorAll('[data-usuario-nome]'), function (el) { el.textContent = nome; });
+        cada(document.querySelectorAll('[data-usuario-iniciais]'), function (el) { el.textContent = sigla; });
+
+        // topo direito
+        cada(document.querySelectorAll('header .usuario'), function (box) {
+            var alvo = acharNome(box);
+            if (alvo) {
+                if (alvo.nodeType === 3) alvo.nodeValue = alvo.nodeValue.replace(/\S[\s\S]*\S|\S/, nome);
+                else alvo.textContent = nome;
+            }
+            // avatar com iniciais (os vazios e os com foto não mudam)
+            cada(box.querySelectorAll('.avatar-usuario, .avatar, .avatar-foto'), function (a) {
+                if (!a.children.length && a.textContent.trim() && !a.style.backgroundImage) a.textContent = sigla;
+            });
+        });
+    }
+
     window.Apollo = {
-        versao: 5,
+        versao: 6,
         perfil: function () { return perfilAtual(); },
         nomePerfil: function () { return NOMES[perfilAtual()]; },
+        nomeUsuario: function () { return USUARIOS[perfilAtual()]; },
         // só funciona sem login (testes); com login o perfil é o do login
         definirPerfil: function (tipo) {
             tipo = normalizar(tipo);
@@ -180,6 +241,7 @@
             if (a) a.removeAttribute('data-tipo');
             gravar(tipo);
             montar();
+            aplicarUsuario();
         },
         sair: function () {
             try { sessionStorage.removeItem(CHAVE_LOGIN); localStorage.removeItem(CHAVE); } catch (e) {}
@@ -188,4 +250,8 @@
     };
 
     montar();
+
+    // o topo (<header>) vem depois deste script: espera a página ser lida
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', aplicarUsuario);
+    else aplicarUsuario();
 })();
