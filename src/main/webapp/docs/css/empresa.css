@@ -1290,9 +1290,9 @@ svg {
     height: 26px;
     padding: 0 14px;
 
-    background: #fff;
+    background: var(--laranja);
     border: 1px solid var(--laranja);
-    color: var(--laranja);
+    color: #fff ;
 
     font-size: 12px;
 }

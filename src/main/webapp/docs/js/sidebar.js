@@ -9,7 +9,7 @@
 
    Menus:
      Técnico / Operador → Dashboard, Filial e Usuários
-     Gerente            → Dashboard, Contrato e Empresa
+     Gerente            → Dashboard, Empresa e Contrato
    (Perfil fica sempre no rodapé.)
 
    TELAS COMPARTILHADAS (detalhes-filial, detalhes-inversor, detalhes-string,
@@ -42,8 +42,8 @@
         dashboard: '<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>',
         filial:    '<circle cx="6" cy="5" r="2"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="8" r="2"/><path d="M6 7v10M18 10c0 4-6 3-12 7"/>',
         usuarios:  '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.5-4 3-6 6.5-6s6 2 6.5 6"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14c2.5 0 4 1.7 4.5 5"/>',
-        contrato:  '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/>',
-        empresa:   '<circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/>',
+        contrato:  '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',
+        empresa:   '<rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 21v-4h6v4"/>',
         perfil:    '<circle cx="12" cy="8" r="4"/><path d="M4 21c.7-4.5 4-6 8-6s7.3 1.5 8 6"/>'
     };
 
@@ -59,7 +59,7 @@
     var MENU = {
         tecnico:  ['dashboard', 'filial', 'usuarios'],
         operador: ['dashboard', 'filial', 'usuarios'],
-        gerente:  ['dashboard', 'contrato', 'empresa']
+        gerente:  ['dashboard', 'empresa', 'contrato']
     };
 
     // telas que têm uma versão para cada tipo de usuário

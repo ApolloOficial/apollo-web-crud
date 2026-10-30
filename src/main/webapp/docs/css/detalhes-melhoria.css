@@ -260,3 +260,102 @@ main.conteudo .filtro-status:focus-visible { outline: 2px solid var(--laranja); 
     main.conteudo .rodape-detalhes { flex-direction: column-reverse; gap: 12px; align-items: stretch; }
     main.conteudo .rodape-detalhes .btn-cadastrar { width: 100%; }
 }
+
+
+/* =====================================================
+   ANÁLISE HEURÍSTICA — botões
+   - botões de cadastro no TOPO da seção, na ponta oposta ao título
+   - TODOS os botões na cor #FF672C (a sidebar não entra)
+   - sem sombra; tamanho igual ao dos outros botões
+   ===================================================== */
+:root { --btn-apollo: #FF672C; --btn-apollo-hover: #E85A20; --btn-apollo-suave: #FFF0E9; }
+
+main.conteudo .secao-topo,
+main.conteudo .painel-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: nowrap;
+}
+main.conteudo .secao-topo { margin: 30px 0 14px; }
+main.conteudo .secao-topo .titulo-secao { margin: 0; }
+main.conteudo .painel-topo { margin-bottom: 8px; }
+main.conteudo .painel-topo h3 { margin: 0; }
+main.conteudo .secao-topo > .btn,
+main.conteudo .painel-topo > .btn { margin-left: auto; }
+
+/* ---------- Botões cheios ---------- */
+main.conteudo .btn.btn-cadastrar,
+main.conteudo .btn.btn-editar,
+main.conteudo .btn.btn-atualizar,
+dialog.pop .pop-btn.cheio,
+dialog.pop .pop-btn.verde,
+dialog.pop .pop-btn.perigo {
+    background: var(--btn-apollo);
+    border-color: var(--btn-apollo);
+    color: #fff;
+    box-shadow: none;
+}
+main.conteudo .btn.btn-cadastrar:hover,
+main.conteudo .btn.btn-editar:hover,
+main.conteudo .btn.btn-atualizar:hover,
+dialog.pop .pop-btn.cheio:hover,
+dialog.pop .pop-btn.verde:hover,
+dialog.pop .pop-btn.perigo:hover {
+    background: var(--btn-apollo-hover);
+    border-color: var(--btn-apollo-hover);
+    box-shadow: none;
+    transform: none;
+}
+
+/* ---------- Botões de contorno ---------- */
+main.conteudo .btn.btn-inativar,
+main.conteudo .btn.btn-detalhes,
+main.conteudo .btn.btn-mais,
+main.conteudo .btn.btn-excluir,
+dialog.pop .pop-btn.contorno {
+    background: #fff;
+    border-color: var(--btn-apollo);
+    color: var(--btn-apollo);
+    box-shadow: none;
+}
+main.conteudo .btn.btn-inativar:hover,
+main.conteudo .btn.btn-detalhes:hover,
+main.conteudo .btn.btn-mais:hover,
+main.conteudo .btn.btn-excluir:hover,
+dialog.pop .pop-btn.contorno:hover {
+    background: var(--btn-apollo-suave);
+    color: var(--btn-apollo);
+}
+main.conteudo .btn.btn-excluir svg { stroke: var(--btn-apollo); }
+dialog.pop .pop-link { color: var(--btn-apollo); }
+
+/* ---------- Cadastrar: mesmo tamanho dos demais botões ---------- */
+main.conteudo .btn.btn-cadastrar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 34px;
+    min-width: 140px;
+    padding: 0 18px;
+    border-radius: 17px;
+    font-size: 12px;
+    font-weight: 500;
+}
+main.conteudo .btn.btn-cadastrar::before {
+    content: "+";
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1;
+}
+main.conteudo .btn.btn-cadastrar.mini { height: 30px; min-width: 0; padding: 0 14px; }
+
+main.conteudo .btn:focus-visible,
+dialog.pop .pop-btn:focus-visible { outline: 2px solid var(--btn-apollo); outline-offset: 2px; }
+
+@media (max-width: 750px) {
+    main.conteudo .secao-topo .btn-cadastrar { width: 100%; }
+    main.conteudo .secao-topo { flex-wrap: wrap; }
+}

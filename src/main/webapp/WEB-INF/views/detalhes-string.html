@@ -139,12 +139,14 @@
         </section>
 
         <!-- Manutenções -->
-        <h3 class="titulo-secao">Manutenções</h3>
+        <div class="secao-topo">
+            <h3 class="titulo-secao">Manutenções</h3>
+            <button type="button" class="btn btn-cadastrar" data-abrir="dlg-cadastrar-manut" data-permissao="manutencao">Cadastrar manutenção</button>
+        </div>
         <section class="lista-manut" id="listaManut"></section>
 
         <div class="rodape-detalhes">
             <a href="detalhes-inversor.html" class="link-voltar">Voltar para o inversor</a>
-            <button type="button" class="btn btn-cadastrar" data-abrir="dlg-cadastrar-manut" data-permissao="manutencao">Cadastrar manutenção</button>
         </div>
 
     </main>
@@ -195,10 +197,10 @@
             <input class="pop-input pop-data" name="previsao" type="date">
         </label>
         <div class="pop-rodape">
-            <button class="pop-btn verde" value="concluir">Concluir</button>
             <div class="grupo">
                 <button class="pop-btn contorno" value="cancel" formnovalidate>Voltar</button>
                 <button class="pop-btn cheio" value="salvar">Salvar</button>
+                <button class="pop-btn verde" value="concluir">Concluir</button>
             </div>
         </div>
     </form>
