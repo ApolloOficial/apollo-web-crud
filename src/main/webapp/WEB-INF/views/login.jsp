@@ -18,7 +18,7 @@
   <section class="banner">
     <div class="logo">
       <img class="logo-texto" src="${raiz}/docs/img/logo/Union.png" alt="Apollo">
-      <img class="logo-seta" src="${raiz}/docs/img/logo/Group 18.png" alt="" aria-hidden="true">
+      <img class="logo-seta" src="${raiz}/docs/img/logo/Group%2018.png" alt="" aria-hidden="true">
     </div>
     <h2>Cadastro, monitoramento, gestão e muito mais</h2>
     <p class="legal"><a href="#">Termos de serviço</a> / <a href="#">políticas de privacidade</a></p>
@@ -43,7 +43,7 @@
         <a class="esqueci" href="${raiz}/recuperar-senha">Esqueci a senha</a>
         <button class="entrar" type="submit">Entrar</button>
         <c:if test="${not empty erroLogin}">
-          <p class="erro" id="erro" role="alert">${erroLogin}</p>
+          <p class="erro" id="erro" role="alert"><c:out value="${erroLogin}"/></p>
         </c:if>
       </form>
     </div>
