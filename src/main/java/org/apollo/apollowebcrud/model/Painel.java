@@ -1,6 +1,5 @@
 package org.apollo.apollowebcrud.model;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class Painel {
@@ -12,7 +11,7 @@ public class Painel {
     private String numeroSerie;
     private String marca;
     private String modelo;
-    private double potenciaW;
+    private Double potenciaW;
     private String notaFiscal;
     private StatusGeral status;
     private LocalDate dataInstalacao;
@@ -20,7 +19,7 @@ public class Painel {
 
 //    CONSTRUTOR
 
-    public Painel(int id, int idString, String numeroSerie, String marca, String modelo, double potenciaW, String notaFiscal, String status, LocalDate dataInstalacao) {
+    public Painel(int id, int idString, String numeroSerie, String marca, String modelo, Double potenciaW, String notaFiscal, String status, LocalDate dataInstalacao) {
         this.id = id;
         this.idString = idString;
         this.numeroSerie = numeroSerie;
@@ -59,7 +58,7 @@ public class Painel {
         return modelo;
     }
 
-    public double getPotenciaW() {
+    public Double getPotenciaW() {
         return potenciaW;
     }
 
@@ -101,7 +100,7 @@ public class Painel {
         this.modelo = modelo;
     }
 
-    public void setPotenciaW(double potenciaW) {
+    public void setPotenciaW(Double potenciaW) {
         this.potenciaW = potenciaW;
     }
 
@@ -128,7 +127,7 @@ public class Painel {
 //    SAÍDA TOSTRING()
 
     @Override
-    public java.lang.String toString() {
+    public String toString() {
         return "Painel{" +
                 "id=" + id +
                 ", idString=" + idString +

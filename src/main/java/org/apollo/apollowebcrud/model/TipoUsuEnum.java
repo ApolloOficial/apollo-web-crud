@@ -1,7 +1,7 @@
 package org.apollo.apollowebcrud.model;
 
 public enum TipoUsuEnum {
-        ADMINISTRADOR,
-        GERENTE,
-        OPERADOR
-    }
+    GERENTE,
+    TECNICO,
+    OPERADOR
+}

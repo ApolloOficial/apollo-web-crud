@@ -1,6 +1,5 @@
 package org.apollo.apollowebcrud.model;
 
-import java.io.ObjectInputFilter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 

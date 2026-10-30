@@ -7,19 +7,21 @@ public class Usuario {
     private int id;
     private String nome;
     private int idTipoUsuario;
-    private int idEmpresa;
-    private int idFilial;
+    private Integer idEmpresa;
+    private Integer idFilial;
     private String email;
     private String telefone;
     private String cpf;
     private String senhaHash;
     private String status;
     private String urlFoto;
+    private Integer idUsuarioCadastro;
+    private TipoUsuEnum perfil;
     private String mensagemErro;
 
 //    CONSTRUTOR
 
-    public Usuario(int id, String nome, int idTipoUsuario, int idEmpresa, int idFilial, String email, String telefone, String cpf, String senhaHash, String status, String urlFoto) {
+    public Usuario(int id, String nome, int idTipoUsuario, Integer idEmpresa, Integer idFilial, String email, String telefone, String cpf, String senhaHash, String status, String urlFoto) {
         this.id = id;
         this.nome = nome;
         this.idTipoUsuario = idTipoUsuario;
@@ -53,11 +55,11 @@ public class Usuario {
         return idTipoUsuario;
     }
 
-    public int getIdEmpresa() {
+    public Integer getIdEmpresa() {
         return idEmpresa;
     }
 
-    public int getIdFilial() {
+    public Integer getIdFilial() {
         return idFilial;
     }
 
@@ -85,6 +87,31 @@ public class Usuario {
         return urlFoto;
     }
 
+    // Técnico e operador (têm filial) são quem opera inversores, strings, painéis e manutenções
+    public boolean podeOperarEquipamentos() {
+        return idFilial != null && (perfil == TipoUsuEnum.TECNICO || perfil == TipoUsuEnum.OPERADOR);
+    }
+
+    // Primeira letra do primeiro e do último nome, para o avatar das telas (ex.: "Ana Souza" → "AS")
+    public String getIniciais() {
+        if (nome == null || nome.isBlank()) {
+            return "";
+        }
+        String[] partes = nome.trim().split("\\s+");
+        String iniciais = partes.length == 1
+                ? partes[0].substring(0, 1)
+                : partes[0].substring(0, 1) + partes[partes.length - 1].substring(0, 1);
+        return iniciais.toUpperCase();
+    }
+
+    public TipoUsuEnum getPerfil() {
+        return perfil;
+    }
+
+    public Integer getIdUsuarioCadastro() {
+        return idUsuarioCadastro;
+    }
+
     public String getMensagemErro() {
         return mensagemErro;
     }
@@ -92,9 +119,9 @@ public class Usuario {
 
 //    SETTERS
 
-public void setId(int id) {
-    this.id = id;
-}
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public void setNome(String nome) {
         this.nome = nome;
@@ -104,11 +131,11 @@ public void setId(int id) {
         this.idTipoUsuario = idTipoUsuario;
     }
 
-    public void setIdEmpresa(int idEmpresa) {
+    public void setIdEmpresa(Integer idEmpresa) {
         this.idEmpresa = idEmpresa;
     }
 
-    public void setIdFilial(int idFilial) {
+    public void setIdFilial(Integer idFilial) {
         this.idFilial = idFilial;
     }
 
@@ -136,6 +163,14 @@ public void setId(int id) {
         this.urlFoto = urlFoto;
     }
 
+    public void setPerfil(TipoUsuEnum perfil) {
+        this.perfil = perfil;
+    }
+
+    public void setIdUsuarioCadastro(Integer idUsuarioCadastro) {
+        this.idUsuarioCadastro = idUsuarioCadastro;
+    }
+
     public void setMensagemErro(String mensagemErro) {
         this.mensagemErro = mensagemErro;
     }
@@ -153,9 +188,9 @@ public void setId(int id) {
                 ", email='" + email + '\'' +
                 ", telefone='" + telefone + '\'' +
                 ", cpf='" + cpf + '\'' +
-                ", senhaHash='" + senhaHash + '\'' +
                 ", ativo='" + status + '\'' +
                 ", urlFoto='" + urlFoto + '\'' +
+                ", idUsuarioCadastro=" + idUsuarioCadastro +
                 '}';
     }
 }
