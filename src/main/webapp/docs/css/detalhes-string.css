@@ -2076,3 +2076,18 @@ dialog.pop .pop-btn:focus-visible { outline: 2px solid var(--btn-apollo); outlin
     main.conteudo .secao-topo .btn-cadastrar { width: 100%; }
     main.conteudo .secao-topo { flex-wrap: wrap; }
 }
+
+.pop-rodape { 
+  display: flex !important; 
+  align-items: center !important; 
+  justify-content: flex-start !important; 
+  gap: 12px !important; 
+  margin-top: 18px !important; 
+}
+
+.pop-rodape .grupo { 
+  display: flex !important; 
+  gap: 14px !important; 
+  margin-left: 0 !important; 
+  margin-right: auto !important; 
+}

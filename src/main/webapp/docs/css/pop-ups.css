@@ -38,8 +38,21 @@ dialog.pop[open] { animation: pop-entra .18s ease-out; }
 .pop-texto { font-size: 13px; line-height: 1.5; margin-bottom: 20px; }
 .pop-texto strong { font-weight: 600; }
 
-.pop-rodape { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 18px; }
-.pop-rodape .grupo { display: flex; gap: 14px; margin-left: auto; }
+/* Rodapé forçado totalmente à esquerda */
+.pop-rodape { 
+  display: flex; 
+  align-items: center; 
+  justify-content: flex-start !important; 
+  gap: 12px; 
+  margin-top: 18px; 
+}
+.pop-rodape .grupo { 
+  display: flex; 
+  gap: 14px; 
+  margin-left: 0 !important; 
+  margin-right: auto !important; 
+}
+
 .pop-btn { border-radius: 22px; padding: 9px 34px; font-size: 12px; font-weight: 500; border: 1px solid transparent; background: none; }
 .pop-btn.verde { background: var(--verde-btn); color: #fff; padding-inline: 26px; }
 .pop-btn.cheio { background: var(--laranja-btn); color: #fff; }
@@ -51,3 +64,18 @@ dialog.pop[open] { animation: pop-entra .18s ease-out; }
 .pop-linha-usuario .pop-input { flex: 1; }
 
 @media (max-width: 520px) { .pop-grade { grid-template-columns: 1fr; } }
+
+.pop-rodape { 
+  display: flex !important; 
+  align-items: center !important; 
+  justify-content: flex-start !important; 
+  gap: 12px !important; 
+  margin-top: 18px !important; 
+}
+
+.pop-rodape .grupo { 
+  display: flex !important; 
+  gap: 14px !important; 
+  margin-left: 0 !important; 
+  margin-right: auto !important; 
+}
