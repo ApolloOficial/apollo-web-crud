@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apollo.apollowebcrud.model.Painel;
 import org.apollo.apollowebcrud.model.StatusGeral;
+import org.apollo.apollowebcrud.model.StringSolar;
 import org.apollo.apollowebcrud.model.Usuario;
 import org.apollo.apollowebcrud.service.PainelService;
 import org.apollo.apollowebcrud.service.StringSolarService;
@@ -14,6 +15,8 @@ import org.apollo.apollowebcrud.util.ParametrosUtils;
 import org.apollo.apollowebcrud.util.SessaoUtils;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 // GET /painel (listagem) | GET /painel?novo=1 | GET /painel?editar=ID
 // POST com o campo "acao": cadastrar (padrão) | editar
@@ -43,6 +46,7 @@ public class PainelServlet extends HttpServlet {
             mostrarFormulario(request, response, "editar", item);
         } else {
             request.setAttribute("listaPaineis", painelService.listarVisiveis(logado));
+            request.setAttribute("codigosString", codigosDasStrings(logado));
             request.getRequestDispatcher(VIEW_LISTA).forward(request, response);
         }
     }
@@ -62,7 +66,7 @@ public class PainelServlet extends HttpServlet {
         }
 
         if (erro == null) {
-            response.sendRedirect(request.getContextPath() + "/painel");
+            response.sendRedirect(request.getContextPath() + "/painel?ok=" + (editando ? "editar" : "cadastrar"));
             return;
         }
 
@@ -80,6 +84,14 @@ public class PainelServlet extends HttpServlet {
         request.setAttribute("item", item);
         request.setAttribute("listaStrings", stringSolarService.listarVisiveis(SessaoUtils.usuarioLogado(request)));
         request.getRequestDispatcher(VIEW_FORMULARIO).forward(request, response);
+    }
+
+    private Map<Integer, String> codigosDasStrings(Usuario logado) {
+        Map<Integer, String> codigos = new HashMap<>();
+        for (StringSolar string : stringSolarService.listarVisiveis(logado)) {
+            codigos.put(string.getId(), string.getCodigo());
+        }
+        return codigos;
     }
 
     private void manterStringOriginal(Painel dados, Usuario logado) {

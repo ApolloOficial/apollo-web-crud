@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apollo.apollowebcrud.model.Manutencao;
+import org.apollo.apollowebcrud.model.Painel;
 import org.apollo.apollowebcrud.model.StatusManutencao;
 import org.apollo.apollowebcrud.model.TipoManutencao;
 import org.apollo.apollowebcrud.model.Usuario;
@@ -16,6 +17,8 @@ import org.apollo.apollowebcrud.util.ParametrosUtils;
 import org.apollo.apollowebcrud.util.SessaoUtils;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 // GET /manutencao (listagem) | GET /manutencao?novo=1 | GET /manutencao?editar=ID
 // POST com o campo "acao": cadastrar (padrão) | editar
@@ -46,6 +49,8 @@ public class ManutencaoServlet extends HttpServlet {
             mostrarFormulario(request, response, "editar", item);
         } else {
             request.setAttribute("listaManutencoes", manutencaoService.listarVisiveis(logado));
+            request.setAttribute("seriesPaineis", seriesDosPaineis(logado));
+            request.setAttribute("nomesResponsaveis", nomesDosResponsaveis(logado));
             request.getRequestDispatcher(VIEW_LISTA).forward(request, response);
         }
     }
@@ -65,7 +70,7 @@ public class ManutencaoServlet extends HttpServlet {
         }
 
         if (erro == null) {
-            response.sendRedirect(request.getContextPath() + "/manutencao");
+            response.sendRedirect(request.getContextPath() + "/manutencao?ok=" + (editando ? "editar" : "cadastrar"));
             return;
         }
 
@@ -85,6 +90,22 @@ public class ManutencaoServlet extends HttpServlet {
         request.setAttribute("listaPaineis", painelService.listarVisiveis(logado));
         request.setAttribute("listaResponsaveis", usuarioService.listarResponsaveisDaFilial(logado));
         request.getRequestDispatcher(VIEW_FORMULARIO).forward(request, response);
+    }
+
+    private Map<Integer, String> seriesDosPaineis(Usuario logado) {
+        Map<Integer, String> series = new HashMap<>();
+        for (Painel painel : painelService.listarVisiveis(logado)) {
+            series.put(painel.getId(), painel.getNumeroSerie());
+        }
+        return series;
+    }
+
+    private Map<Integer, String> nomesDosResponsaveis(Usuario logado) {
+        Map<Integer, String> nomes = new HashMap<>();
+        for (Usuario responsavel : usuarioService.listarResponsaveisDaFilial(logado)) {
+            nomes.put(responsavel.getId(), responsavel.getNome());
+        }
+        return nomes;
     }
 
     private void manterPainelOriginal(Manutencao dados, Usuario logado) {
