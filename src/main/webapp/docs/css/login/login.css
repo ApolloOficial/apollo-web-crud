@@ -126,7 +126,7 @@ body{
 .area:hover{background:rgba(255,107,53,.1)}
 .area:active{transform:scale(.97)}
 
-.area[aria-checked="true"]{
+.area[aria-pressed="true"]{
   background:var(--laranja);
   color:#fff;
 }
@@ -333,3 +333,4 @@ body{
   .spinner{animation:none}
   .area,.entrar,.campo{transition:none}
 }
+.sucesso{margin:12px 0 0;font-size:.85rem;font-weight:600;color:#2e7d32;text-align:center}

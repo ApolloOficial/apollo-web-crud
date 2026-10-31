@@ -10,7 +10,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<!-- login.css traz o que as telas têm em comum (banner, painel, campos, botão) -->
 <link rel="stylesheet" href="${raiz}/docs/css/login/login.css">
 <link rel="stylesheet" href="${raiz}/docs/css/login/login_codigo.css">
 </head>

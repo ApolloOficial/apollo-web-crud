@@ -35,13 +35,15 @@
         <button type="button" class="area" data-area="operador" aria-pressed="${areaSelecionada eq 'operador'}">Operador</button>
       </div>
 
-      <%-- O servidor compara a área escolhida com o perfil associado à conta no banco. --%>
       <form id="form-login" action="${raiz}/login" method="post" novalidate>
         <input type="hidden" name="area" id="area" value="<c:out value='${areaSelecionada}'/>">
         <input class="campo" type="email" name="email" value="<c:out value='${emailDigitado}'/>" placeholder="Email" autocomplete="username" aria-label="Email" required>
         <input class="campo" type="password" name="senha" placeholder="Senha" autocomplete="current-password" aria-label="Senha" required>
         <a class="esqueci" href="${raiz}/recuperar-senha">Esqueci a senha</a>
         <button class="entrar" type="submit">Entrar</button>
+        <c:if test="${param.senhaRedefinida == '1'}">
+          <p class="sucesso" role="status">Senha redefinida. Entre com a nova senha.</p>
+        </c:if>
         <c:if test="${not empty erroLogin}">
           <p class="erro" id="erro" role="alert"><c:out value="${erroLogin}"/></p>
         </c:if>
