@@ -5,16 +5,26 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apollo.apollowebcrud.model.Inversor;
+import org.apollo.apollowebcrud.model.Manutencao;
+import org.apollo.apollowebcrud.model.Painel;
 import org.apollo.apollowebcrud.model.StatusGeral;
 import org.apollo.apollowebcrud.model.StringSolar;
 import org.apollo.apollowebcrud.model.Usuario;
+import org.apollo.apollowebcrud.service.FilialService;
 import org.apollo.apollowebcrud.service.InversorService;
+import org.apollo.apollowebcrud.service.ManutencaoService;
 import org.apollo.apollowebcrud.service.PainelService;
 import org.apollo.apollowebcrud.service.StringSolarService;
 import org.apollo.apollowebcrud.util.ParametrosUtils;
 import org.apollo.apollowebcrud.util.SessaoUtils;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 // GET /string (listagem) | GET /string?novo=1 | GET /string?editar=ID
 // POST com o campo "acao": cadastrar (padrão) | editar
@@ -31,6 +41,8 @@ public class StringSolarServlet extends HttpServlet {
     private final StringSolarService stringSolarService = new StringSolarService();
     private final InversorService inversorService = new InversorService();
     private final PainelService painelService = new PainelService();
+    private final FilialService filialService = new FilialService();
+    private final ManutencaoService manutencaoService = new ManutencaoService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -50,6 +62,7 @@ public class StringSolarServlet extends HttpServlet {
             detalhes(request, response, logado);
         } else {
             request.setAttribute("listaStrings", stringSolarService.listarVisiveis(logado));
+            request.setAttribute("codigosInversor", codigosDosInversores(logado));
             request.getRequestDispatcher(VIEW_LISTA).forward(request, response);
         }
     }
@@ -63,8 +76,13 @@ public class StringSolarServlet extends HttpServlet {
             return;
         }
         request.setAttribute("item", item);
-        request.setAttribute("inversor", inversorService.buscarVisivel(item.getIdInversor(), logado));
-        request.setAttribute("listaPaineis", painelService.listarDaString(id, logado));
+        Inversor inversor = inversorService.buscarVisivel(item.getIdInversor(), logado);
+        List<Painel> paineis = painelService.listarDaString(id, logado);
+        request.setAttribute("inversor", inversor);
+        request.setAttribute("filial", inversor == null ? null : filialService.buscarVisivel(inversor.getIdFilial(), logado));
+        request.setAttribute("listaPaineis", paineis);
+        request.setAttribute("listaManutencoes", manutencoesDosPaineis(paineis, logado));
+        request.setAttribute("seriesPaineis", seriesDosPaineis(paineis));
         request.getRequestDispatcher(VIEW_DETALHES).forward(request, response);
     }
 
@@ -83,7 +101,7 @@ public class StringSolarServlet extends HttpServlet {
         }
 
         if (erro == null) {
-            response.sendRedirect(request.getContextPath() + "/string");
+            response.sendRedirect(request.getContextPath() + "/string?ok=" + (editando ? "editar" : "cadastrar"));
             return;
         }
 
@@ -101,6 +119,32 @@ public class StringSolarServlet extends HttpServlet {
         request.setAttribute("item", item);
         request.setAttribute("listaInversores", inversorService.listarVisiveis(SessaoUtils.usuarioLogado(request)));
         request.getRequestDispatcher(VIEW_FORMULARIO).forward(request, response);
+    }
+
+    private Map<Integer, String> codigosDosInversores(Usuario logado) {
+        Map<Integer, String> codigos = new HashMap<>();
+        for (Inversor inversor : inversorService.listarVisiveis(logado)) {
+            codigos.put(inversor.getId(), inversor.getCodigo());
+        }
+        return codigos;
+    }
+
+    private List<Manutencao> manutencoesDosPaineis(List<Painel> paineis, Usuario logado) {
+        Set<Integer> ids = new HashSet<>();
+        for (Painel painel : paineis) {
+            ids.add(painel.getId());
+        }
+        return manutencaoService.listarVisiveis(logado).stream()
+                .filter(m -> ids.contains(m.getIdPainel()))
+                .toList();
+    }
+
+    private Map<Integer, String> seriesDosPaineis(List<Painel> paineis) {
+        Map<Integer, String> series = new HashMap<>();
+        for (Painel painel : paineis) {
+            series.put(painel.getId(), painel.getNumeroSerie());
+        }
+        return series;
     }
 
     private void manterInversorOriginal(StringSolar dados, Usuario logado) {

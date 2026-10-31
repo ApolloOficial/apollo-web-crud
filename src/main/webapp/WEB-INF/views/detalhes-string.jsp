@@ -1,27 +1,33 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="ap" tagdir="/WEB-INF/tags" %>
+<c:set var="raiz" value="${pageContext.request.contextPath}"/>
+<c:set var="ativo" value="filial"/>
+<c:set var="podeEditar" value="${usuarioLogado.perfil != 'GERENTE'}"/>
+<c:set var="somaW" value="0"/>
+<c:set var="totalAtivos" value="0"/>
+<c:forEach var="p" items="${listaPaineis}">
+    <c:if test="${not empty p.potenciaW}"><c:set var="somaW" value="${somaW + p.potenciaW}"/></c:if>
+    <c:if test="${p.status == 'ATIVO'}"><c:set var="totalAtivos" value="${totalAtivos + 1}"/></c:if>
+</c:forEach>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apollo - Detalhes da String</title>
-
+    <title>Apollo | Detalhes da string</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="../../docs/css/detalhes-string.css">
-    <link rel="stylesheet" href="../../docs/css/sidebar.css">
-    <link rel="stylesheet" href="../../docs/css/detalhes-melhorias.css">
+    <link rel="stylesheet" href="${raiz}/docs/css/logoApollo.css">
+    <link rel="stylesheet" href="${raiz}/docs/css/detalhes-string.css">
+    <link rel="stylesheet" href="${raiz}/docs/css/sidebar.css">
+    <link rel="stylesheet" href="${raiz}/docs/css/detalhes-melhoria.css">
 </head>
 <body>
-
 <div class="pagina">
-
-    <!-- ===== Sidebar (montada por sidebar.js conforme o tipo de usuário) ===== -->
-    <aside class="sidebar" data-ativo="filial"></aside>
-    <script src="../../docs/js/sidebar.js"></script>
+    <%@ include file="includes/sidebar.jspf" %>
 
     <main class="conteudo" id="tela-string">
 
@@ -29,86 +35,80 @@
             <div>
                 <h1 class="titulo">Detalhes da String</h1>
                 <nav class="breadcrumb" aria-label="Você está em">
-                    <a href="empresa.jsp">Filial</a><span class="sep">&gt;</span>
-                    <a href="detalhes-filial.jsp">Solaris Osasco</a><span class="sep">&gt;</span>
-                    <a href="detalhes-filial.jsp#listaInversores">Inversores</a><span class="sep">&gt;</span>
-                    <a href="detalhes-inversor.jsp">INV-OSA-01</a><span class="sep">&gt;</span>
-                    <span class="atual">STR-OSA-01-01</span>
+                    <a href="${raiz}/filial">Filial</a><span class="sep">&gt;</span>
+                    <a href="${raiz}/filial?detalhes=${inversor.idFilial}"><c:out value="${filial.nome}" default="Filial"/></a><span class="sep">&gt;</span>
+                    <a href="${raiz}/inversor?detalhes=${item.idInversor}"><c:out value="${inversor.codigo}" default="Inversor"/></a><span class="sep">&gt;</span>
+                    <span class="atual"><c:out value="${item.codigo}"/></span>
                 </nav>
             </div>
-
             <div class="usuario">
-                <svg class="sino" viewBox="0 0 24 24" aria-label="Notificações"><path d="M12 2a6 6 0 0 0-6 6v4l-2 3h16l-2-3V8a6 6 0 0 0-6-6zM10 19a2 2 0 0 0 4 0z"/></svg>
-                <div class="avatar-usuario" aria-hidden="true"></div>
-                <span>Neymar júnior césar</span>
-                <span class="seta" aria-hidden="true">▾</span>
+                <a href="${raiz}/perfil" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit">
+                    <div class="avatar-usuario" aria-hidden="true"></div>
+                    <span><c:out value="${usuarioLogado.nome}"/></span>
+                </a>
             </div>
         </header>
 
-        <!-- Cabeçalho da string -->
         <section class="card-inversor">
             <div class="inversor-info">
                 <div class="avatar">STR</div>
                 <div>
                     <div class="linha-nome">
-                        <h2>STR-OSA-01-01</h2>
-                        <span class="badge badge-ativo" data-status-string>Ativo</span>
+                        <h2><c:out value="${item.codigo}"/></h2>
+                        <ap:badge valor="${item.status}"/>
                     </div>
-                    <p class="subtitulo">Inversor INV-OSA-01 · MPPT 1 · Entrada 1</p>
+                    <p class="subtitulo">Inversor <c:out value="${inversor.codigo}" default="—"/> · MPPT <c:out value="${item.numeroMppt}" default="—"/> · Entrada <c:out value="${item.numeroEntrada}" default="—"/></p>
                 </div>
             </div>
-
-            <div class="acoes">
-                <button type="button" class="btn btn-editar" data-abrir="dlg-editar-string" data-permissao="equipamento">Editar</button>
-                <button type="button" class="btn btn-inativar" data-abrir="dlg-inativar-string" data-permissao="equipamento">Inativar</button>
-                <button type="button" class="btn btn-excluir" data-abrir="dlg-excluir-string" data-permissao="equipamento" aria-label="Excluir string">
-                    <svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                </button>
-            </div>
+            <c:if test="${podeEditar}">
+                <div class="acoes">
+                    <a class="btn btn-editar" href="${raiz}/string?editar=${item.id}">Editar</a>
+                </div>
+            </c:if>
         </section>
 
-        <!-- Campos -->
         <section class="grade-info">
             <div class="card-info">
-                <span class="rotulo">ID do inversor</span>
-                <span class="valor vazio">Não informado</span>
+                <span class="rotulo">Inversor</span>
+                <span class="valor"><c:out value="${inversor.codigo}" default="—"/></span>
             </div>
             <div class="card-info">
                 <span class="rotulo">Código</span>
-                <span class="valor">STR-OSA-01-01</span>
+                <span class="valor"><c:out value="${item.codigo}"/></span>
             </div>
             <div class="card-info">
                 <span class="rotulo">Nº de MPPT</span>
-                <span class="valor">1</span>
+                <span class="valor"><c:out value="${item.numeroMppt}" default="—"/></span>
             </div>
             <div class="card-info">
                 <span class="rotulo">Número de entrada</span>
-                <span class="valor">1</span>
+                <span class="valor"><c:out value="${item.numeroEntrada}" default="—"/></span>
             </div>
             <div class="card-info card-status">
                 <span class="rotulo">Status</span>
-                <span class="badge badge-ativo badge-mini" data-status-string>Ativo</span>
+                <ap:badge valor="${item.status}"/>
             </div>
         </section>
 
-        <!-- Painéis da string -->
         <section class="secao-paineis">
             <div class="paineis-topo">
                 <h3>Painéis da String</h3>
-                <button type="button" class="btn btn-cadastrar" data-abrir="dlg-add-painel" data-permissao="cadastro">Adicionar painel</button>
+                <c:if test="${podeEditar}">
+                    <a class="btn btn-cadastrar" href="${raiz}/painel?novo=1">Adicionar painel</a>
+                </c:if>
             </div>
 
             <div class="metricas">
                 <div class="metrica">
-                    <div><p>Painéis totais</p><strong id="mTotal">0</strong></div>
+                    <div><p>Painéis totais</p><strong>${listaPaineis.size()}</strong></div>
                     <svg viewBox="0 0 24 24"><path d="M4 4h16l2 12H2zM12 4v12M7 4l-2 12M17 4l2 12M3 10h18M10 20h4"/></svg>
                 </div>
                 <div class="metrica">
-                    <div><p>Potência total</p><strong id="mPotencia">0 kWp</strong></div>
+                    <div><p>Potência total</p><strong><fmt:formatNumber value="${somaW / 1000}" minFractionDigits="1" maxFractionDigits="2"/> kWp</strong></div>
                     <svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>
                 </div>
                 <div class="metrica">
-                    <div><p>Ativos</p><strong id="mAtivos">0/0</strong></div>
+                    <div><p>Ativos</p><strong>${totalAtivos}/${listaPaineis.size()}</strong></div>
                     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>
                 </div>
             </div>
@@ -116,183 +116,80 @@
             <div class="filtros">
                 <label class="busca">
                     <span class="lupa"></span>
-                    <input type="search" id="buscaPainel" placeholder="Busque pelo modelo do painel" aria-label="Buscar painel">
+                    <input type="search" id="busca" placeholder="Busque pelo modelo ou série do painel" aria-label="Buscar painel">
                 </label>
-                <div class="filtro-wrap">
-                    <button type="button" class="filtro-status" id="btnFiltroStatus" aria-haspopup="listbox" aria-expanded="false"><em id="rotuloFiltro">Todos os status</em> <span aria-hidden="true">›</span></button>
-                    <ul class="filtro-menu" id="menuFiltroStatus" role="listbox" aria-label="Filtrar por status" hidden>
-                        <li role="option" data-filtro="" aria-selected="true">Todos os status</li>
-                        <li role="option" data-filtro="Ativo" aria-selected="false">Ativo</li>
-                        <li role="option" data-filtro="Inativo" aria-selected="false">Inativo</li>
-                    </ul>
-                </div>
+                <select class="filtro-status" id="filtro-status" aria-label="Filtrar por status">
+                    <option value="">Todos os status</option>
+                    <option value="ATIVO">Ativo</option>
+                    <option value="INATIVO">Inativo</option>
+                </select>
             </div>
 
             <div class="tabela-paineis">
                 <table>
                     <thead>
-                        <tr><th>ID</th><th>Marca</th><th>Modelo</th><th>Potência</th><th>Data de instalação</th><th>Status</th><th>Ações</th></tr>
+                    <tr><th>Nº de série</th><th>Marca</th><th>Modelo</th><th>Potência (W)</th><th>Data de instalação</th><th>Status</th><th>Ações</th></tr>
                     </thead>
-                    <tbody id="tbodyPaineis"></tbody>
+                    <tbody>
+                    <c:forEach var="p" items="${listaPaineis}">
+                        <tr data-linha data-status="${p.status}">
+                            <td><c:out value="${p.numeroSerie}"/></td>
+                            <td><c:out value="${p.marca}"/></td>
+                            <td><c:out value="${p.modelo}"/></td>
+                            <td><c:out value="${p.potenciaW}" default="—"/></td>
+                            <td><ap:data valor="${p.dataInstalacao}"/></td>
+                            <td><ap:badge valor="${p.status}"/></td>
+                            <td>
+                                <c:if test="${podeEditar}">
+                                    <a class="mais" href="${raiz}/painel?editar=${p.id}" aria-label="Editar painel ${p.numeroSerie}" style="text-decoration:none">Editar</a>
+                                </c:if>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                    <c:if test="${empty listaPaineis}">
+                        <tr><td colspan="7">Nenhum painel cadastrado nesta string.</td></tr>
+                    </c:if>
+                    <tr id="sem-resultado" hidden><td colspan="7">Nenhum painel encontrado para o filtro informado.</td></tr>
+                    </tbody>
                 </table>
             </div>
-
-            <div class="paginacao" id="paginacao"></div>
         </section>
 
-        <!-- Manutenções -->
         <div class="secao-topo">
             <h3 class="titulo-secao">Manutenções</h3>
-            <button type="button" class="btn btn-cadastrar" data-abrir="dlg-cadastrar-manut" data-permissao="manutencao">Cadastrar manutenção</button>
+            <c:if test="${podeEditar}">
+                <a class="btn btn-cadastrar" href="${raiz}/manutencao?novo=1">Cadastrar manutenção</a>
+            </c:if>
         </div>
-        <section class="lista-manut" id="listaManut"></section>
+        <section class="lista-manut">
+            <c:forEach var="m" items="${listaManutencoes}">
+                <article class="card-manut">
+                    <div class="linha"><span>Placa</span><span class="selos">
+                        <ap:badge valor="${m.status}"/>
+                        <ap:badge valor="${m.tipoManutencao}"/>
+                    </span></div>
+                    <p class="codigo"><c:out value="${seriesPaineis[m.idPainel]}" default="—"/></p>
+                    <p class="id">OS <c:out value="${m.id}"/> · <c:out value="${m.descricao}" default="Sem descrição"/></p>
+                    <div class="rodape">
+                        <span>Aberta em <ap:data valor="${m.dataAbertura}"/></span>
+                        <div class="botoes">
+                            <c:if test="${podeEditar && m.status != 'CONCLUIDA' && m.status != 'CANCELADA'}">
+                                <a class="btn btn-atualizar" href="${raiz}/manutencao?editar=${m.id}">Atualizar</a>
+                            </c:if>
+                        </div>
+                    </div>
+                </article>
+            </c:forEach>
+            <c:if test="${empty listaManutencoes}">
+                <p class="vazio" style="padding:24px 0;color:#7a7a7a;font-size:14px">Nenhuma manutenção para os painéis desta string.</p>
+            </c:if>
+        </section>
 
         <div class="rodape-detalhes">
-            <a href="detalhes-inversor.jsp" class="link-voltar">Voltar para o inversor</a>
+            <a href="${raiz}/inversor?detalhes=${item.idInversor}" class="link-voltar">Voltar para o inversor</a>
         </div>
-
     </main>
-
 </div>
-
-<!-- ===== Pop-ups ===== -->
-<dialog class="pop" id="dlg-cadastrar-manut" aria-labelledby="dlg-cadastrar-manut-t">
-    <form method="dialog">
-        <h2 class="pop-titulo" id="dlg-cadastrar-manut-t"><span class="pop-icone"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/></svg></span>Cadastrar manutenção</h2>
-        <label class="pop-campo">
-            <select class="pop-select" name="tipo" aria-label="Tipo de manutenção" required>
-                <option value="" selected>Selecione o tipo de manutenção *</option>
-                <option>Preventiva</option><option>Corretiva</option><option>Preditiva</option>
-            </select>
-        </label>
-        <label class="pop-campo">
-            <textarea class="pop-area" name="descricao" placeholder="Escreva a descrição da manutenção... *" aria-label="Descrição" required></textarea>
-        </label>
-        <label class="pop-campo">
-            <span>Data prevista da conclusão: *</span>
-            <input class="pop-input pop-data" name="previsao" type="date" required>
-        </label>
-        <div class="pop-rodape">
-            <div class="grupo">
-                <button class="pop-btn contorno" value="cancel" formnovalidate>Cancelar</button>
-                <button class="pop-btn cheio" value="ok">Cadastrar</button>
-            </div>
-        </div>
-    </form>
-</dialog>
-<dialog class="pop" id="dlg-atualizar-manut" aria-labelledby="dlg-atualizar-manut-t">
-    <form method="dialog">
-        <h2 class="pop-titulo" id="dlg-atualizar-manut-t"><span class="pop-icone"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/></svg></span>Atualizar manutenção</h2>
-        <label class="pop-campo">
-            <span>Tipo de manutenção *</span>
-            <select class="pop-select" name="tipo" required>
-                <option value="" selected>Selecione o tipo de manutenção</option>
-                <option>Preventiva</option><option>Corretiva</option><option>Preditiva</option>
-            </select>
-        </label>
-        <label class="pop-campo">
-            <span>Descrição *</span>
-            <textarea class="pop-area" name="descricao" placeholder="Escreva a descrição da manutenção..." required></textarea>
-        </label>
-        <label class="pop-campo">
-            <span>Data prevista da conclusão</span>
-            <input class="pop-input pop-data" name="previsao" type="date">
-        </label>
-        <div class="pop-rodape">
-            <div class="grupo">
-                <button class="pop-btn contorno" value="cancel" formnovalidate>Voltar</button>
-                <button class="pop-btn cheio" value="salvar">Salvar</button>
-                <button class="pop-btn verde" value="concluir">Concluir</button>
-            </div>
-        </div>
-    </form>
-</dialog>
-<dialog class="pop" id="dlg-detalhes-manut" aria-labelledby="dlg-detalhes-manut-t">
-    <form method="dialog">
-        <h2 class="pop-titulo" id="dlg-detalhes-manut-t"><span class="pop-icone"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/></svg></span>Detalhes da manutenção</h2>
-        <label class="pop-campo">
-            <span>Tipo de manutenção</span>
-            <input class="pop-input" id="det-tipo" readonly>
-        </label>
-        <label class="pop-campo">
-            <span>Descrição</span>
-            <textarea class="pop-area" id="det-descricao" readonly></textarea>
-        </label>
-        <label class="pop-campo">
-            <span>Data prevista da conclusão</span>
-            <input class="pop-input pop-data" id="det-previsao" readonly>
-        </label>
-        <label class="pop-campo">
-            <span>Usuário que cadastrou</span>
-            <input class="pop-input" id="det-usuario" readonly>
-        </label>
-        <div class="pop-rodape">
-            <div class="grupo">
-                <button class="pop-btn cheio" value="cancel" formnovalidate>Voltar</button>
-            </div>
-        </div>
-    </form>
-</dialog>
-<dialog class="pop" id="dlg-editar-string" aria-labelledby="dlg-editar-string-t">
-    <form method="dialog">
-        <h2 class="pop-titulo" id="dlg-editar-string-t"><span class="pop-icone"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="2.6"/><line x1="10.2" y1="11.2" x2="7.4" y2="8.4"/><line x1="13.8" y1="11.2" x2="16.6" y2="8.4"/><line x1="12" y1="15.6" x2="12" y2="18.4"/><circle cx="6" cy="7" r="1.6"/><circle cx="18" cy="7" r="1.6"/><circle cx="12" cy="20" r="1.6"/></svg></span>Editar String</h2>
-        <div class="pop-grade">
-            <label class="pop-campo"><span>Código da String *</span><input class="pop-input" name="codigo" type="text" value="STR-OSA-01-01" required></label>
-            <label class="pop-campo"><span>Inversor *</span><input class="pop-input" name="inversor" type="text" value="INV-OSA-01" required></label>
-            <label class="pop-campo"><span>MPPT *</span><input class="pop-input" name="mppt" type="number" value="1" required min="1"></label>
-            <label class="pop-campo"><span>Entrada *</span><input class="pop-input" name="entrada" type="number" value="1" required min="1"></label>
-            <label class="pop-campo"><span>Status *</span><select class="pop-select" name="status" required><option value="" selected></option><option>Ativo</option><option>Inativo</option></select></label>
-            <div class="pop-rodape"><div class="grupo"><button class="pop-btn contorno" value="cancel" formnovalidate>Cancelar</button><button class="pop-btn cheio" value="ok">Salvar</button></div></div>
-        </div>
-    </form>
-</dialog>
-<dialog class="pop" id="dlg-add-painel" aria-labelledby="dlg-add-painel-t">
-    <form method="dialog">
-        <h2 class="pop-titulo" id="dlg-add-painel-t"><span class="pop-icone"><svg viewBox="0 0 24 24"><path d="M4 4h16l2 12H2zM12 4v12M3 10h18"/></svg></span>Dados do Painel</h2>
-        <div class="pop-grade">
-            <label class="pop-campo"><span>Número de série *</span><input class="pop-input" name="serie" type="text" required></label>
-            <label class="pop-campo"><span>Marca *</span><input class="pop-input" name="marca" type="text" required></label>
-            <label class="pop-campo"><span>Modelo *</span><input class="pop-input" name="modelo" type="text" required></label>
-            <label class="pop-campo"><span>Potência (W) *</span><input class="pop-input" name="potencia" type="number" required min="1" step="0.01"></label>
-            <label class="pop-campo"><span>Nota fiscal</span><input class="pop-input" name="nf" type="text" maxlength="44" inputmode="numeric"></label>
-            <label class="pop-campo"><span>Data de instalação</span><input class="pop-input" name="data" type="date" ></label>
-            <label class="pop-campo"><span>Status *</span><select class="pop-select" name="status" required><option value="" selected></option><option>Ativo</option><option>Inativo</option></select></label>
-            <div class="pop-rodape"><div class="grupo"><button class="pop-btn contorno" value="cancel" formnovalidate>Cancelar</button><button class="pop-btn cheio" value="ok">Cadastrar</button></div></div>
-        </div>
-    </form>
-</dialog>
-<dialog class="pop" id="dlg-editar-painel" aria-labelledby="dlg-editar-painel-t">
-    <form method="dialog">
-        <h2 class="pop-titulo" id="dlg-editar-painel-t"><span class="pop-icone"><svg viewBox="0 0 24 24"><path d="M4 4h16l2 12H2zM12 4v12M3 10h18"/></svg></span>Editar Painel</h2>
-        <div class="pop-grade">
-            <label class="pop-campo"><span>Número de série *</span><input class="pop-input" name="serie" type="text" required></label>
-            <label class="pop-campo"><span>Marca *</span><input class="pop-input" name="marca" type="text" value="Sunova" required></label>
-            <label class="pop-campo"><span>Modelo *</span><input class="pop-input" name="modelo" type="text" value="Canadian solar 600W" required></label>
-            <label class="pop-campo"><span>Potência (W) *</span><input class="pop-input" name="potencia" type="number" value="550.00" required min="1" step="0.01"></label>
-            <label class="pop-campo"><span>Nota fiscal</span><input class="pop-input" name="nf" type="text" maxlength="44" inputmode="numeric"></label>
-            <label class="pop-campo"><span>Data de instalação</span><input class="pop-input" name="data" type="date" value="2026-09-11" ></label>
-            <label class="pop-campo"><span>Status *</span><select class="pop-select" name="status" required><option value="" selected></option><option>Ativo</option><option>Inativo</option></select></label>
-            <div class="pop-rodape"><div class="grupo"><button class="pop-btn contorno" value="cancel" formnovalidate>Cancelar</button><button class="pop-btn cheio" value="ok">Salvar</button></div></div>
-        </div>
-    </form>
-</dialog>
-<dialog class="pop estreito" id="dlg-inativar-string" aria-labelledby="dlg-inativar-string-t">
-    <form method="dialog">
-        <h2 class="pop-titulo" id="dlg-inativar-string-t">Inativar string</h2>
-        <p class="pop-texto">A string <strong>STR-OSA-01-01</strong> deixará de ser monitorada. Você pode reativá-la depois pela edição.</p>
-        <div class="pop-rodape"><div class="grupo"><button class="pop-btn contorno" value="cancel" formnovalidate>Cancelar</button><button class="pop-btn cheio" value="ok">Inativar</button></div></div>
-    </form>
-</dialog>
-<dialog class="pop estreito" id="dlg-excluir-string" aria-labelledby="dlg-excluir-string-t">
-    <form method="dialog">
-        <h2 class="pop-titulo" id="dlg-excluir-string-t">Excluir string</h2>
-        <p class="pop-texto">Tem certeza que deseja excluir a string <strong>STR-OSA-01-01</strong>? Os painéis vinculados também serão desativados.</p>
-        <div class="pop-rodape"><div class="grupo"><button class="pop-btn contorno" value="cancel" formnovalidate>Cancelar</button><button class="pop-btn perigo" value="ok">Excluir</button></div></div>
-    </form>
-</dialog>
-
-<script src="../../docs/js/validar-email.js"></script>
-<script src="../../docs/js/detalhes-string.js"></script>
-<script src="../../docs/js/permissoes.js"></script>
+<script src="${raiz}/docs/js/filtro-tabela.js"></script>
 </body>
 </html>
