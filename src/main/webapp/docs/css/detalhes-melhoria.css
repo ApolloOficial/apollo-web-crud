@@ -359,3 +359,8 @@ dialog.pop .pop-btn:focus-visible { outline: 2px solid var(--btn-apollo); outlin
     main.conteudo .secao-topo .btn-cadastrar { width: 100%; }
     main.conteudo .secao-topo { flex-wrap: wrap; }
 }
+.badge-cancelada,
+.badge-cancelado {
+    background: #fdeceb;
+    color: #d93025;
+}
