@@ -1,28 +1,28 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<%@ taglib prefix="ap" tagdir="/WEB-INF/tags" %>
+<c:set var="raiz" value="${pageContext.request.contextPath}"/>
+<c:set var="ativo" value="filial"/>
+<c:set var="ehGerente" value="${usuarioLogado.perfil == 'GERENTE'}"/>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apollo - Detalhes da Filial</title>
-
+    <title>Apollo | Detalhes da filial</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="../../docs/css/detalhes-filial.css">
-    <link rel="stylesheet" href="../../docs/css/sidebar.css">
-    <link rel="stylesheet" href="../../docs/css/detalhes-melhorias.css">
-    <link rel="stylesheet" href="../../docs/css/pop-usuario.css">
+    <link rel="stylesheet" href="${raiz}/docs/css/logoApollo.css">
+    <link rel="stylesheet" href="${raiz}/docs/css/detalhes-filial.css">
+    <link rel="stylesheet" href="${raiz}/docs/css/sidebar.css">
+    <link rel="stylesheet" href="${raiz}/docs/css/detalhes-melhoria.css">
 </head>
 <body>
-
 <div class="pagina">
-
-    <!-- ===== Sidebar (montada por sidebar.js conforme o tipo de usuário) ===== -->
-    <aside class="sidebar" data-ativo="filial"></aside>
-    <script src="../../docs/js/sidebar.js"></script>
+    <%@ include file="includes/sidebar.jspf" %>
 
     <main class="conteudo" id="tela-filial">
 
@@ -30,125 +30,141 @@
             <div>
                 <h1 class="titulo">Detalhes da Filial</h1>
                 <nav class="breadcrumb" aria-label="Você está em">
-                    <a href="empresa.jsp">Filial</a><span class="sep">&gt;</span>
-                    <span class="atual">Solaris Osasco</span>
+                    <a href="${raiz}/filial">Filial</a><span class="sep">&gt;</span>
+                    <span class="atual"><c:out value="${item.nome}"/></span>
                 </nav>
             </div>
-
             <div class="usuario">
-                <svg class="sino" viewBox="0 0 24 24" aria-label="Notificações"><path d="M12 2a6 6 0 0 0-6 6v4l-2 3h16l-2-3V8a6 6 0 0 0-6-6zM10 19a2 2 0 0 0 4 0z"/></svg>
-                <div class="avatar-usuario" aria-hidden="true"></div>
-                <span>Neymar júnior césar</span>
-                <span class="seta" aria-hidden="true">▾</span>
+                <a href="${raiz}/perfil" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit">
+                    <div class="avatar-usuario" aria-hidden="true"></div>
+                    <span><c:out value="${usuarioLogado.nome}"/></span>
+                </a>
             </div>
         </header>
 
-        <!-- Cabeçalho da filial -->
+        <c:if test="${not empty erroFilial}">
+            <p class="pop-erro" role="alert" style="margin-bottom:16px"><c:out value="${erroFilial}"/></p>
+        </c:if>
+
         <section class="card-inversor">
             <div class="inversor-info">
-                <div class="avatar">SO</div>
+                <div class="avatar"><c:out value="${fn:toUpperCase(fn:substring(item.nome, 0, 2))}"/></div>
                 <div>
                     <div class="linha-nome">
-                        <h2>Solaris Osasco</h2>
-                        <span class="badge badge-ativo" data-status-filial>Ativo</span>
+                        <h2><c:out value="${item.nome}"/></h2>
+                        <c:choose>
+                            <c:when test="${item.status == 'ATIVO'}"><span class="badge badge-ativo">Ativo</span></c:when>
+                            <c:otherwise><span class="badge badge-inativo">Inativo</span></c:otherwise>
+                        </c:choose>
                     </div>
-                    <p class="subtitulo">Solaris Industria S.A. · Segmento: Indústria</p>
+                    <p class="subtitulo"><c:out value="${empresa.nome}"/> · Segmento: <c:out value="${segmento.nome}" default="—"/></p>
                 </div>
             </div>
 
-            <div class="acoes">
-                <button type="button" class="btn btn-editar" data-abrir="dlg-editar-filial" data-permissao="filial">Editar filial</button>
-                <button type="button" class="btn btn-inativar" data-abrir="dlg-inativar-filial" data-permissao="filial">Inativar filial</button>
-                <button type="button" class="btn btn-excluir" data-abrir="dlg-excluir-filial" data-permissao="filial" aria-label="Excluir filial">
-                    <svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                </button>
-            </div>
+            <c:if test="${ehGerente}">
+                <div class="acoes">
+                    <a class="btn btn-editar" href="${raiz}/filial?editar=${item.id}">Editar filial</a>
+                    <form action="${raiz}/filial" method="post" style="display:inline" data-confirmar="Confirma esta alteração de status?">
+                        <input type="hidden" name="id" value="${item.id}">
+                        <c:choose>
+                            <c:when test="${item.status == 'ATIVO'}">
+                                <input type="hidden" name="acao" value="inativar">
+                                <button type="submit" class="btn btn-inativar">Inativar filial</button>
+                            </c:when>
+                            <c:otherwise>
+                                <input type="hidden" name="acao" value="reativar">
+                                <button type="submit" class="btn btn-editar">Reativar filial</button>
+                            </c:otherwise>
+                        </c:choose>
+                    </form>
+                </div>
+            </c:if>
         </section>
 
-        <!-- Métricas -->
         <section class="metricas-filial">
             <div class="metrica-card">
                 <span class="rotulo">Inversores</span>
-                <strong>1</strong>
-                <span class="badge badge-ativo badge-mini">250 kW</span>
+                <strong>${resumo.totalInversores}</strong>
+                <span class="badge badge-ativo badge-mini"><fmt:formatNumber value="${resumo.potenciaTotalKw}" minFractionDigits="0" maxFractionDigits="2"/> kW</span>
             </div>
             <div class="metrica-card">
                 <span class="rotulo">Strings</span>
-                <strong>2</strong>
-                <span class="badge badge-amarelo badge-mini">MPPT 1</span>
+                <strong>${resumo.totalStrings}</strong>
             </div>
             <div class="metrica-card">
                 <span class="rotulo">Painéis</span>
-                <strong>48</strong>
-                <span class="badge badge-amarelo badge-mini">1 inativo</span>
+                <strong>${resumo.totalPaineis}</strong>
+                <span class="badge badge-amarelo badge-mini">${resumo.paineisInativos} inativo(s)</span>
             </div>
             <div class="metrica-card">
                 <span class="rotulo">Manutenções em aberto</span>
-                <strong>3</strong>
-                <span class="badge badge-amarelo badge-mini">2 em andamento</span>
+                <strong>${resumo.manutencoesEmAberto}</strong>
+                <span class="badge badge-amarelo badge-mini">${resumo.manutencoesEmAndamento} em andamento</span>
             </div>
         </section>
 
-        <!-- Dados / Endereço / Equipe -->
         <section class="info-trio">
             <article class="painel-info">
                 <h3>Dados da filial</h3>
                 <ul class="lista-dados">
-                    <li><span class="chave">Nome</span><span class="valor-dado">Solaris Osasco</span></li>
-                    <li><span class="chave">CNPJ</span><span class="valor-dado">11.222.333/0002-62</span></li>
-                    <li><span class="chave">E-mail</span><span class="valor-dado">osasco@solarisindustria.com.br</span></li>
-                    <li><span class="chave">Telefone</span><span class="valor-dado">(11) 3456-7893</span></li>
-                    <li><span class="chave">Segmento</span><span class="valor-dado">Indústria</span></li>
-                    <li><span class="chave">Empresa</span><span class="valor-dado">Solaris Industria S.A.</span></li>
+                    <li><span class="chave">Nome</span><span class="valor-dado"><c:out value="${item.nome}"/></span></li>
+                    <li><span class="chave">CNPJ</span><span class="valor-dado"><ap:cnpj valor="${item.cnpj}"/></span></li>
+                    <li><span class="chave">E-mail</span><span class="valor-dado"><c:out value="${item.email}"/></span></li>
+                    <li><span class="chave">Telefone</span><span class="valor-dado"><ap:telefone valor="${item.telefone}"/></span></li>
+                    <li><span class="chave">Segmento</span><span class="valor-dado"><c:out value="${segmento.nome}" default="—"/></span></li>
+                    <li><span class="chave">Empresa</span><span class="valor-dado"><c:out value="${empresa.nome}" default="—"/></span></li>
                 </ul>
             </article>
 
             <article class="painel-info">
                 <h3>Endereço</h3>
                 <ul class="lista-dados">
-                    <li><span class="chave">Logradouro</span><span class="valor-dado">Rua Antônio Agú, 330</span></li>
-                    <li><span class="chave">Complemento</span><span class="valor-dado">Galpão 2</span></li>
-                    <li><span class="chave">Bairro</span><span class="valor-dado">Centro</span></li>
-                    <li><span class="chave">Cidade / UF</span><span class="valor-dado">Osasco / SP</span></li>
-                    <li><span class="chave">CEP</span><span class="valor-dado">06018-001</span></li>
+                    <li><span class="chave">Logradouro</span><span class="valor-dado"><c:out value="${endereco.logradouro}"/>, <c:out value="${endereco.numero}"/></span></li>
+                    <li><span class="chave">Complemento</span><span class="valor-dado"><c:out value="${endereco.complemento}" default="—"/></span></li>
+                    <li><span class="chave">Bairro</span><span class="valor-dado"><c:out value="${endereco.bairro}"/></span></li>
+                    <li><span class="chave">Cidade / UF</span><span class="valor-dado"><c:out value="${endereco.cidade}"/> / <c:out value="${endereco.estado}"/></span></li>
+                    <li><span class="chave">CEP</span><span class="valor-dado"><c:out value="${endereco.cep}"/></span></li>
                 </ul>
             </article>
 
             <article class="painel-info">
                 <div class="painel-topo">
                     <h3>Equipe da filial</h3>
-                    <button type="button" class="btn btn-cadastrar mini" id="btnCadastrarUsuario" data-abrir="dlg-cadastrar-usuario">Cadastrar usuário</button>
+                    <c:if test="${ehGerente || usuarioLogado.perfil == 'TECNICO'}">
+                        <a class="btn btn-cadastrar mini" href="${raiz}/cadastro">Cadastrar usuário</a>
+                    </c:if>
                 </div>
-                <ul class="lista-equipe">
-                    <li>
-                        <div class="avatar-mini">AS</div>
-                        <div>
-                            <span class="membro-nome">Ana Souza <span class="cargo cargo-azul">Técnico</span></span>
-                            <span class="membro-email">ana.souza@solarisindustria.com.br</span>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="avatar-mini">AS</div>
-                        <div>
-                            <span class="membro-nome">Ana Souza <span class="cargo cargo-azul">Técnico</span></span>
-                            <span class="membro-email">ana.souza@solarisindustria.com.br</span>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="avatar-mini">DL</div>
-                        <div>
-                            <span class="membro-nome">Diego Lima <span class="cargo cargo-amarelo">Operador</span></span>
-                            <span class="membro-email">diego.lima@solarisindustria.com.br</span>
-                        </div>
-                    </li>
-                </ul>
-                <div class="equipe-rodape">
-                    <a href="membros.html" class="btn btn-mais">Ver mais</a>
-                </div>
+                <c:choose>
+                    <c:when test="${empty equipe}">
+                        <p class="vazio" style="padding:18px 0;color:#7a7a7a;font-size:13px">Nenhum membro nesta filial.</p>
+                    </c:when>
+                    <c:otherwise>
+                        <ul class="lista-equipe">
+                            <c:forEach var="m" items="${equipe}">
+                                <li>
+                                    <div class="avatar-mini"><c:out value="${m.iniciais}"/></div>
+                                    <div>
+                                        <span class="membro-nome"><c:out value="${m.nome}"/>
+                                            <c:choose>
+                                                <c:when test="${m.perfil == 'TECNICO'}"><span class="cargo cargo-azul">Técnico</span></c:when>
+                                                <c:otherwise><span class="cargo cargo-amarelo">Operador</span></c:otherwise>
+                                            </c:choose>
+                                        </span>
+                                        <span class="membro-email"><c:out value="${m.email}"/></span>
+                                    </div>
+                                </li>
+                            </c:forEach>
+                        </ul>
+                    </c:otherwise>
+                </c:choose>
+                <c:if test="${ehGerente || usuarioLogado.perfil == 'TECNICO'}">
+                    <div class="equipe-rodape">
+                        <a href="${raiz}/membros" class="btn btn-mais">Ver mais</a>
+                    </div>
+                </c:if>
             </article>
         </section>
 
-        <!-- Monitoramento -->
         <section class="card-monitor">
             <div>
                 <h3>Monitoramento do inversor</h3>
@@ -157,179 +173,39 @@
             <span class="badge badge-amarelo">Aguardando integração com a API</span>
         </section>
 
-        <!-- Inversores (botão de cadastro no topo da seção) -->
         <div class="secao-topo">
             <h3 class="titulo-secao">Inversores</h3>
-            <button type="button" class="btn btn-cadastrar" data-abrir="dlg-cadastrar-inversor" data-permissao="cadastro">Cadastrar inversor</button>
+            <c:if test="${!ehGerente && usuarioLogado.idFilial == item.id}">
+                <a class="btn btn-cadastrar" href="${raiz}/inversor?novo=1">Cadastrar inversor</a>
+            </c:if>
         </div>
-        <section class="grade-strings" id="listaInversores"></section>
-
+        <section class="grade-strings" id="listaInversores">
+            <c:forEach var="inv" items="${listaInversores}">
+                <article class="card-string">
+                    <div>
+                        <span class="tipo">Inversor</span>
+                        <span class="codigo"><c:out value="${inv.codigo}"/></span>
+                        <span class="mppt"><c:out value="${inv.marca}"/> <c:out value="${inv.modelo}"/> · <c:out value="${inv.potenciaKw}" default="—"/> kW</span>
+                        <span class="paineis">Nº de série: <c:out value="${inv.numeroSerie}"/></span>
+                        <span class="data">Instalado em <ap:data valor="${inv.dataInstalacao}"/></span>
+                    </div>
+                    <div class="lado-direito">
+                        <c:choose>
+                            <c:when test="${inv.status == 'ATIVO'}"><span class="badge badge-ativo">Ativo</span></c:when>
+                            <c:otherwise><span class="badge badge-inativo">Inativo</span></c:otherwise>
+                        </c:choose>
+                        <a href="${raiz}/inversor?detalhes=${inv.id}" class="btn btn-detalhes">Ver detalhes</a>
+                    </div>
+                </article>
+            </c:forEach>
+            <c:if test="${empty listaInversores}">
+                <p class="vazio" style="padding:24px 0;color:#7a7a7a;font-size:14px">Nenhum inversor cadastrado nesta filial.</p>
+            </c:if>
+        </section>
+        <c:set var="erroAviso" value=""/>
+        <%@ include file="includes/aviso.jspf" %>
     </main>
-
 </div>
-
-<!-- ===== Pop-ups ===== -->
-<dialog class="pop" id="dlg-editar-filial" aria-labelledby="dlg-editar-filial-t">
-    <form method="dialog">
-
-        <div class="pop-bloco">
-            <h2 class="pop-secao com-linha" id="dlg-editar-filial-t">Informações da filial</h2>
-            <div class="pop-grade">
-                <label class="pop-campo"><span>Empresa à qual pertence *</span><input class="pop-input" name="empresa" type="text" placeholder="Ex.: Acme" value="Solaris Industria S.A." required></label>
-                <label class="pop-campo"><span>Telefone *</span><input class="pop-input" name="telefone" type="tel" placeholder="(11) 99999-9999" value="(11) 3456-7893" required></label>
-                <label class="pop-campo"><span>E-mail de contato *</span><input class="pop-input" name="email" type="email" placeholder="nome@empresa.com" value="osasco@solarisindustria.com.br" required></label>
-                <label class="pop-campo"><span>CNPJ *</span><input class="pop-input" name="cnpj" type="text" value="11.222.333/0002-62" disabled></label>
-                <label class="pop-campo"><span>Segmento *</span><input class="pop-input" name="segmento" type="text" placeholder="Ex.: Indústria" value="Indústria" required></label>
-                <label class="pop-campo"><span>Nome da filial *</span><input class="pop-input" name="nome" type="text" placeholder="Ex.: Centro" value="Solaris Osasco" required></label>
-                <label class="pop-campo"><span>CEP *</span><input class="pop-input curto" name="cep" type="text" inputmode="numeric" placeholder="00000-000" value="06018-001" required></label>
-            </div>
-        </div>
-
-        <div class="pop-bloco">
-            <h2 class="pop-secao com-linha">Endereço da filial</h2>
-            <div class="pop-grade">
-                <label class="pop-campo largo">
-                    <select class="pop-select" name="endereco" aria-label="Endereço já cadastrado">
-                        <option value="" selected>Selecione um endereço já cadastrado</option>
-                        <option>Rua Antônio Agú, 330 - Centro, Osasco / SP</option>
-                    </select>
-                </label>
-                <label class="pop-campo largo"><span>Complemento</span><input class="pop-input" name="complemento" type="text" placeholder="Ex.: Sala 101 (opcional)" value="Galpão 2"></label>
-            </div>
-        </div>
-
-        <div class="pop-rodape">
-            <div class="grupo">
-                <button class="pop-btn contorno" value="cancel" formnovalidate>Cancelar</button>
-                <button class="pop-btn cheio" value="ok">Salvar</button>
-            </div>
-        </div>
-
-    </form>
-</dialog>
-<dialog class="pop" id="dlg-cadastrar-inversor" aria-labelledby="dlg-cadastrar-inversor-t">
-    <form method="dialog">
-
-        <div class="pop-bloco">
-            <h2 class="pop-secao" id="dlg-cadastrar-inversor-t">
-                <span class="pop-icone"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M13 7l-3 5h4l-3 5"/></svg></span>
-                Dados do inversor
-            </h2>
-            <div class="pop-grade">
-                <label class="pop-campo"><span>Código do inversor *</span><input class="pop-input" name="codigo" type="text" autocomplete="off" required></label>
-                <label class="pop-campo"><span>Filial *</span>
-                    <select class="pop-select" name="filial" required>
-                        <option value="" selected></option>
-                        <option>Solaris Osasco</option>
-                    </select>
-                </label>
-                <label class="pop-campo"><span>Número de série *</span><input class="pop-input" name="serie" type="text" autocomplete="off" required></label>
-                <label class="pop-campo"><span>Marca *</span><input class="pop-input" name="marca" type="text" autocomplete="off" required></label>
-                <label class="pop-campo"><span>Modelo *</span><input class="pop-input" name="modelo" type="text" autocomplete="off" required></label>
-                <label class="pop-campo"><span>Potência (kW)</span><input class="pop-input" name="potencia" type="number" min="0" step="0.01"></label>
-                <label class="pop-campo"><span>Status *</span>
-                    <select class="pop-select" name="status" required>
-                        <option value="" selected></option>
-                        <option>Ativo</option>
-                        <option>Inativo</option>
-                    </select>
-                </label>
-                <label class="pop-campo"><span>Data de instalação</span><input class="pop-input" name="data" type="date"></label>
-            </div>
-        </div>
-
-        <div class="pop-bloco">
-            <h2 class="pop-secao">
-                <span class="pop-icone"><svg viewBox="0 0 24 24"><path d="M9 4h6v3H9z"/><path d="M7 5H6a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1"/><path d="M8 12h8M8 16h5"/></svg></span>
-                Resumo do inversor
-            </h2>
-            <dl class="resumo-lista" aria-live="polite">
-                <dt>Código</dt><dd data-resumo="codigo">—</dd>
-                <dt>Marca</dt><dd data-resumo="marca">—</dd>
-                <dt>Modelo</dt><dd data-resumo="modelo">—</dd>
-                <dt>Potência total</dt><dd data-resumo="potencia">—</dd>
-                <dt>Status</dt><dd data-resumo="status">—</dd>
-                <dt>Data de instalação</dt><dd data-resumo="data">—</dd>
-            </dl>
-        </div>
-
-        <div class="pop-rodape">
-            <div class="grupo">
-                <button class="pop-btn contorno" value="cancel" formnovalidate>Cancelar</button>
-                <button class="pop-btn cheio" value="ok">Cadastrar</button>
-            </div>
-        </div>
-
-    </form>
-</dialog>
-<dialog class="pop pop-usuario" id="dlg-cadastrar-usuario" aria-labelledby="dlg-cadastrar-usuario-t">
-    <form method="dialog">
-        <h2 class="so-leitor" id="dlg-cadastrar-usuario-t"><span id="tituloCadastrarUsuario">Cadastrar usuário</span></h2>
-
-        <div class="pop-bloco">
-            <h3 class="pop-secao com-linha">
-                <span class="pop-icone"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span>
-                Dados pessoais
-            </h3>
-            <div class="pop-grade">
-                <label class="pop-campo"><span>Nome completo *</span><input class="pop-input" name="nome" type="text" placeholder="Ex.: Mason Mount" autocomplete="off" required></label>
-                <label class="pop-campo"><span>Telefone</span><input class="pop-input" name="telefone" type="tel" inputmode="tel" placeholder="(11) 99999-9999" autocomplete="off" maxlength="15"></label>
-                <label class="pop-campo"><span>Email *</span><input class="pop-input" name="email" type="email" placeholder="nome@empresa.com" autocomplete="off" required></label>
-                <label class="pop-campo"><span>CPF *</span><input class="pop-input" name="cpf" type="text" inputmode="numeric" placeholder="000.000.000-00" autocomplete="off" maxlength="14" required></label>
-            </div>
-        </div>
-
-        <div class="pop-bloco">
-            <h3 class="pop-secao com-linha">
-                <span class="pop-icone"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>
-                Acesso
-            </h3>
-            <div class="pop-grade">
-                <label class="pop-campo"><span>Senha *</span><input class="pop-input" name="senha" type="password" placeholder="Digite a senha" autocomplete="new-password" required></label>
-            </div>
-        </div>
-
-        <div class="pop-bloco">
-            <h3 class="pop-secao com-linha">
-                <span class="pop-icone"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 21v-4h6v4"/></svg></span>
-                Empresa
-            </h3>
-            <div class="pop-grade">
-                <label class="pop-campo"><span>Perfil / Tipo de usuário *</span><select class="pop-select" name="cargo" id="cargoNovoUsuario" required></select></label>
-            </div>
-        </div>
-
-        <div class="pop-rodape">
-            <div class="grupo">
-                <button class="pop-btn contorno" value="cancel" formnovalidate>Cancelar</button>
-                <button class="pop-btn cheio" value="ok">Cadastrar</button>
-            </div>
-        </div>
-    </form>
-</dialog>
-<dialog class="pop estreito" id="dlg-inativar-filial" aria-labelledby="dlg-inativar-filial-t">
-    <form method="dialog">
-        <h2 class="pop-titulo" id="dlg-inativar-filial-t">Inativar filial</h2>
-        <p class="pop-texto">A filial <strong>Solaris Osasco</strong> deixará de ser monitorada. Você pode reativá-la depois pela edição.</p>
-        <div class="pop-rodape"><div class="grupo">
-            <button class="pop-btn contorno" value="cancel" formnovalidate>Cancelar</button>
-            <button class="pop-btn cheio" value="ok">Inativar</button>
-        </div></div>
-    </form>
-</dialog>
-<dialog class="pop estreito" id="dlg-excluir-filial" aria-labelledby="dlg-excluir-filial-t">
-    <form method="dialog">
-        <h2 class="pop-titulo" id="dlg-excluir-filial-t">Excluir filial</h2>
-        <p class="pop-texto">Tem certeza que deseja excluir a filial <strong>Solaris Osasco</strong>? Os inversores, strings e painéis vinculados também serão desativados.</p>
-        <div class="pop-rodape"><div class="grupo">
-            <button class="pop-btn contorno" value="cancel" formnovalidate>Cancelar</button>
-            <button class="pop-btn perigo" value="ok">Excluir</button>
-        </div></div>
-    </form>
-</dialog>
-
-<script src="../../docs/js/validar-email.js"></script>
-<script src="../../docs/js/detalhes-filial.js"></script>
-<script src="../../docs/js/permissoes.js"></script>
+<script src="${raiz}/docs/js/aviso.js"></script>
 </body>
 </html>

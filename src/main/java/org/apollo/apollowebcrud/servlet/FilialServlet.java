@@ -5,9 +5,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apollo.apollowebcrud.model.Empresa;
 import org.apollo.apollowebcrud.model.Endereco;
 import org.apollo.apollowebcrud.model.Filial;
 import org.apollo.apollowebcrud.model.Usuario;
+import org.apollo.apollowebcrud.service.EmpresaService;
 import org.apollo.apollowebcrud.service.FilialDetalhesService;
 import org.apollo.apollowebcrud.service.FilialService;
 import org.apollo.apollowebcrud.service.SegmentoService;
@@ -15,6 +17,7 @@ import org.apollo.apollowebcrud.util.ParametrosUtils;
 import org.apollo.apollowebcrud.util.SessaoUtils;
 
 import java.io.IOException;
+import java.util.List;
 
 // GET /filial (listagem) | ?novo=1 (formulário vazio) | ?editar=ID (formulário preenchido) | ?detalhes=ID (tela de detalhes)
 // POST com o campo "acao": cadastrar (padrão) | editar | inativar | reativar
@@ -25,12 +28,13 @@ import java.io.IOException;
 public class FilialServlet extends HttpServlet {
 
     private static final String VIEW_LISTA = "/WEB-INF/views/filial.jsp";
-    private static final String VIEW_FORMULARIO = "/WEB-INF/views/Cadastrar-filial.jsp";
+    private static final String VIEW_FORMULARIO = "/WEB-INF/views/cadastrar-filial.jsp";
     private static final String VIEW_DETALHES = "/WEB-INF/views/detalhes-filial.jsp";
 
     private final FilialService filialService = new FilialService();
     private final SegmentoService segmentoService = new SegmentoService();
     private final FilialDetalhesService filialDetalhesService = new FilialDetalhesService();
+    private final EmpresaService empresaService = new EmpresaService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -65,7 +69,9 @@ public class FilialServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
+        List<Empresa> empresas = empresaService.listarVisiveis(logado);
         request.setAttribute("item", item);
+        request.setAttribute("empresa", empresas.isEmpty() ? null : empresas.get(0));
         request.setAttribute("endereco", filialService.buscarEndereco(item));
         request.setAttribute("segmento", filialService.buscarSegmento(item));
         request.setAttribute("resumo", filialDetalhesService.montarResumo(item.getId()));
@@ -90,7 +96,7 @@ public class FilialServlet extends HttpServlet {
         };
 
         if (erro == null) {
-            response.sendRedirect(request.getContextPath() + "/filial");
+            response.sendRedirect(request.getContextPath() + "/filial?ok=" + acao);
             return;
         }
 
