@@ -5,12 +5,20 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apollo.apollowebcrud.model.Filial;
+import org.apollo.apollowebcrud.model.TipoUsuEnum;
 import org.apollo.apollowebcrud.model.Usuario;
+import org.apollo.apollowebcrud.service.FilialService;
 import org.apollo.apollowebcrud.service.UsuarioService;
 import org.apollo.apollowebcrud.util.ParametrosUtils;
 import org.apollo.apollowebcrud.util.SessaoUtils;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 // GET /membros (listagem) | GET /membros?editar=ID (formulário preenchido; o cadastro novo fica em /cadastro)
 // POST com o campo "acao": editar | inativar | reativar
@@ -19,9 +27,10 @@ import java.io.IOException;
 public class UsuarioServlet extends HttpServlet {
 
     private static final String VIEW_MEMBROS = "/WEB-INF/views/membros.jsp";
-    private static final String VIEW_FORMULARIO = "/WEB-INF/views/Cadastro-Usuario.jsp";
+    private static final String VIEW_FORMULARIO = "/WEB-INF/views/cadastro-usuario.jsp";
 
     private final UsuarioService usuarioService = new UsuarioService();
+    private final FilialService filialService = new FilialService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -55,7 +64,7 @@ public class UsuarioServlet extends HttpServlet {
         };
 
         if (erro == null) {
-            response.sendRedirect(request.getContextPath() + "/membros");
+            response.sendRedirect(request.getContextPath() + "/membros?ok=" + acao);
             return;
         }
 
@@ -69,7 +78,30 @@ public class UsuarioServlet extends HttpServlet {
 
     private void mostrarLista(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setAttribute("listaMembros", usuarioService.listarVisiveis(SessaoUtils.usuarioLogado(request)));
+        Usuario logado = SessaoUtils.usuarioLogado(request);
+        List<Usuario> membros = usuarioService.listarVisiveis(logado);
+        Map<Integer, String> nomesFiliais = new HashMap<>();
+        for (Filial filial : filialService.listarVisiveis(logado)) {
+            nomesFiliais.put(filial.getId(), filial.getNome());
+        }
+        Set<Integer> filiaisComEquipe = new HashSet<>();
+        int tecnicos = 0;
+        int operadores = 0;
+        for (Usuario membro : membros) {
+            if (membro.getPerfil() == TipoUsuEnum.TECNICO) {
+                tecnicos++;
+            } else if (membro.getPerfil() == TipoUsuEnum.OPERADOR) {
+                operadores++;
+            }
+            if (membro.getIdFilial() != null) {
+                filiaisComEquipe.add(membro.getIdFilial());
+            }
+        }
+        request.setAttribute("listaMembros", membros);
+        request.setAttribute("nomesFiliais", nomesFiliais);
+        request.setAttribute("totalTecnicos", tecnicos);
+        request.setAttribute("totalOperadores", operadores);
+        request.setAttribute("totalFiliaisComEquipe", filiaisComEquipe.size());
         request.getRequestDispatcher(VIEW_MEMBROS).forward(request, response);
     }
 

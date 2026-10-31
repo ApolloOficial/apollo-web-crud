@@ -18,7 +18,7 @@ import java.io.IOException;
 @WebServlet("/cadastro")
 public class CadastroServlet extends HttpServlet {
 
-    private static final String VIEW_CADASTRO = "/WEB-INF/views/Cadastro-Usuario.jsp";
+    private static final String VIEW_CADASTRO = "/WEB-INF/views/cadastro-usuario.jsp";
 
     private final UsuarioService usuarioService = new UsuarioService();
     private final FilialService filialService = new FilialService();
@@ -41,11 +41,12 @@ public class CadastroServlet extends HttpServlet {
                 : usuarioService.cadastrarUsuario(novo, cadastrador);
 
         if (erro == null) {
-            response.sendRedirect(request.getContextPath() + "/membros");
+            response.sendRedirect(request.getContextPath() + "/membros?ok=cadastrar");
             return;
         }
 
         request.setAttribute("ErroNoCadastro", erro);
+        request.setAttribute("item", novo != null ? novo : lerFormularioSemFilial(request));
         prepararTela(request);
         request.getRequestDispatcher(VIEW_CADASTRO).forward(request, response);
     }
@@ -72,6 +73,16 @@ public class CadastroServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             return null;
         }
+    }
+
+    private Usuario lerFormularioSemFilial(HttpServletRequest request) {
+        Usuario usuario = new Usuario();
+        usuario.setNome(request.getParameter("nome"));
+        usuario.setEmail(request.getParameter("email"));
+        usuario.setCpf(request.getParameter("cpf"));
+        usuario.setTelefone(request.getParameter("telefone"));
+        usuario.setUrlFoto(request.getParameter("urlFoto"));
+        return usuario;
     }
 
     private Integer numeroOuNulo(String valor) {

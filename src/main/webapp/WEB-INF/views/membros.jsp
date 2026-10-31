@@ -1,155 +1,109 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<%@ taglib prefix="ap" tagdir="/WEB-INF/tags" %>
+<c:set var="raiz" value="${pageContext.request.contextPath}"/>
+<c:set var="ativo" value="membros"/>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apollo - Membros</title>
-
+    <title>Apollo | Membros</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- Arquivos do projeto (mesma pasta) -->
-    <link rel="stylesheet" href="../docs/css/Apollostyle.css">
-    <link rel="stylesheet" href="../docs/css/Logo Apollo.css">
-    <link rel="stylesheet" href="../docs/css/membros.css">
-    <link rel="stylesheet" href="../docs/css/sidebar.css">
+    <link rel="stylesheet" href="${raiz}/docs/css/logoApollo.css">
+    <link rel="stylesheet" href="${raiz}/docs/css/sidebar.css">
+    <link rel="stylesheet" href="${raiz}/docs/css/apollo.css">
 </head>
 <body>
 <div class="pagina">
-
-    <!-- ===== Sidebar (montada por sidebar.js conforme o tipo de usuário) ===== -->
-    <aside class="sidebar" data-ativo="usuarios"></aside>
-    <script src="../JS/sidebar.js"></script>
+    <%@ include file="includes/sidebar.jspf" %>
 
     <main class="conteudo">
+        <ap:topo titulo="Membros" subtitulo="Gerencie os usuários da empresa e acompanhe as equipes"/>
 
-        <header class="topo">
-            <div>
-                <h1 class="titulo">Membros</h1>
-                <nav class="breadcrumb" aria-label="Você está em">
-                    <a href="detalhes-filial.jsp">Filial</a><span class="sep">&gt;</span>
-                    <a href="detalhes-filial.jsp">Solaris Osasco</a><span class="sep">&gt;</span>
-                    <span>Usuários</span>
-                </nav>
-                <p class="subtitulo-pagina">Gerencie os usuários da sua empresa e acompanhe suas equipes.</p>
-            </div>
-            <div class="usuario">
-                <span class="avatar-usuario" aria-hidden="true">CM</span>
-                <span>Carlos Menezes</span>
-            </div>
-        </header>
 
-        <!-- Resumo -->
-        <section class="stats" aria-label="Resumo">
-            <article class="stat">
-                <span class="stat-icone"><svg class="ic" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.5-4 3-6 6.5-6s6 2 6.5 6"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14c2.5 0 4 1.7 4.5 5"/></svg></span>
-                <div><span class="rot">Total de membros</span><span class="num" id="st-total">0</span><small>Usuários cadastrados na empresa</small></div>
-            </article>
-            <article class="stat">
-                <span class="stat-icone"><svg class="ic" viewBox="0 0 24 24"><path d="M3 18h18M5 18v-3a7 7 0 0 1 14 0v3M12 8v4M9 10l1 2M15 10l-1 2"/></svg></span>
-                <div><span class="rot">Técnicos</span><span class="num" id="st-tec">0</span><small>Responsáveis pela manutenção e configuração</small></div>
-            </article>
-            <article class="stat">
-                <span class="stat-icone"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c.7-4.5 4-6 8-6s7.3 1.5 8 6"/></svg></span>
-                <div><span class="rot">Operadores</span><span class="num" id="st-ope">0</span><small>Membros e operação dos sistemas</small></div>
-            </article>
-            <article class="stat">
-                <span class="stat-icone"><svg class="ic" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
-                <div><span class="rot">Filiais com equipe</span><span class="num" id="st-fil">0</span><small>Filiais com membros cadastrados</small></div>
-            </article>
+        <section class="grade-resumo" aria-label="Resumo">
+            <div class="resumo-item"><span>Total de membros</span><strong>${fn:length(listaMembros)}</strong></div>
+            <div class="resumo-item"><span>Técnicos</span><strong>${totalTecnicos}</strong></div>
+            <div class="resumo-item"><span>Operadores</span><strong>${totalOperadores}</strong></div>
+            <div class="resumo-item"><span>Filiais com equipe</span><strong>${totalFiliaisComEquipe}</strong></div>
         </section>
 
-        <!-- Lista -->
-        <section class="painel">
-            <div class="barra">
-                <div class="barra-esq">
-                    <label class="campo-busca">
-                        <svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-                        <input type="search" id="busca" placeholder="Buscar por nome ou e-mail" aria-label="Buscar por nome ou e-mail" autocomplete="off">
-                    </label>
-                    <button type="button" class="btn-linha" id="btn-filtros" aria-haspopup="true">
-                        <svg class="ic" viewBox="0 0 24 24"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></svg>
-                        Filtros
-                        <svg class="ic" viewBox="0 0 24 24" style="width:12px;height:12px"><path d="m6 9 6 6 6-6"/></svg>
-                    </button>
-                </div>
-                <div class="barra-dir">
-                    <select class="select-linha" id="sel-filial" aria-label="Filtrar por filial"></select>
-                    <button type="button" class="btn-cadastrar-membro" id="btn-novo">
-                        <svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-                        Cadastrar membro
-                    </button>
-                </div>
+        <div class="barra">
+            <div class="barra-filtros">
+                <input class="filtro" type="search" id="busca" placeholder="Buscar por nome ou e-mail" aria-label="Buscar membro">
+                <select class="filtro" id="filtro-status" aria-label="Filtrar por cargo">
+                    <option value="">Todos os cargos</option>
+                    <option value="GERENTE">Gerente</option>
+                    <option value="TECNICO">Técnico</option>
+                    <option value="OPERADOR">Operador</option>
+                </select>
             </div>
+            <c:if test="${usuarioLogado.perfil == 'GERENTE' || usuarioLogado.perfil == 'TECNICO'}">
+                <a class="btn" href="${raiz}/cadastro">Cadastrar membro</a>
+            </c:if>
+        </div>
 
-            <div class="chips" id="chips" role="group" aria-label="Filtrar por grupo"></div>
-
-            <div class="tabela-wrap">
-                <table class="tabela">
-                    <thead><tr><th>Membro</th><th>Filial</th><th>Cargo</th><th>E-mail</th><th>Status</th><th>Ações</th></tr></thead>
-                    <tbody id="corpo"></tbody>
-                </table>
-            </div>
-
-            <div class="rodape-tab">
-                <span id="contagem" aria-live="polite"></span>
-                <div class="pag" id="pag"></div>
-            </div>
-        </section>
-
+        <div class="tabela-wrap">
+            <table class="tabela">
+                <thead>
+                <tr><th>Membro</th><th>Filial</th><th>Cargo</th><th>E-mail</th><th>Status</th><th>Ações</th></tr>
+                </thead>
+                <tbody>
+                <c:forEach var="m" items="${listaMembros}">
+                    <tr data-linha data-status="${m.perfil}">
+                        <td>
+                            <div class="usuario">
+                                <span class="avatar-usuario" aria-hidden="true"><c:out value="${m.iniciais}"/></span>
+                                <span><c:out value="${m.nome}"/></span>
+                            </div>
+                        </td>
+                        <td><c:out value="${nomesFiliais[m.idFilial]}" default="—"/></td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${m.perfil == 'GERENTE'}">Gerente</c:when>
+                                <c:when test="${m.perfil == 'TECNICO'}">Técnico</c:when>
+                                <c:when test="${m.perfil == 'OPERADOR'}">Operador</c:when>
+                                <c:otherwise><c:out value="${m.perfil}"/></c:otherwise>
+                            </c:choose>
+                        </td>
+                        <td><c:out value="${m.email}"/></td>
+                        <td><ap:badge valor="${m.status}"/></td>
+                        <td>
+                            <div class="acoes">
+                                <a class="btn btn-mini btn-contorno" href="${raiz}/membros?editar=${m.id}">Editar</a>
+                                <form action="${raiz}/membros" method="post" data-confirmar="Confirma esta alteração de status?">
+                                    <input type="hidden" name="id" value="${m.id}">
+                                    <c:choose>
+                                        <c:when test="${m.status == 'ATIVO'}">
+                                            <input type="hidden" name="acao" value="inativar">
+                                            <button class="btn btn-mini btn-perigo" type="submit">Inativar</button>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <input type="hidden" name="acao" value="reativar">
+                                            <button class="btn btn-mini" type="submit">Reativar</button>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
+            <c:if test="${empty listaMembros}">
+                <p class="vazio">Nenhum membro cadastrado.</p>
+            </c:if>
+            <p class="vazio" id="sem-resultado" hidden>Nenhum membro encontrado para o filtro informado.</p>
+        </div>
+        <c:set var="erroAviso" value="${erroMembros}"/>
+        <%@ include file="includes/aviso.jspf" %>
     </main>
 </div>
-
-<div class="menu-flutuante" id="menu" role="menu" hidden></div>
-
-<!-- ===== Pop-up: cadastrar / editar membro ===== -->
-<dialog class="pop pop-usuario" id="dlg-membro" aria-labelledby="dlg-membro-t">
-    <form id="form-membro" novalidate>
-        <h2 class="so-leitor" id="dlg-membro-t">Cadastrar membro</h2>
-
-        <div class="pop-bloco">
-            <h3 class="pop-secao">
-                <span class="pop-icone"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span>
-                Dados pessoais
-            </h3>
-            <div class="pop-grade">
-                <label class="pop-campo"><span>Nome completo *</span><input class="pop-input" name="nome" type="text" placeholder="Ex.: Mason Mount" autocomplete="off" required></label>
-                <label class="pop-campo"><span>Telefone</span><input class="pop-input" name="telefone" type="tel" inputmode="tel" placeholder="(11) 99999-9999" autocomplete="off" maxlength="15"></label>
-                <label class="pop-campo"><span>Email *</span><input class="pop-input" name="email" type="email" placeholder="nome@empresa.com" autocomplete="off" required></label>
-                <label class="pop-campo"><span id="rot-cpf">CPF *</span><input class="pop-input" name="cpf" type="text" inputmode="numeric" placeholder="000.000.000-00" autocomplete="off" maxlength="14" required></label>
-            </div>
-        </div>
-
-        <div class="pop-bloco" id="bloco-acesso">
-            <h3 class="pop-secao">
-                <span class="pop-icone"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>
-                Acesso
-            </h3>
-            <div class="pop-grade">
-                <label class="pop-campo"><span>Senha *</span><input class="pop-input" name="senha" type="password" placeholder="Digite a senha" autocomplete="new-password" required></label>
-            </div>
-        </div>
-
-        <div class="pop-bloco">
-            <h3 class="pop-secao">
-                <span class="pop-icone"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 21v-4h6v4"/></svg></span>
-                Empresa
-            </h3>
-            <div class="pop-grade">
-                <label class="pop-campo"><span>Perfil / Tipo de usuário *</span><select class="pop-select" name="cargo" required></select></label>
-            </div>
-        </div>
-
-        <div class="pop-rodape">
-            <button type="button" class="pop-btn contorno" id="dlg-cancelar">Cancelar</button>
-            <button type="submit" class="pop-btn cheio" id="dlg-salvar">Cadastrar</button>
-        </div>
-    </form>
-</dialog>
-
-<script src="../JS/membros.js"></script>
+<script src="${raiz}/docs/js/filtro-tabela.js"></script>
+<script src="${raiz}/docs/js/aviso.js"></script>
 </body>
 </html>

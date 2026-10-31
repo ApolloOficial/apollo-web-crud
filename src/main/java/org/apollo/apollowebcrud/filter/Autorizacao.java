@@ -9,7 +9,7 @@ import java.util.Set;
 // Regra única de "quem pode abrir qual tela". O AuthFilter só pergunta; para mudar permissão, edite aqui.
 public final class Autorizacao {
 
-    private static final Set<String> COMUNS = Set.of("/dashboard", "/logout", "/empresa");
+    private static final Set<String> COMUNS = Set.of("/dashboard", "/logout", "/empresa", "/perfil");
 
     // Telas de equipamento: técnico e operador cadastram/editam; o gerente só visualiza
     private static final Set<String> ROTAS_EQUIPAMENTO = Set.of("/inversor", "/string", "/painel", "/manutencao");
@@ -21,7 +21,7 @@ public final class Autorizacao {
     );
 
     // O gerente que ainda não tem empresa só pode usar a tela de empresa (e sair)
-    private static final Set<String> ROTAS_GERENTE_SEM_EMPRESA = Set.of("/empresa", "/logout");
+    private static final Set<String> ROTAS_GERENTE_SEM_EMPRESA = Set.of("/empresa", "/logout", "/perfil");
 
     private Autorizacao() {
         throw new UnsupportedOperationException("Esta é uma classe utilitária e não pode ser instanciada.");
