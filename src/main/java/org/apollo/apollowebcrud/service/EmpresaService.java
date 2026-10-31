@@ -15,17 +15,22 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Regras de negócio da empresa. Cada gerente possui uma única empresa e o cadastro dela é feito
+ * em transação junto com endereço, contrato inicial e o vínculo do próprio gerente.
+ */
 public class EmpresaService {
 
     private final EmpresaDAO empresaDAO = new EmpresaDAO();
     private final CadastroEmpresaDAO cadastroEmpresaDAO = new CadastroEmpresaDAO();
     private final EnderecoService enderecoService = new EnderecoService();
 
+    /** Confere se existe uma empresa com o id informado. */
     public boolean verificarEmpresaExist(int idEmpresa) {
         return empresaDAO.buscarPorId(idEmpresa) != null;
     }
 
-    // Todo usuário só enxerga a própria empresa (o gerente sem empresa ainda vê lista vazia)
+    /** Cada usuário só enxerga a própria empresa, então um gerente sem empresa recebe uma lista vazia. */
     public List<Empresa> listarVisiveis(Usuario logado) {
         if (logado.getIdEmpresa() == null) {
             return List.of();
@@ -34,6 +39,7 @@ public class EmpresaService {
         return propria == null ? List.of() : List.of(propria);
     }
 
+    /** Busca a empresa vinculada ao gerente, ou null se não houver. */
     public Empresa buscarDoGerente(Usuario gerente) {
         if (gerente == null || gerente.getPerfil() != TipoUsuEnum.GERENTE || gerente.getIdEmpresa() == null) {
             return null;
@@ -41,10 +47,12 @@ public class EmpresaService {
         return empresaDAO.buscarPorId(gerente.getIdEmpresa());
     }
 
+    /** Carrega o endereço da empresa. */
     public Endereco buscarEndereco(Empresa empresa) {
         return empresa == null ? null : enderecoService.buscarPorId(empresa.getIdEndereco());
     }
 
+    /** Informa se a empresa existe e está com status ATIVO. */
     public boolean estaAtiva(int idEmpresa) {
         Empresa empresa = empresaDAO.buscarPorId(idEmpresa);
         return empresa != null && empresa.getStatus() == StatusGeral.ATIVO;
@@ -52,7 +60,10 @@ public class EmpresaService {
 
     // ---------- CADASTRO (feito pelo gerente, uma única vez) ----------
 
-    // Devolve null se cadastrou, ou a mensagem de erro. No sucesso, o gerente da sessão já fica com idEmpresa.
+    /**
+     * Valida os dados e cadastra a empresa. Devolve null em caso de sucesso ou a mensagem de erro.
+     * Quando dá certo, o gerente da sessão já passa a ter o idEmpresa preenchido.
+     */
     public String cadastrarEmpresa(Empresa empresa, Endereco endereco, Usuario gerente) {
         String erro = validarGerente(gerente);
         if (erro == null) erro = validarEmpresa(empresa, 0);
@@ -74,7 +85,9 @@ public class EmpresaService {
 
     // ---------- EDIÇÃO (só o gerente, da própria empresa) ----------
 
-    // Devolve null se salvou, ou a mensagem de erro. O status não muda por aqui.
+    /**
+     * Valida e atualiza empresa e endereço. O status não é alterado por aqui. Devolve null ou a mensagem de erro.
+     */
     public String editarEmpresa(Empresa dados, Endereco endereco, Usuario gerente) {
         if (gerente.getPerfil() != TipoUsuEnum.GERENTE || gerente.getIdEmpresa() == null) {
             return "Somente o gerente pode editar a empresa";
@@ -101,6 +114,7 @@ public class EmpresaService {
         return empresaDAO.atualizar(atual, endereco) ? null : "Erro interno no servidor ao tentar salvar a empresa";
     }
 
+    /** Só um gerente que ainda não tem empresa vinculada pode fazer o cadastro. */
     private String validarGerente(Usuario gerente) {
         if (gerente.getPerfil() != TipoUsuEnum.GERENTE) {
             return "Somente o gerente pode cadastrar a empresa";
@@ -111,7 +125,10 @@ public class EmpresaService {
         return null;
     }
 
-    // idIgnorar: na edição, o próprio registro não conta como CNPJ repetido (no cadastro é 0)
+    /**
+     * Confere nome, CNPJ (formato, dígitos verificadores e duplicidade) e e-mail de contato. O parâmetro
+     * idIgnorar evita que a própria empresa seja vista como CNPJ repetido durante a edição, e vale 0 no cadastro.
+     */
     private String validarEmpresa(Empresa e, int idIgnorar) {
         if (vazio(e.getNome())) {
             return "O nome da empresa não foi informado";
@@ -136,7 +153,9 @@ public class EmpresaService {
         return null;
     }
 
-    // Normaliza o que o banco exige: CNPJ só com dígitos, campos opcionais vazios viram null
+    /**
+     * Padroniza os dados para o formato do banco. O CNPJ fica só com dígitos e campos opcionais vazios viram null.
+     */
     private void prepararParaGravar(Empresa empresa, Endereco endereco, Usuario gerente) {
         empresa.setNome(empresa.getNome().trim());
         empresa.setCnpj(CnpjUtils.removerMascara(empresa.getCnpj()));
@@ -149,7 +168,10 @@ public class EmpresaService {
         enderecoService.normalizar(endereco);
     }
 
-    // O contrato nasce junto com a empresa; o gerente só consulta. Valor mensal começa em 0 até a equipe Apollo definir.
+    /**
+     * Cria o contrato que nasce junto com a empresa. O gerente só consulta, por isso o valor mensal
+     * começa em zero até que a equipe da Apollo defina o valor real.
+     */
     private Contrato contratoInicial(Usuario gerente) {
         Contrato contrato = new Contrato();
         contrato.setDataInicio(LocalDate.now());
@@ -159,10 +181,12 @@ public class EmpresaService {
         return contrato;
     }
 
+    /** Atalho para testar texto nulo ou em branco. */
     private boolean vazio(String valor) {
         return valor == null || valor.trim().isEmpty();
     }
 
+    /** Troca texto em branco por null e remove espaços das pontas. */
     private String vazioParaNulo(String valor) {
         return vazio(valor) ? null : valor.trim();
     }

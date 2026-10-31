@@ -13,12 +13,15 @@ import static org.apollo.apollowebcrud.util.TextoUtils.excede;
 import static org.apollo.apollowebcrud.util.TextoUtils.vazio;
 import static org.apollo.apollowebcrud.util.TextoUtils.vazioParaNulo;
 
+/**
+ * Regras dos inversores. Todas as operações ficam restritas à filial do técnico ou operador logado.
+ */
 public class InversorService {
 
     private final InversorDAO inversorDAO = new InversorDAO();
     private final FilialService filialService = new FilialService();
 
-    // Técnico e operador só enxergam o que pertence à própria filial
+    /** Técnico e operador só enxergam os inversores da própria filial. */
     public List<Inversor> listarVisiveis(Usuario logado) {
         if (logado.getIdFilial() == null) {
             return List.of();
@@ -26,7 +29,9 @@ public class InversorService {
         return inversorDAO.listarPorFilial(logado.getIdFilial());
     }
 
-    // Visualização: o gerente enxerga o inversor de qualquer filial da empresa dele; técnico e operador, o da própria filial
+    /**
+     * Usada na visualização. O gerente consulta inversores de qualquer filial da empresa e os demais só os da própria.
+     */
     public Inversor buscarVisivel(int idInversor, Usuario logado) {
         if (logado.getPerfil() != TipoUsuEnum.GERENTE) {
             return buscarDaFilial(idInversor, logado);
@@ -37,7 +42,7 @@ public class InversorService {
         return daEmpresa ? inversor : null;
     }
 
-    // Devolve o inversor só se ele é da filial do usuário (null caso contrário)
+    /** Devolve o inversor apenas se ele pertencer à filial do usuário, caso contrário null. */
     public Inversor buscarDaFilial(int idInversor, Usuario logado) {
         if (!logado.podeOperarEquipamentos()) {
             return null;
@@ -48,7 +53,7 @@ public class InversorService {
 
     // ---------- CADASTRO ----------
 
-    // Devolve null se cadastrou, ou a mensagem de erro. A filial vem sempre do usuário logado.
+    /** Valida e cadastra. A filial é sempre a do usuário logado. Devolve null ou a mensagem de erro. */
     public String cadastrarInversor(Inversor novo, Usuario logado) {
         if (!logado.podeOperarEquipamentos()) {
             return "Você não tem permissão para cadastrar inversores";
@@ -69,8 +74,9 @@ public class InversorService {
         return inversorDAO.inserir(novo) > 0 ? null : "Erro interno no servidor ao tentar salvar o inversor";
     }
 
-    // ---------- EDIÇÃO (a filial não muda; o status pode mudar aqui) ----------
+    // ---------- EDIÇÃO (a filial não muda, mas o status pode mudar aqui) ----------
 
+    /** Valida e atualiza o inversor, respeitando a filial do usuário. */
     public String editarInversor(Inversor dados, Usuario logado) {
         Inversor atual = buscarDaFilial(dados.getId(), logado);
         if (atual == null) {
@@ -96,7 +102,11 @@ public class InversorService {
         return inversorDAO.atualizar(atual) ? null : "Erro interno no servidor ao tentar salvar o inversor";
     }
 
-    // idIgnorar: na edição, o próprio inversor não conta como repetido (no cadastro é 0)
+    /**
+     * Confere código e número de série (obrigatórios), tamanho máximo dos textos e potência positiva.
+     * Também impede código repetido na mesma filial e número de série repetido no sistema.
+     * O idIgnorar impede que o próprio inversor seja tratado como repetido durante a edição.
+     */
     private String validar(Inversor i, int idFilial, int idIgnorar) {
         if (vazio(i.getCodigo())) return "O código do inversor não foi informado";
         if (excede(i.getCodigo(), 50)) return "O código do inversor deve ter até 50 caracteres";

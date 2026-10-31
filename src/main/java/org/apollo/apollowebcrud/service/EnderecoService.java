@@ -4,16 +4,17 @@ import org.apollo.apollowebcrud.dao.EnderecoDAO;
 import org.apollo.apollowebcrud.model.Endereco;
 import org.apollo.apollowebcrud.util.CepUtils;
 
-// Regras de endereço usadas no cadastro de empresa e de filial
+/** Regras compartilhadas de endereço, usadas tanto no cadastro de empresa quanto no de filial. */
 public class EnderecoService {
 
     private final EnderecoDAO enderecoDAO = new EnderecoDAO();
 
+    /** Busca um endereço pelo id. */
     public Endereco buscarPorId(int idEndereco) {
         return idEndereco <= 0 ? null : enderecoDAO.buscarPorId(idEndereco);
     }
 
-    // Devolve null se está tudo certo, ou a mensagem de erro
+    /** Verifica logradouro, número, bairro, cidade, estado e CEP. Devolve null se estiver tudo certo. */
     public String validar(Endereco end) {
         if (!CepUtils.isCepValido(end.getCep())) {
             return "O CEP não é válido";
@@ -28,7 +29,9 @@ public class EnderecoService {
         return null;
     }
 
-    // Deixa no formato do banco: CEP só com dígitos, estado em maiúsculas, complemento vazio vira null
+    /**
+     * Ajusta o endereço ao formato do banco, com CEP só com dígitos, estado em maiúsculas e complemento vazio como null.
+     */
     public void normalizar(Endereco end) {
         end.setCep(end.getCep().replaceAll("\\D", ""));
         end.setLogradouro(end.getLogradouro().trim());
@@ -39,6 +42,7 @@ public class EnderecoService {
         end.setEstado(end.getEstado().trim().toUpperCase());
     }
 
+    /** Verdadeiro para texto nulo ou em branco. */
     private boolean vazio(String valor) {
         return valor == null || valor.trim().isEmpty();
     }

@@ -11,14 +11,17 @@ import org.apollo.apollowebcrud.model.Usuario;
 import java.util.ArrayList;
 import java.util.List;
 
-// Dados extras da tela de detalhes da filial. A autorização (a filial é visível para o usuário?)
-// já foi feita por quem chama, com FilialService.buscarVisivel.
+/**
+ * Dados complementares da tela de detalhes da filial. Quem chama já confirmou, com
+ * FilialService.buscarVisivel, que o usuário tem direito de ver aquela filial.
+ */
 public class FilialDetalhesService {
 
     private final ResumoFilialDAO resumoFilialDAO = new ResumoFilialDAO();
     private final InversorDAO inversorDAO = new InversorDAO();
     private final UsuarioDAO usuarioDAO = new UsuarioDAO();
 
+    /** Reúne as contagens de inversores, strings, painéis e manutenções em um único objeto. */
     public ResumoFilial montarResumo(int idFilial) {
         ResumoFilial resumo = new ResumoFilial();
         resumo.setTotalInversores(resumoFilialDAO.contarInversores(idFilial));
@@ -31,11 +34,12 @@ public class FilialDetalhesService {
         return resumo;
     }
 
+    /** Lista os inversores da filial. */
     public List<Inversor> listarInversores(int idFilial) {
         return inversorDAO.listarPorFilial(idFilial);
     }
 
-    // Técnicos e operadores da filial; o perfil de cada um já vai preenchido (a view usa ${u.perfil})
+    /** Lista técnicos e operadores da filial já com o perfil preenchido, pois a view usa ${u.perfil}. */
     public List<Usuario> listarEquipe(int idFilial) {
         List<Usuario> equipe = new ArrayList<>();
         equipe.addAll(comPerfil(usuarioDAO.listarPorFilialETipo(idFilial, TipoUsuEnum.TECNICO.name()), TipoUsuEnum.TECNICO));
@@ -43,6 +47,7 @@ public class FilialDetalhesService {
         return equipe;
     }
 
+    /** Preenche o perfil de cada usuário da lista, já que ela contém um único tipo. */
     private List<Usuario> comPerfil(List<Usuario> usuarios, TipoUsuEnum perfil) {
         usuarios.forEach(u -> u.setPerfil(perfil));
         return usuarios;

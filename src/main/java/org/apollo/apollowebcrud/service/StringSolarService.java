@@ -11,12 +11,15 @@ import java.util.List;
 import static org.apollo.apollowebcrud.util.TextoUtils.excede;
 import static org.apollo.apollowebcrud.util.TextoUtils.vazio;
 
+/**
+ * Regras das strings, que ligam os painéis a um inversor. O acesso fica restrito à filial do usuário.
+ */
 public class StringSolarService {
 
     private final StringSolarDAO stringSolarDAO = new StringSolarDAO();
     private final InversorService inversorService = new InversorService();
 
-    // Técnico e operador só enxergam o que pertence à própria filial
+    /** Técnico e operador só enxergam as strings da própria filial. */
     public List<StringSolar> listarVisiveis(Usuario logado) {
         if (logado.getIdFilial() == null) {
             return List.of();
@@ -24,7 +27,7 @@ public class StringSolarService {
         return stringSolarDAO.listarPorFilial(logado.getIdFilial());
     }
 
-    // Strings do inversor, só se o inversor é da filial do usuário (lista vazia caso contrário)
+    /** Lista as strings de um inversor, desde que ele seja da filial do usuário. */
     public List<StringSolar> listarDoInversor(int idInversor, Usuario logado) {
         if (inversorService.buscarVisivel(idInversor, logado) == null) {
             return List.of();
@@ -32,13 +35,15 @@ public class StringSolarService {
         return stringSolarDAO.listarPorInversor(idInversor);
     }
 
-    // Visualização: a string só aparece se o inversor dela é visível para o usuário (gerente: da empresa; demais: da filial)
+    /**
+     * Na visualização, a string aparece se o inversor dela for visível para o usuário. Para o gerente vale a empresa e para os demais a filial.
+     */
     public StringSolar buscarVisivel(int idString, Usuario logado) {
         StringSolar string = stringSolarDAO.buscarPorId(idString);
         return string != null && inversorService.buscarVisivel(string.getIdInversor(), logado) != null ? string : null;
     }
 
-    // Devolve a string só se o inversor dela é da filial do usuário (null caso contrário)
+    /** Devolve a string apenas quando o inversor dela é da filial do usuário. */
     public StringSolar buscarDaFilial(int idString, Usuario logado) {
         if (!logado.podeOperarEquipamentos()) {
             return null;
@@ -49,6 +54,7 @@ public class StringSolarService {
 
     // ---------- CADASTRO ----------
 
+    /** Valida e cadastra a string. Devolve null ou a mensagem de erro. */
     public String cadastrarString(StringSolar nova, Usuario logado) {
         if (!logado.podeOperarEquipamentos()) {
             return "Você não tem permissão para cadastrar strings";
@@ -70,8 +76,9 @@ public class StringSolarService {
         return stringSolarDAO.inserir(nova) > 0 ? null : "Erro interno no servidor ao tentar salvar a string";
     }
 
-    // ---------- EDIÇÃO (o inversor não muda; o status pode mudar aqui) ----------
+    // ---------- EDIÇÃO (o inversor não muda, mas o status pode mudar aqui) ----------
 
+    /** Valida e atualiza a string, sem permitir a troca de inversor. */
     public String editarString(StringSolar dados, Usuario logado) {
         StringSolar atual = buscarDaFilial(dados.getId(), logado);
         if (atual == null) {
@@ -94,6 +101,7 @@ public class StringSolarService {
         return stringSolarDAO.atualizar(atual) ? null : "Erro interno no servidor ao tentar salvar a string";
     }
 
+    /** Confere código, MPPT, entrada e duplicidade dentro do mesmo inversor. */
     private String validar(StringSolar s, int idInversor, int idIgnorar) {
         if (vazio(s.getCodigo())) return "O código da string não foi informado";
         if (excede(s.getCodigo(), 50)) return "O código da string deve ter até 50 caracteres";

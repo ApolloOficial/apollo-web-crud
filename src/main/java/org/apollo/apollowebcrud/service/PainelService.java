@@ -13,12 +13,15 @@ import static org.apollo.apollowebcrud.util.TextoUtils.excede;
 import static org.apollo.apollowebcrud.util.TextoUtils.vazio;
 import static org.apollo.apollowebcrud.util.TextoUtils.vazioParaNulo;
 
+/**
+ * Regras dos painéis solares. O acesso é limitado à filial do usuário por meio da string de cada painel.
+ */
 public class PainelService {
 
     private final PainelDAO painelDAO = new PainelDAO();
     private final StringSolarService stringSolarService = new StringSolarService();
 
-    // Técnico e operador só enxergam o que pertence à própria filial
+    /** Lista os painéis da filial do usuário. */
     public List<Painel> listarVisiveis(Usuario logado) {
         if (logado.getIdFilial() == null) {
             return List.of();
@@ -26,7 +29,7 @@ public class PainelService {
         return painelDAO.listarPorFilial(logado.getIdFilial());
     }
 
-    // Painéis da string, só se a string é da filial do usuário (lista vazia caso contrário)
+    /** Lista os painéis de uma string, mas só se ela pertencer à filial do usuário. */
     public List<Painel> listarDaString(int idString, Usuario logado) {
         if (stringSolarService.buscarVisivel(idString, logado) == null) {
             return List.of();
@@ -34,7 +37,7 @@ public class PainelService {
         return painelDAO.listarPorString(idString);
     }
 
-    // Devolve o painel só se a string dele é da filial do usuário (null caso contrário)
+    /** Painel só é devolvido se a string dele for da filial do usuário. */
     public Painel buscarDaFilial(int idPainel, Usuario logado) {
         if (!logado.podeOperarEquipamentos()) {
             return null;
@@ -45,6 +48,7 @@ public class PainelService {
 
     // ---------- CADASTRO ----------
 
+    /** Valida e cadastra o painel, devolvendo null ou a mensagem de erro. */
     public String cadastrarPainel(Painel novo, Usuario logado) {
         if (!logado.podeOperarEquipamentos()) {
             return "Você não tem permissão para cadastrar painéis";
@@ -66,8 +70,9 @@ public class PainelService {
         return painelDAO.inserir(novo) > 0 ? null : "Erro interno no servidor ao tentar salvar o painel";
     }
 
-    // ---------- EDIÇÃO (a string não muda; o status pode mudar aqui) ----------
+    // ---------- EDIÇÃO (a string não muda, mas o status pode mudar aqui) ----------
 
+    /** Valida e atualiza o painel. A string de origem não pode ser trocada. */
     public String editarPainel(Painel dados, Usuario logado) {
         Painel atual = buscarDaFilial(dados.getId(), logado);
         if (atual == null) {
@@ -94,6 +99,10 @@ public class PainelService {
         return painelDAO.atualizar(atual) ? null : "Erro interno no servidor ao tentar salvar o painel";
     }
 
+    /**
+     * Confere o número de série, os tamanhos dos textos, a potência e a chave da nota fiscal (44 dígitos).
+     * O número de série também não pode se repetir, exceto no próprio painel durante a edição.
+     */
     private String validar(Painel p, int idIgnorar) {
         if (vazio(p.getNumeroSerie())) return "O número de série não foi informado";
         if (excede(p.getNumeroSerie(), 100)) return "O número de série deve ter até 100 caracteres";
@@ -113,7 +122,9 @@ public class PainelService {
         return null;
     }
 
-    // Deixa no formato do banco: textos sem espaços nas pontas, nota fiscal só com dígitos, vazios viram null
+    /**
+     * Remove espaços das pontas, deixa a nota fiscal só com dígitos e transforma textos vazios em null.
+     */
     private void normalizar(Painel p) {
         p.setNumeroSerie(p.getNumeroSerie().trim());
         p.setMarca(vazioParaNulo(p.getMarca()));

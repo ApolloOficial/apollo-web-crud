@@ -5,6 +5,7 @@ import org.apollo.apollowebcrud.model.Segmento;
 
 import java.util.List;
 
+/** Consultas aos segmentos de atuação usados no cadastro de filiais. */
 public class SegmentoService {
 
     private final SegmentoDAO segmentoDAO = new SegmentoDAO();

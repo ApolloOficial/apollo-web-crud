@@ -5,11 +5,16 @@ import org.apollo.apollowebcrud.model.Dashboard;
 import org.apollo.apollowebcrud.model.TipoUsuEnum;
 import org.apollo.apollowebcrud.model.Usuario;
 
-// Escolhe os números do dashboard conforme o perfil e o escopo (empresa ou filial) do usuário logado
+/**
+ * Calcula os números exibidos nos cards da página inicial, somando os dados vindos do DashboardDAO.
+ */
 public class DashboardService {
 
     private final DashboardDAO dashboardDAO = new DashboardDAO();
 
+    /**
+     * Escolhe o escopo certo para o perfil. O gerente enxerga a empresa inteira e os demais, apenas a filial.
+     */
     public Dashboard montarDashboard(Usuario logado) {
         if (logado.getPerfil() == TipoUsuEnum.GERENTE && logado.getIdEmpresa() != null) {
             return dashboardDaEmpresa(logado.getIdEmpresa());
@@ -20,7 +25,7 @@ public class DashboardService {
         return new Dashboard();
     }
 
-    // Gerente: empresa inteira
+    /** Visão do gerente com membros, filiais, inversores e potência de toda a empresa. */
     private Dashboard dashboardDaEmpresa(int idEmpresa) {
         Dashboard dashboard = new Dashboard();
         dashboard.setTotalMembros(dashboardDAO.contarMembrosDaEmpresa(idEmpresa));
@@ -30,7 +35,7 @@ public class DashboardService {
         return dashboard;
     }
 
-    // Técnico e operador: só a filial deles
+    /** Visão de técnico e operador, limitada à filial de cada um. */
     private Dashboard dashboardDaFilial(int idFilial) {
         Dashboard dashboard = new Dashboard();
         dashboard.setTotalMembros(dashboardDAO.contarMembrosDaFilial(idFilial));

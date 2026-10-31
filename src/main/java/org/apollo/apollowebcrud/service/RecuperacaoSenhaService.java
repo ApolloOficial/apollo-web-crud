@@ -9,8 +9,10 @@ import org.apollo.apollowebcrud.util.SenhaUtils;
 
 import java.security.SecureRandom;
 
-// Recuperação de senha em 2 etapas: (1) pede o código por e-mail, (2) informa código + nova senha.
-// Todos os métodos devolvem null em caso de sucesso, ou a mensagem de erro para a tela.
+/**
+ * Recuperação de senha em duas etapas. Na primeira o usuário pede o código por e-mail e na segunda
+ * informa o código e a nova senha. Todos os métodos devolvem null em caso de sucesso ou a mensagem para a tela.
+ */
 public class RecuperacaoSenhaService {
 
     private static final int VALIDADE_MINUTOS = 15;
@@ -23,8 +25,10 @@ public class RecuperacaoSenhaService {
     private final EmailService emailService = new EmailService();
     private final SecureRandom aleatorio = new SecureRandom();
 
-    // Etapa 1. Se o e-mail não existir (ou o usuário estiver inativo) responde igual a sucesso,
-    // para não revelar quais e-mails estão cadastrados.
+    /**
+     * Primeira etapa. Se o e-mail não existir ou o usuário estiver inativo, a resposta é igual à de sucesso
+     * para que ninguém descubra quais e-mails estão cadastrados.
+     */
     public String solicitarCodigo(String email) {
         String emailLimpo = email == null ? "" : email.trim();
         if (!EmailUtils.isEmailValido(emailLimpo)) {
@@ -43,7 +47,10 @@ public class RecuperacaoSenhaService {
         return emailService.enviarCodigoRecuperacao(usuario.getEmail(), codigo, VALIDADE_MINUTOS) ? null : ERRO_ENVIO;
     }
 
-    // Etapa 2
+    /**
+     * Segunda etapa. Exige o código, a nova senha com confirmação e uma senha dentro das regras.
+     * Se o código estiver errado ou vencido a mensagem é a mesma de usuário inexistente.
+     */
     public String redefinirSenha(String email, String codigo, String novaSenha, String confirmacao) {
         if (codigo == null || codigo.isBlank()) {
             return "Informe o código recebido por e-mail";
@@ -65,6 +72,7 @@ public class RecuperacaoSenhaService {
         return trocou ? null : "Não foi possível redefinir a senha. Tente novamente";
     }
 
+    /** Compara o código digitado com o hash guardado e contabiliza a tentativa quando erra. */
     private boolean codigoConfere(int idUsuario, String codigo) {
         String hash = recuperacaoDAO.buscarHashValido(idUsuario);
         if (hash != null && SenhaUtils.verificar(codigo, hash)) {
@@ -74,11 +82,12 @@ public class RecuperacaoSenhaService {
         return false;
     }
 
+    /** Indica se o usuário existe e está ativo. */
     private boolean estaAtivo(Usuario usuario) {
         return usuario != null && StatusGeral.ATIVO.name().equals(usuario.getStatus());
     }
 
-    // 6 dígitos, com zeros à esquerda
+    /** Sorteia um código de seis dígitos, completando com zeros à esquerda. */
     private String gerarCodigo() {
         return String.format("%06d", aleatorio.nextInt(1_000_000));
     }

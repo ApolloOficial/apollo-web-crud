@@ -11,13 +11,14 @@ import java.util.List;
 import static org.apollo.apollowebcrud.util.TextoUtils.excede;
 import static org.apollo.apollowebcrud.util.TextoUtils.vazio;
 
+/** Regras das manutenções, sempre limitadas aos painéis da filial do usuário logado. */
 public class ManutencaoService {
 
     private final ManutencaoDAO manutencaoDAO = new ManutencaoDAO();
     private final PainelService painelService = new PainelService();
     private final UsuarioService usuarioService = new UsuarioService();
 
-    // Técnico e operador só enxergam o que pertence à própria filial
+    /** Técnico e operador só enxergam as manutenções da própria filial. */
     public List<Manutencao> listarVisiveis(Usuario logado) {
         if (logado.getIdFilial() == null) {
             return List.of();
@@ -25,7 +26,7 @@ public class ManutencaoService {
         return manutencaoDAO.listarPorFilial(logado.getIdFilial());
     }
 
-    // Devolve a manutenção só se o painel dela é da filial do usuário (null caso contrário)
+    /** Devolve a manutenção só quando o painel dela pertence à filial do usuário. */
     public Manutencao buscarDaFilial(int idManutencao, Usuario logado) {
         if (!logado.podeOperarEquipamentos()) {
             return null;
@@ -36,7 +37,10 @@ public class ManutencaoService {
 
     // ---------- CADASTRO ----------
 
-    // Nasce ABERTA, com abertura hoje (se não informada). Sem responsável informado, o responsável é quem cadastrou.
+    /**
+     * A manutenção nasce ABERTA e com a data de abertura de hoje, caso nenhuma seja informada.
+     * Se não houver responsável, assume quem a cadastrou.
+     */
     public String cadastrarManutencao(Manutencao nova, Usuario logado) {
         if (!logado.podeOperarEquipamentos()) {
             return "Você não tem permissão para cadastrar manutenções";
@@ -64,8 +68,9 @@ public class ManutencaoService {
         return manutencaoDAO.inserir(nova) > 0 ? null : "Erro interno no servidor ao tentar salvar a manutenção";
     }
 
-    // ---------- EDIÇÃO (o painel não muda; status e datas mudam aqui) ----------
+    // ---------- EDIÇÃO (o painel não muda, mas status e datas mudam aqui) ----------
 
+    /** Valida e atualiza os dados da manutenção, incluindo status e datas. */
     public String editarManutencao(Manutencao dados, Usuario logado) {
         Manutencao atual = buscarDaFilial(dados.getId(), logado);
         if (atual == null) {
@@ -101,7 +106,9 @@ public class ManutencaoService {
         return manutencaoDAO.atualizar(atual) ? null : "Erro interno no servidor ao tentar salvar a manutenção";
     }
 
-    // Mesmas regras do banco (datas coerentes) + responsável precisa ser técnico/operador da mesma filial
+    /**
+     * Aplica as mesmas regras de datas do banco e exige que o responsável seja técnico ou operador da mesma filial.
+     */
     private String validar(Manutencao m, Usuario logado) {
         if (m.getTipoManutencao() == null) return "O tipo da manutenção não foi informado";
         if (vazio(m.getDescricao())) return "A descrição não foi informada";

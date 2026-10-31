@@ -15,6 +15,10 @@ import org.apollo.apollowebcrud.util.TelefoneUtils;
 
 import java.util.List;
 
+/**
+ * Regras de negócio das filiais. Apenas o gerente cadastra, edita, inativa e reativa,
+ * sempre dentro da própria empresa. Técnico e operador só consultam a filial a que pertencem.
+ */
 public class FilialService {
 
     private final FilialDAO filialDAO = new FilialDAO();
@@ -23,20 +27,24 @@ public class FilialService {
     private final EmpresaService empresaService = new EmpresaService();
     private final InativacaoDAO inativacaoDAO = new InativacaoDAO();
 
+    /** Confere se a filial existe. */
     public boolean verificarFilialExist(int idFilial) {
         return filialDAO.buscarPorId(idFilial) != null;
     }
 
+    /** Busca simples pelo id, sem checar quem está pedindo. */
     public Filial buscarPorId(int idFilial) {
         return filialDAO.buscarPorId(idFilial);
     }
 
-    // Edição é exclusiva do gerente e limitada às filiais da própria empresa.
+    /** A edição é exclusiva do gerente e limitada às filiais da empresa dele. */
     public Filial buscarParaEdicao(int idFilial, Usuario gerente) {
         return buscarFilialDoGerente(idFilial, gerente);
     }
 
-    // O gerente consulta filiais da empresa; técnico/operador consultam somente a filial vinculada à sessão.
+    /**
+     * O gerente consulta as filiais da empresa e técnico ou operador apenas a filial vinculada à sessão.
+     */
     public Filial buscarVisivel(int idFilial, Usuario logado) {
         if (logado == null) {
             return null;
@@ -51,15 +59,17 @@ public class FilialService {
         return filial != null && filial.getId() == logado.getIdFilial() ? filial : null;
     }
 
+    /** Carrega o endereço da filial. */
     public Endereco buscarEndereco(Filial filial) {
         return filial == null ? null : enderecoService.buscarPorId(filial.getIdEndereco());
     }
 
+    /** Carrega o segmento de atuação da filial. */
     public Segmento buscarSegmento(Filial filial) {
         return filial == null ? null : segmentoService.buscarPorId(filial.getIdSegmento());
     }
 
-    // Gerente: todas as filiais da sua empresa. Técnico e operador: só a própria filial.
+    /** Gerente recebe todas as filiais da empresa e os demais perfis recebem somente a própria. */
     public List<Filial> listarVisiveis(Usuario logado) {
         if (logado.getPerfil() == TipoUsuEnum.GERENTE) {
             return logado.getIdEmpresa() == null ? List.of() : filialDAO.listarPorEmpresa(logado.getIdEmpresa());
@@ -71,6 +81,7 @@ public class FilialService {
         return propria == null ? List.of() : List.of(propria);
     }
 
+    /** Informa se a filial existe e está ativa. */
     public boolean estaAtiva(int idFilial) {
         Filial filial = filialDAO.buscarPorId(idFilial);
         return filial != null && filial.getStatus() == StatusGeral.ATIVO;
@@ -78,7 +89,7 @@ public class FilialService {
 
     // ---------- CADASTRO (feito pelo gerente, na própria empresa) ----------
 
-    // Devolve null se cadastrou, ou a mensagem de erro
+    /** Valida e grava a filial com o endereço. Devolve null se cadastrou ou a mensagem de erro. */
     public String cadastrarFilial(Filial filial, Endereco endereco, Usuario gerente) {
         String erro = validarGerente(gerente);
         if (erro == null) erro = validarFilial(filial, 0);
@@ -96,6 +107,7 @@ public class FilialService {
 
     // ---------- EDIÇÃO, INATIVAÇÃO E REATIVAÇÃO (só o gerente, filiais da própria empresa) ----------
 
+    /** Valida e atualiza filial e endereço. Devolve null em caso de sucesso. */
     public String editarFilial(Filial dados, Endereco endereco, Usuario gerente) {
         Filial atual = buscarFilialDoGerente(dados.getId(), gerente);
         if (atual == null) {
@@ -118,7 +130,7 @@ public class FilialService {
         return filialDAO.atualizar(atual, endereco) ? null : "Erro interno no servidor ao tentar salvar a filial";
     }
 
-    // Inativa a filial e, junto, os usuários e equipamentos dela que estavam ativos
+    /** Inativa a filial e também os usuários e equipamentos que ainda estavam ativos nela. */
     public String inativarFilial(int idFilial, Usuario gerente) {
         if (buscarFilialDoGerente(idFilial, gerente) == null) {
             return "Filial não encontrada ou sem permissão";
@@ -126,7 +138,10 @@ public class FilialService {
         return inativacaoDAO.inativarFilialComDependentes(idFilial) ? null : "Erro interno no servidor ao inativar a filial";
     }
 
-    // Reativa só a filial (usuários e equipamentos voltam manualmente) e só se a empresa estiver ativa
+    /**
+     * Reativa apenas a filial. Usuários e equipamentos precisam voltar manualmente,
+     * e a empresa tem que estar ativa para que isso seja permitido.
+     */
     public String reativarFilial(int idFilial, Usuario gerente) {
         if (buscarFilialDoGerente(idFilial, gerente) == null) {
             return "Filial não encontrada ou sem permissão";
@@ -137,7 +152,7 @@ public class FilialService {
         return inativacaoDAO.reativarFilial(idFilial) ? null : "Erro interno no servidor ao reativar a filial";
     }
 
-    // A filial só é devolvida se o usuário é gerente e ela pertence à empresa dele
+    /** Só devolve a filial se o usuário for gerente e ela pertencer à empresa dele. */
     private Filial buscarFilialDoGerente(int idFilial, Usuario gerente) {
         if (gerente == null || gerente.getPerfil() != TipoUsuEnum.GERENTE || gerente.getIdEmpresa() == null) {
             return null;
@@ -146,6 +161,7 @@ public class FilialService {
         return filial != null && filial.getIdEmpresa() == gerente.getIdEmpresa() ? filial : null;
     }
 
+    /** Confirma que o usuário é gerente e que a empresa dele já foi cadastrada. */
     private String validarGerente(Usuario gerente) {
         if (gerente.getPerfil() != TipoUsuEnum.GERENTE) {
             return "Somente o gerente pode cadastrar filiais";
@@ -156,7 +172,10 @@ public class FilialService {
         return null;
     }
 
-    // idIgnorar: na edição, a própria filial não conta como CNPJ repetido (no cadastro é 0)
+    /**
+     * Confere nome, segmento, CNPJ (formato e duplicidade), e-mail e telefone. O idIgnorar permite que
+     * a filial editada não conte como CNPJ duplicado, e vale 0 no cadastro.
+     */
     private String validarFilial(Filial f, int idIgnorar) {
         if (vazio(f.getNome())) {
             return "O nome da filial não foi informado";
@@ -187,7 +206,7 @@ public class FilialService {
         return null;
     }
 
-    // A empresa vem sempre do gerente logado, nunca do formulário
+    /** A empresa da filial vem sempre do gerente logado e nunca do formulário. */
     private void prepararParaGravar(Filial filial, Endereco endereco, Usuario gerente) {
         filial.setIdEmpresa(gerente.getIdEmpresa());
         filial.setNome(filial.getNome().trim());
@@ -200,6 +219,7 @@ public class FilialService {
         enderecoService.normalizar(endereco);
     }
 
+    /** Testa texto nulo ou em branco. */
     private boolean vazio(String valor) {
         return valor == null || valor.trim().isEmpty();
     }

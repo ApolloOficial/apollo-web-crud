@@ -12,10 +12,14 @@ import jakarta.mail.internet.MimeMessage;
 
 import java.util.Properties;
 
-// Envio de e-mail via SMTP. Chaves no .env: SMTP_HOST, SMTP_PORT (padrão 587), SMTP_USER, SMTP_PASSWORD
-// e, opcionalmente, SMTP_FROM (padrão: o próprio SMTP_USER).
+/**
+ * Envio de e-mails por SMTP. A configuração é lida do arquivo .env pelas chaves SMTP_HOST,
+ * SMTP_PORT (587 por padrão), SMTP_USER e SMTP_PASSWORD, além de SMTP_FROM, que é opcional
+ * e usa o próprio SMTP_USER quando não existe.
+ */
 public class EmailService {
 
+    /** Monta e envia a mensagem com o código de recuperação de senha. Devolve false se o envio falhar. */
     public boolean enviarCodigoRecuperacao(String destinatario, String codigo, int minutosValidade) {
         String texto = "Seu código de recuperação de senha do Apollo é: " + codigo + "\n\n"
                 + "Ele vale por " + minutosValidade + " minutos. "
@@ -23,6 +27,7 @@ public class EmailService {
         return enviar(destinatario, "Apollo - código de recuperação de senha", texto);
     }
 
+    /** Faz o envio propriamente dito e registra o erro no log em vez de lançá-lo para quem chamou. */
     private boolean enviar(String destinatario, String assunto, String texto) {
         Dotenv env = Dotenv.load();
         String host = env.get("SMTP_HOST");
@@ -48,6 +53,7 @@ public class EmailService {
         }
     }
 
+    /** Cria a sessão SMTP com autenticação e STARTTLS. */
     private Session criarSessao(Dotenv env, String host, String usuario, String senha) {
         Properties props = new Properties();
         props.put("mail.smtp.host", host);

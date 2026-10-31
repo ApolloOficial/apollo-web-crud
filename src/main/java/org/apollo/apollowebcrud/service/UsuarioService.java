@@ -15,6 +15,10 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Regras de negócio dos usuários. Concentra o login, a revalidação da sessão e o gerenciamento da equipe.
+ * O gerente cadastra técnicos e o técnico cadastra operadores, cada um dentro do seu escopo de empresa ou filial.
+ */
 public class UsuarioService {
 
     private final UsuarioDAO usuarioDAO = new UsuarioDAO();
@@ -28,6 +32,11 @@ public class UsuarioService {
 
     // ---------- LOGIN ----------
 
+    /**
+     * Autentica o usuário. O e-mail precisa existir, a senha deve conferir com o hash, o status tem que ser ATIVO
+     * e a área escolhida na tela deve corresponder ao perfil. Qualquer falha devolve null. Quando o e-mail não
+     * existe, uma verificação fictícia mantém o tempo de resposta parecido. A senha nunca volta no objeto devolvido.
+     */
     public Usuario validarLogin(String email, String senha, TipoUsuEnum areaSelecionada) {
         String emailLimpo = email == null ? null : email.trim();
 
@@ -55,7 +64,7 @@ public class UsuarioService {
         return usuario;
     }
 
-    // Recarrega perfil, vínculo e status do banco antes de autorizar cada requisição protegida.
+    /** Recarrega perfil, vínculos e status do banco antes de autorizar cada requisição protegida. */
     public Usuario revalidarSessao(int idUsuario) {
         if (idUsuario <= 0) {
             return null;
@@ -76,24 +85,28 @@ public class UsuarioService {
         return usuario;
     }
 
-    // Gerente que ainda não cadastrou a empresa começa pela tela de empresa
+    /** Define a primeira tela após o login. Gerente sem empresa começa pelo cadastro dela. */
     public String paginaInicial(Usuario usuario) {
         boolean gerenteSemEmpresa = usuario.getPerfil() == TipoUsuEnum.GERENTE && usuario.getIdEmpresa() == null;
         return gerenteSemEmpresa ? "/empresa" : "/dashboard";
     }
 
+    /** Exige e-mail e senha preenchidos. */
     private boolean dadosLoginPreenchidos(String email, String senha) {
         return email != null && email.contains("@")
                 && senha != null && !senha.isEmpty();
     }
 
+    /** Verdadeiro quando o status do usuário é ATIVO. */
     private boolean estaAtivo(Usuario usuario) {
         return StatusGeral.ATIVO.name().equals(usuario.getStatus());
     }
 
     // ---------- LISTAGEM ----------
 
-    // Gerente vê os técnicos da empresa; técnico vê os operadores da filial; operador não tem a tela
+    /**
+     * O gerente vê os técnicos da empresa e o técnico vê os operadores da filial. O operador não possui essa tela.
+     */
     public List<Usuario> listarVisiveis(Usuario logado) {
         if (logado.getPerfil() == TipoUsuEnum.GERENTE && logado.getIdEmpresa() != null) {
             return comPerfil(usuarioDAO.listarPorEmpresaETipo(logado.getIdEmpresa(), TipoUsuEnum.TECNICO.name()), TipoUsuEnum.TECNICO);
@@ -104,13 +117,13 @@ public class UsuarioService {
         return List.of();
     }
 
-    // A lista é sempre de um único tipo, então o perfil de cada linha já é conhecido (a view usa ${u.perfil})
+    /** Como a lista é de um tipo só, o perfil de cada linha já é conhecido e é preenchido aqui. */
     private List<Usuario> comPerfil(List<Usuario> usuarios, TipoUsuEnum perfil) {
         usuarios.forEach(u -> u.setPerfil(perfil));
         return usuarios;
     }
 
-    // Técnicos e operadores da filial (candidatos a responsável por manutenção)
+    /** Técnicos e operadores da filial, candidatos a responsável por uma manutenção. */
     public List<Usuario> listarResponsaveisDaFilial(Usuario logado) {
         if (!logado.podeOperarEquipamentos()) {
             return List.of();
@@ -120,7 +133,7 @@ public class UsuarioService {
         return responsaveis;
     }
 
-    // O usuário existe, está ativo, é técnico ou operador e é da filial informada
+    /** Confere se o usuário existe, está ativo, é técnico ou operador e pertence à filial informada. */
     public boolean ehOperacionalDaFilial(Integer idUsuario, int idFilial) {
         if (idUsuario == null) {
             return false;
@@ -136,7 +149,7 @@ public class UsuarioService {
 
     // ---------- CADASTRO ----------
 
-    // Devolve null se cadastrou, ou a mensagem de erro
+    /** Valida e cadastra o novo usuário. Devolve null ou a mensagem de erro. */
     public String cadastrarUsuario(Usuario novo, Usuario cadastrador) {
         TipoUsuEnum tipoPermitido = tipoQueOCadastradorPodeCriar(cadastrador);
         if (tipoPermitido == null) {
@@ -159,9 +172,12 @@ public class UsuarioService {
     }
 
     // ---------- EDIÇÃO, INATIVAÇÃO E REATIVAÇÃO ----------
-    // Gerente gerencia os técnicos da empresa dele; técnico gerencia os operadores da filial dele.
+    // O gerente gerencia os técnicos da empresa dele e o técnico gerencia os operadores da filial dele.
 
-    // dados.getId() identifica quem editar. Não muda tipo, empresa nem filial. Senha nova é opcional.
+    /**
+     * Atualiza dados pessoais do usuário identificado em dados.getId(). Tipo, empresa e filial não mudam
+     * e a nova senha é opcional.
+     */
     public String editarUsuario(Usuario dados, String novaSenha, Usuario logado) {
         Usuario atual = buscarGerenciavel(dados.getId(), logado);
         if (atual == null) {
@@ -187,7 +203,9 @@ public class UsuarioService {
         return salvou ? null : "Erro interno no servidor ao tentar salvar o usuário";
     }
 
-    // Funcionário saiu da empresa: o usuário fica INATIVO (não é apagado) e não consegue mais entrar
+    /**
+     * Quando alguém sai da empresa o usuário fica INATIVO e não é apagado, mas deixa de conseguir entrar.
+     */
     public String inativarUsuario(int idAlvo, Usuario logado) {
         if (buscarGerenciavel(idAlvo, logado) == null) {
             return "Usuário não encontrado ou sem permissão";
@@ -195,7 +213,7 @@ public class UsuarioService {
         return inativacaoDAO.inativarUsuario(idAlvo) ? null : "Erro interno no servidor ao inativar o usuário";
     }
 
-    // Só reativa se a filial e a empresa do usuário estiverem ativas
+    /** A reativação só é permitida se a filial e a empresa do usuário estiverem ativas. */
     public String reativarUsuario(int idAlvo, Usuario logado) {
         Usuario alvo = buscarGerenciavel(idAlvo, logado);
         if (alvo == null) {
@@ -207,7 +225,7 @@ public class UsuarioService {
         return inativacaoDAO.reativarUsuario(idAlvo) ? null : "Erro interno no servidor ao reativar o usuário";
     }
 
-    // O usuário só é devolvido se é do tipo que o logado gerencia e está no escopo dele
+    /** Devolve o usuário somente se for do tipo que o logado gerencia e estiver dentro do escopo dele. */
     private Usuario buscarGerenciavel(int idAlvo, Usuario logado) {
         TipoUsuEnum tipoGerenciavel = tipoQueOCadastradorPodeCriar(logado);
         if (tipoGerenciavel == null) {
@@ -226,7 +244,9 @@ public class UsuarioService {
         return mesmoEscopo ? alvo : null;
     }
 
-    // Busca para o formulário de edição; não devolve usuários fora do escopo do gerente/técnico.
+    /**
+     * Busca o usuário para o formulário de edição, ignorando quem está fora do escopo do gerente ou técnico.
+     */
     public Usuario buscarParaEdicao(int idAlvo, Usuario logado) {
         Usuario alvo = buscarGerenciavel(idAlvo, logado);
         if (alvo != null) {
@@ -236,14 +256,14 @@ public class UsuarioService {
         return alvo;
     }
 
-    // Gerente cadastra técnico; técnico cadastra operador
+    /** O gerente cadastra técnicos e o técnico cadastra operadores. */
     private TipoUsuEnum tipoQueOCadastradorPodeCriar(Usuario cadastrador) {
         if (cadastrador.getPerfil() == TipoUsuEnum.GERENTE) return TipoUsuEnum.TECNICO;
         if (cadastrador.getPerfil() == TipoUsuEnum.TECNICO) return TipoUsuEnum.OPERADOR;
         return null;
     }
 
-    // O formulário não envia o tipo: quem cadastra define (gerente → técnico, técnico → operador)
+    /** O formulário não envia o tipo, então quem cadastra é que o define. */
     private String definirTipo(Usuario novo, TipoUsuEnum tipoPermitido) {
         Integer idTipo = tipoUsuarioService.buscarIdPorPerfil(tipoPermitido);
         if (idTipo == null) {
@@ -253,7 +273,9 @@ public class UsuarioService {
         return null;
     }
 
-    // A empresa vem sempre do cadastrador. A filial: do técnico é a dele; o gerente escolhe uma da empresa dele.
+    /**
+     * A empresa vem sempre de quem cadastra. A filial do técnico é a dele e o gerente escolhe uma da própria empresa.
+     */
     private String definirVinculos(Usuario novo, Usuario cadastrador) {
         if (cadastrador.getIdEmpresa() == null) {
             return "Cadastre a empresa antes de cadastrar usuários";
@@ -275,6 +297,7 @@ public class UsuarioService {
         return null;
     }
 
+    /** Valida nome, e-mail, CPF e telefone. */
     private String validarDadosPessoais(Usuario u) {
         if (u.getNome() == null || u.getNome().trim().isEmpty()) {
             return "O nome não foi informado";
@@ -285,7 +308,9 @@ public class UsuarioService {
         return erro;
     }
 
-    // idIgnorar: na edição, o próprio usuário não conta como email/CPF repetido (no cadastro o id é 0)
+    /**
+     * O idIgnorar faz o próprio usuário não ser contado como e-mail repetido na edição e vale 0 no cadastro.
+     */
     private String validarEmail(String email, int idIgnorar) {
         if (email == null || email.trim().isEmpty()) {
             return "O email não foi informado";
@@ -300,6 +325,7 @@ public class UsuarioService {
         return null;
     }
 
+    /** Mesma lógica do e-mail, aplicada ao CPF. */
     private String validarCpf(String cpf, int idIgnorar) {
         String cpfLimpo = CpfUtils.removerMascara(cpf);
 
@@ -316,7 +342,7 @@ public class UsuarioService {
         return null;
     }
 
-    // Telefone é opcional no banco
+    /** O telefone é opcional no banco, mas se vier preenchido precisa ter formato válido. */
     private String validarTelefone(String telefone) {
         if (telefone == null || telefone.trim().isEmpty()) {
             return null;
@@ -324,7 +350,9 @@ public class UsuarioService {
         return TelefoneUtils.isTelefoneValido(telefone.trim()) ? null : "O telefone não é válido";
     }
 
-    // Na entrada, o campo senhaHash do objeto carrega a senha digitada; aqui ela vira hash antes de gravar
+    /**
+     * Exige pelo menos 8 caracteres e um caractere especial. No cadastro o campo senhaHash do objeto ainda guarda a senha digitada.
+     */
     public String validarSenha(String senha) {
         if (senha == null || senha.trim().isEmpty()) {
             return "A senha não foi informada";
@@ -338,6 +366,9 @@ public class UsuarioService {
         return null;
     }
 
+    /**
+     * Remove espaços de nome e e-mail, deixa CPF e telefone só com dígitos, gera o hash da senha e registra quem cadastrou.
+     */
     private void prepararParaGravar(Usuario novo, Usuario cadastrador) {
         novo.setNome(novo.getNome().trim());
         novo.setEmail(novo.getEmail().trim());
@@ -347,6 +378,7 @@ public class UsuarioService {
         novo.setIdUsuarioCadastro(cadastrador.getId());
     }
 
+    /** Remove máscara do telefone e devolve null se ele estiver vazio. */
     private String telefoneSomenteDigitos(String telefone) {
         if (telefone == null || telefone.trim().isEmpty()) {
             return null;
