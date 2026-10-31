@@ -3,6 +3,9 @@ package org.apollo.apollowebcrud.model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * Contrato firmado entre a Apollo e a empresa cliente. É criado junto com a empresa e o gerente apenas o consulta.
+ */
 public class Contrato {
 
 //    ATRIBUTOS

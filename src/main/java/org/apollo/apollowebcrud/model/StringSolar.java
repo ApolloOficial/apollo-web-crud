@@ -1,5 +1,8 @@
 package org.apollo.apollowebcrud.model;
 
+/**
+ * Conjunto de painéis ligado a um inversor, identificado pelo código e pelos números de MPPT e de entrada.
+ */
 public class StringSolar {
 
 //    ATRIBUTOS

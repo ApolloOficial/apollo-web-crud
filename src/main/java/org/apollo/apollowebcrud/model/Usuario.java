@@ -1,5 +1,9 @@
 package org.apollo.apollowebcrud.model;
 
+/**
+ * Pessoa que acessa o sistema. O perfil não vem da tabela usuario e é preenchido a partir do tipo.
+ * O campo senhaHash guarda o hash e só carrega a senha digitada durante o cadastro, antes de o serviço convertê-la.
+ */
 public class Usuario {
 
 //    ATRIBUTO
@@ -87,12 +91,16 @@ public class Usuario {
         return urlFoto;
     }
 
-    // Técnico e operador (têm filial) são quem opera inversores, strings, painéis e manutenções
+    /**
+     * Técnico e operador, que possuem filial, são os perfis que operam inversores, strings, painéis e manutenções.
+     */
     public boolean podeOperarEquipamentos() {
         return idFilial != null && (perfil == TipoUsuEnum.TECNICO || perfil == TipoUsuEnum.OPERADOR);
     }
 
-    // Primeira letra do primeiro e do último nome, para o avatar das telas (ex.: "Ana Souza" → "AS")
+    /**
+     * Devolve a inicial do primeiro e do último nome para o avatar das telas, por exemplo AS para Ana Souza.
+     */
     public String getIniciais() {
         if (nome == null || nome.isBlank()) {
             return "";

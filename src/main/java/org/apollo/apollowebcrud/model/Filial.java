@@ -1,5 +1,8 @@
 package org.apollo.apollowebcrud.model;
 
+/**
+ * Unidade de uma empresa, onde ficam a equipe de técnicos e operadores e os equipamentos de geração.
+ */
 public class Filial {
 
     // ATRIBUTOS

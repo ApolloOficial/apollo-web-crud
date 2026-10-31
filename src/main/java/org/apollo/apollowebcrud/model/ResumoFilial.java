@@ -1,8 +1,9 @@
 package org.apollo.apollowebcrud.model;
 
-// Números das métricas da tela de detalhes da filial.
-// Inversores e strings contam só os ATIVOS; painéis contam ATIVO + INATIVO (e destaca quantos estão inativos);
-// manutenções em aberto = ABERTA + EM_ANDAMENTO.
+/**
+ * Métricas da tela de detalhes da filial. Inversores e strings contam apenas os ativos e os painéis contam
+ * ativos e inativos, destacando quantos estão inativos. As manutenções em aberto somam ABERTA e EM_ANDAMENTO.
+ */
 public class ResumoFilial {
 
     private int totalInversores;

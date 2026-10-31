@@ -2,6 +2,9 @@ package org.apollo.apollowebcrud.model;
 
 import java.time.LocalDate;
 
+/**
+ * Inversor solar instalado em uma filial. Agrupa strings de painéis e informa a potência total em kW.
+ */
 public class Inversor {
 
 //    ATRIBUTOS
@@ -112,7 +115,7 @@ public class Inversor {
         this.status = status;
     }
 
-    //    Garante que a conclusão da instalação não seja cadastrada em um momento futuro
+    /** Impede que a instalação seja registrada com data no futuro. */
     public void setDataInstalacao(LocalDate dataInstalacao) {
         if (dataInstalacao != null && dataInstalacao.isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("Data de finalização não pode ser no futuro");

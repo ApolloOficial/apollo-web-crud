@@ -1,9 +1,10 @@
 package org.apollo.apollowebcrud.model;
 
-// Números dos 4 cards do dashboard.
-// Gerente: membros da empresa, filiais, inversores e potência total (todas as filiais da empresa).
-// Técnico/operador: membros da filial, manutenções, inversores e potência total (da filial).
-// Os campos que não se aplicam ao perfil ficam em 0.
+/**
+ * Números dos quatro cards do dashboard. O gerente vê membros da empresa, filiais, inversores e potência total.
+ * Técnico e operador veem membros da filial, manutenções, inversores e potência total. Os campos que não se
+ * aplicam ao perfil ficam em zero.
+ */
 public class Dashboard {
 
     private int totalMembros;
