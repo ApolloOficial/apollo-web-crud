@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -17,7 +18,7 @@
     <a class="brand-link" href="#inicio" aria-label="Apollo — início">
       <div class="logo-apollo" aria-hidden="true"><div class="nome"><i class="a-anel"></i><i class="a-haste"></i><i class="p-anel"></i><i class="p-haste"></i><i class="o1-anel"></i><i class="l1"></i><i class="l2"></i><i class="o2-anel"></i></div><div class="marca-apollo"><i class="m1"></i><i class="m2"></i></div></div>
     </a>
-    <a class="btn-login" href="#contato">Login</a>
+    <a class="btn-login" href="login">Login</a>
   </header>
 
   <main>
@@ -46,7 +47,7 @@
         <div class="eyebrow"><span class="eyebrow-mark" aria-hidden="true"><div class="marca-apollo"><i class="m1"></i><i class="m2"></i></div></span><span>Sobre o Apollo</span></div>
         <h2 id="about-title">Tecnologia que transforma<br>dados em <span>decisões inteligentes</span></h2>
         <p class="about-copy">O Apollo foi desenvolvido para tornar a gestão de sistemas fotovoltaicos mais simples, eficiente e estratégica — com análises avançadas e monitoramento contínuo, você tem total visibilidade do desempenho da sua energia.</p>
-        <picture class="about-visual"><source media="(max-width: 820px)" srcset="assets/about-phone-mobile.jpg"><img src="assets/about-phone-wave.jpg" alt="Celular com a marca Apollo sobre uma faixa ondulada em tons de laranja e amarelo, representando praticidade, gestão e visibilidade."></picture>
+        <picture class="about-visual"><source media="(max-width: 820px)" srcset="imagem_landing/about-phone-mobile.jpg"><img src="imagem_landing/about-phone-wave.jpg" alt="Celular com a marca Apollo sobre uma faixa ondulada em tons de laranja e amarelo, representando praticidade, gestão e visibilidade."></picture>
       </div>
     </section>
 
@@ -119,16 +120,66 @@
       <div class="section-wrap">
         <div class="section-kicker"><h2>Nosso Diferencial</h2><span aria-hidden="true"></span></div>
         <h3 class="diff-subtitle" id="diff-title">Tecnologia e inteligência para maximizar o desempenho dos seus painéis solares</h3>
-        <div class="is-card">
-          <div class="is-left"><button type="button" class="is-emblem" id="is-emblem" aria-label="Voltar ao texto do Índice de Sustentabilidade"><span class="is-orbs" aria-hidden="true"><i class="orb orb-a"></i><i class="orb orb-b"></i><i class="orb orb-c"></i></span><span class="is-letters" aria-hidden="true">IS</span><svg class="leaf" viewBox="0 0 50 50" aria-hidden="true"><path d="M7 39C13 17 25 8 43 7C42 25 32 39 7 39Z" fill="white"/><path d="M9 40L34 15" stroke="#83bd2b" stroke-width="2.5" stroke-linecap="round"/></svg></button></div>
-          <div class="is-right"><div class="solar-grid" aria-hidden="true"></div>
-            <div class="is-options" role="tablist" aria-label="Critérios do Índice de Sustentabilidade">
-              <button class="is-option" type="button" role="tab" aria-selected="false" data-criterion="fin"><span class="criterion-icon finance-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 17.5 9 12l3.4 3.1L20 6.5"/><path d="M14.5 6.5H20v5.5"/></svg></span><span>Finança</span></button>
-              <button class="is-option" type="button" role="tab" aria-selected="false" data-criterion="efi"><span class="criterion-icon efficiency-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19V11M10 19V6M15 19v-5M20 19V3"/><path d="M3 19.5h19"/></svg></span><span>Eficiência</span></button>
-              <button class="is-option" type="button" role="tab" aria-selected="false" data-criterion="vida"><span class="criterion-icon life-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.8 8.7c0 5-8.8 10.3-8.8 10.3S3.2 13.7 3.2 8.7A4.7 4.7 0 0 1 12 6.4a4.7 4.7 0 0 1 8.8 2.3Z"/></svg></span><span>Vida útil</span></button>
+        <div class="diff-carousel" id="diff-carousel" role="region" aria-roledescription="carrossel" aria-label="Nossos diferenciais">
+          <div class="diff-viewport">
+            <div class="diff-track" id="diff-track">
+              <div class="diff-slide is-current" role="group" aria-roledescription="slide" aria-label="1 de 2: Índice de Sustentabilidade">
+                <div class="is-card">
+                  <div class="is-left"><button type="button" class="is-emblem" id="is-emblem" aria-label="Voltar ao texto do Índice de Sustentabilidade"><span class="is-orbs" aria-hidden="true"><i class="orb orb-a"></i><i class="orb orb-b"></i><i class="orb orb-c"></i></span><span class="is-letters" aria-hidden="true">IS</span><svg class="leaf" viewBox="0 0 50 50" aria-hidden="true"><path d="M7 39C13 17 25 8 43 7C42 25 32 39 7 39Z" fill="white"/><path d="M9 40L34 15" stroke="#83bd2b" stroke-width="2.5" stroke-linecap="round"/></svg></button></div>
+                  <div class="is-right"><div class="solar-grid" aria-hidden="true"></div>
+                    <div class="is-options" role="tablist" aria-label="Critérios do Índice de Sustentabilidade">
+                      <button class="is-option" type="button" role="tab" aria-selected="false" data-criterion="fin"><span class="criterion-icon finance-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 17.5 9 12l3.4 3.1L20 6.5"/><path d="M14.5 6.5H20v5.5"/></svg></span><span>Finança</span></button>
+                      <button class="is-option" type="button" role="tab" aria-selected="false" data-criterion="efi"><span class="criterion-icon efficiency-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19V11M10 19V6M15 19v-5M20 19V3"/><path d="M3 19.5h19"/></svg></span><span>Eficiência</span></button>
+                      <button class="is-option" type="button" role="tab" aria-selected="false" data-criterion="vida"><span class="criterion-icon life-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.8 8.7c0 5-8.8 10.3-8.8 10.3S3.2 13.7 3.2 8.7A4.7 4.7 0 0 1 12 6.4a4.7 4.7 0 0 1 8.8 2.3Z"/></svg></span><span>Vida útil</span></button>
+                    </div>
+                    <div class="is-content" id="is-content" aria-live="polite"><h3><span>Índice de Sustentabilidade</span><i class="is-rule" aria-hidden="true"></i></h3><p>O Índice de Sustentabilidade (IS) é uma avaliação inteligente que analisa cada lote de painéis solares com base em três critérios essenciais: <em class="blue">eficiência</em>, <em class="red">vida útil</em> e <em class="green">retorno financeiro</em>. Com essas informações, o sistema gera uma nota que auxilia na tomada de <em class="blue">decisões mais seguras e estratégicas</em>.</p></div>
+                    <div class="click-hint"><svg viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke="currentColor"><g stroke-width="3.8" stroke-linecap="butt"><path d="M16.3 1V7"/><path d="M4.6 5.9L10.3 10.3"/><path d="M28.4 5.3L22.8 9.6"/><path d="M.9 16.6H7.1"/><path d="M5 27.5L10.3 23"/></g><path d="M14 14L35.5 20L28.5 24.5L35 31L31 35L24.5 28.5L20 35.5Z" stroke-width="3.6" stroke-linejoin="miter" stroke-miterlimit="10"/></svg><span>Clique nos ícones<br>para <b>saber mais</b></span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="diff-slide" role="group" aria-roledescription="slide" aria-label="2 de 2: ApolloIA" aria-hidden="true" inert>
+                <div class="is-card ia-card">
+                  <div class="is-left">
+                    <button type="button" class="ia-emblem" id="ia-emblem" aria-label="Voltar ao texto do ApolloIA">
+                      <span class="is-orbs"><i class="orb orb-a"></i><i class="orb orb-b"></i><i class="orb orb-c"></i></span>
+                      <svg class="ia-art" viewBox="0 0 200 200" focusable="false">
+                        <circle cx="100" cy="100" r="90" fill="none" stroke="#fff" stroke-width="6.5" stroke-dasharray="20 15.3" stroke-linecap="round"/>
+                        <path d="M72 152l5 11 11 5-11 5-5 11-5-11-11-5 11-5z" fill="#fff" opacity=".28"/>
+                        <path d="M128 150l4 9 9 4-9 4-4 9-4-9-9-4 9-4z" fill="#fff" opacity=".2"/>
+                        <rect x="46" y="94" width="10" height="26" rx="5" fill="#fff"/>
+                        <rect x="144" y="94" width="10" height="26" rx="5" fill="#fff"/>
+                        <rect x="55" y="74" width="90" height="68" rx="17" fill="#fff"/>
+                        <rect x="64" y="83" width="72" height="50" rx="11" fill="#ff6a2b"/>
+                        <rect x="73" y="96" width="14" height="14" rx="4" fill="#fff"/>
+                        <rect x="113" y="96" width="14" height="14" rx="4" fill="#fff"/>
+                        <rect x="89" y="120" width="22" height="4.5" rx="2.25" fill="#fff"/>
+                        <path d="M100 74V63" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+                        <circle cx="100" cy="55" r="8.5" fill="#fff"/>
+                        <circle cx="100" cy="55" r="3.6" fill="#ff6a2b"/>
+                        <text x="148" y="160" font-family="Nunito,'Plus Jakarta Sans',Arial,sans-serif" font-size="31" font-weight="900" fill="#fff" text-anchor="middle">AI</text>
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="is-right"><div class="solar-grid" aria-hidden="true"></div>
+                    <div class="is-options ia-options" role="group" aria-label="Funções do ApolloIA">
+                      <button type="button" class="ia-tag" data-ia="analisar" aria-pressed="false"><span class="criterion-icon ia-icon"><svg viewBox="0 0 24 24"><path d="M12 3.5l1.9 5.1 5.1 1.9-5.1 1.9-1.9 5.1-1.9-5.1L5 10.5l5.1-1.9z"/><path d="M19 3v4M17 5h4"/></svg></span><span>Analisar</span></button>
+                      <button type="button" class="ia-tag" data-ia="orientar" aria-pressed="false"><span class="criterion-icon ia-icon"><svg viewBox="0 0 24 24"><path d="M4.5 5.5h15v10h-8l-4.5 3.5v-3.5h-2.5z"/><path d="M8.5 10.5h.01M12 10.5h.01M15.5 10.5h.01"/></svg></span><span>Orientar</span></button>
+                      <button type="button" class="ia-tag" data-ia="ajudar" aria-pressed="false"><span class="criterion-icon ia-icon"><svg viewBox="0 0 24 24"><path d="M9.2 17.5h5.6M10 20.5h4M12 3.5a5.6 5.6 0 0 0-3.4 10.1c.6.5.6 1.1.6 1.9h5.6c0-.8 0-1.4.6-1.9A5.6 5.6 0 0 0 12 3.5Z"/></svg></span><span>Ajudar</span></button>
+                    </div>
+                    <div class="is-content ia-content" id="ia-content" aria-live="polite"><h3><span>ApolloIA</span><i class="is-rule" aria-hidden="true"></i></h3><p>O ApolloAI é a camada de Inteligência Artificial do Apollo que analisa os dados dos inversores (geração, potência, temperatura, status, alertas e histórico) para interpretar alertas, identificar anomalias e quedas de desempenho e sugerir possíveis causas e próximos passos.<br>Sua função é de apoio à decisão: não substitui os profissionais nem dá diagnósticos definitivos, e sinaliza incerteza quando os dados são insuficientes.</p></div>
+                    <div class="click-hint ia-hint"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l1.9 5.1 5.1 1.9-5.1 1.9-1.9 5.1-1.9-5.1L5 10.5l5.1-1.9z"/></svg><span>Seu assistente de IA<br>para uma gestão solar mais eficiente</span></div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="is-content" id="is-content" aria-live="polite"><h3><span>Índice de Sustentabilidade</span><i class="is-rule" aria-hidden="true"></i></h3><p>O Índice de Sustentabilidade (IS) é uma avaliação inteligente que analisa cada lote de painéis solares com base em três critérios essenciais: <em class="blue">eficiência</em>, <em class="red">vida útil</em> e <em class="green">retorno financeiro</em>. Com essas informações, o sistema gera uma nota que auxilia na tomada de <em class="blue">decisões mais seguras e estratégicas</em>.</p></div>
-            <div class="click-hint"><svg viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke="currentColor"><g stroke-width="3.8" stroke-linecap="butt"><path d="M16.3 1V7"/><path d="M4.6 5.9L10.3 10.3"/><path d="M28.4 5.3L22.8 9.6"/><path d="M.9 16.6H7.1"/><path d="M5 27.5L10.3 23"/></g><path d="M14 14L35.5 20L28.5 24.5L35 31L31 35L24.5 28.5L20 35.5Z" stroke-width="3.6" stroke-linejoin="miter" stroke-miterlimit="10"/></svg><span>Clique nos ícones<br>para <b>saber mais</b></span></div>
+          </div>
+          <div class="diff-nav">
+            <button type="button" class="diff-arrow" id="diff-prev" aria-label="Diferencial anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg></button>
+            <div class="diff-dots">
+              <button type="button" class="diff-dot is-on" data-slide="0" aria-label="Ver Índice de Sustentabilidade" aria-current="true"></button>
+              <button type="button" class="diff-dot" data-slide="1" aria-label="Ver ApolloIA"></button>
+            </div>
+            <button type="button" class="diff-arrow" id="diff-next" aria-label="Próximo diferencial"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 5.5 16 12l-6.5 6.5"/></svg></button>
           </div>
         </div>
       </div>
@@ -144,29 +195,29 @@
       <h2 id="team-title">Equipe <span>Apollo</span></h2>
       <div class="team-window" id="team-window">
         <div class="team-track" id="team-track">
-          <article class="team-member"><img src="assets/davi-fernandes.jpg" alt="Davi Fernandes"><h3>Davi Fernandes</h3><p>Dados e Front-end</p></article>
-          <article class="team-member"><img src="assets/ikaro-bueno.jpg" alt="Ikaro Bueno"><h3>Ikaro Bueno</h3><p>Fullstack</p></article>
-          <article class="team-member"><img src="assets/miguel-bastos.jpg" alt="Miguel Bastos"><h3>Miguel Bastos</h3><p>Front e Back-end</p></article>
-          <article class="team-member"><img src="assets/nicholas-kim.jpg" alt="Nicholas Kim"><h3>Nicholas Kim</h3><p>FullStack</p></article>
-          <article class="team-member"><img src="assets/pedro-augusto.jpg" alt="Pedro Augusto"><h3>Pedro Augusto</h3><p>DADOS E BACK-END</p></article>
-          <article class="team-member"><img src="assets/enzo-mota.jpg" alt="Enzo Mota"><h3>Enzo Mota</h3><p>FULLSTACK</p></article>
-          <article class="team-member"><img src="assets/giovanna-quirino.jpg" alt="Giovanna Quirino"><h3>Giovanna Quirino</h3><p>FULLSTACK</p></article>
-          <article class="team-member"><img src="assets/guilherme-montoni.jpg" alt="Guilherme Montoni"><h3>Guilherme Montoni</h3><p>DADOS E BACK-END</p></article>
-          <article class="team-member"><img src="assets/matheus-botana.jpg" alt="Matheus Botana"><h3>Matheus Botana</h3><p>DADOS E FRONT-END</p></article>
-          <article class="team-member"><img src="assets/pedro-sena.jpg" alt="Pedro Sena"><h3>Pedro Sena</h3><p>FULLSTACK</p></article>
-          <article class="team-member"><img src="assets/yasmin-holando.jpg" alt="Yasmin Holando"><h3>Yasmin Holando</h3><p>FRONT-END</p></article>
+          <article class="team-member"><img src="imagem_landing/davi-fernandes.jpg" alt="Davi Fernandes"><h3>Davi Fernandes</h3><p>Dados e Front-end</p></article>
+          <article class="team-member"><img src="imagem_landing/ikaro-bueno.jpg" alt="Ikaro Bueno"><h3>Ikaro Bueno</h3><p>Fullstack</p></article>
+          <article class="team-member"><img src="imagem_landing/miguel-bastos.jpg" alt="Miguel Bastos"><h3>Miguel Bastos</h3><p>Front e Back-end</p></article>
+          <article class="team-member"><img src="imagem_landing/nicholas-kim.jpg" alt="Nicholas Kim"><h3>Nicholas Kim</h3><p>FullStack</p></article>
+          <article class="team-member"><img src="imagem_landing/pedro-augusto.jpg" alt="Pedro Augusto"><h3>Pedro Augusto</h3><p>DADOS E BACK-END</p></article>
+          <article class="team-member"><img src="imagem_landing/enzo-mota.jpg" alt="Enzo Mota"><h3>Enzo Mota</h3><p>FULLSTACK</p></article>
+          <article class="team-member"><img src="imagem_landing/giovanna-quirino.jpg" alt="Giovanna Quirino"><h3>Giovanna Quirino</h3><p>FULLSTACK</p></article>
+          <article class="team-member"><img src="imagem_landing/guilherme-guedes.jpg" alt="Guilherme Montoni"><h3>Guilherme Montoni</h3><p>DADOS E BACK-END</p></article>
+          <article class="team-member"><img src="imagem_landing/matheus-botana.jpg" alt="Matheus Botana"><h3>Matheus Botana</h3><p>DADOS E FRONT-END</p></article>
+          <article class="team-member"><img src="imagem_landing/pedro-sena.jpg" alt="Pedro Sena"><h3>Pedro Sena</h3><p>FULLSTACK</p></article>
+          <article class="team-member"><img src="imagem_landing/yasmin-holando.jpg" alt="Yasmin Holando"><h3>Yasmin Holando</h3><p>FRONT-END</p></article>
           
-          <article class="team-member" aria-hidden="true"><img src="assets/davi-fernandes.jpg" alt=""><h3>Davi Fernandes</h3><p>Dados e Front-end</p></article>
-          <article class="team-member" aria-hidden="true"><img src="assets/ikaro-bueno.jpg" alt=""><h3>Ikaro Bueno</h3><p>Fullstack</p></article>
-          <article class="team-member" aria-hidden="true"><img src="assets/miguel-bastos.jpg" alt=""><h3>Miguel Bastos</h3><p>Front e Back-end</p></article>
-          <article class="team-member" aria-hidden="true"><img src="assets/nicholas-kim.jpg" alt=""><h3>Nicholas Kim</h3><p>FullStack</p></article>
-          <article class="team-member" aria-hidden="true"><img src="assets/pedro-augusto.jpg" alt=""><h3>Pedro Augusto</h3><p>DADOS E BACK-END</p></article>
-          <article class="team-member" aria-hidden="true"><img src="assets/enzo-mota.jpg" alt=""><h3>Enzo Mota</h3><p>FULLSTACK</p></article>
-          <article class="team-member" aria-hidden="true"><img src="assets/giovanna-quirino.jpg" alt=""><h3>Giovanna Quirino</h3><p>FULLSTACK</p></article>
-          <article class="team-member" aria-hidden="true"><img src="assets/guilherme-montoni.jpg" alt=""><h3>Guilherme Montoni</h3><p>DADOS E BACK-END</p></article>
-          <article class="team-member" aria-hidden="true"><img src="assets/matheus-botana.jpg" alt=""><h3>Matheus Botana</h3><p>DADOS E FRONT-END</p></article>
-          <article class="team-member" aria-hidden="true"><img src="assets/pedro-sena.jpg" alt=""><h3>Pedro Sena</h3><p>FULLSTACK</p></article>
-          <article class="team-member" aria-hidden="true"><img src="assets/yasmin-holando.jpg" alt=""><h3>Yasmin Holando</h3><p>FRONT-END</p></article>
+          <article class="team-member" aria-hidden="true"><img src="imagem_landing/davi-fernandes.jpg" alt=""><h3>Davi Fernandes</h3><p>Dados e Front-end</p></article>
+          <article class="team-member" aria-hidden="true"><img src="imagem_landing/ikaro-bueno.jpg" alt=""><h3>Ikaro Bueno</h3><p>Fullstack</p></article>
+          <article class="team-member" aria-hidden="true"><img src="imagem_landing/miguel-bastos.jpg" alt=""><h3>Miguel Bastos</h3><p>Front e Back-end</p></article>
+          <article class="team-member" aria-hidden="true"><img src="imagem_landing/nicholas-kim.jpg" alt=""><h3>Nicholas Kim</h3><p>FullStack</p></article>
+          <article class="team-member" aria-hidden="true"><img src="imagem_landing/pedro-augusto.jpg" alt=""><h3>Pedro Augusto</h3><p>DADOS E BACK-END</p></article>
+          <article class="team-member" aria-hidden="true"><img src="imagem_landing/enzo-mota.jpg" alt=""><h3>Enzo Mota</h3><p>FULLSTACK</p></article>
+          <article class="team-member" aria-hidden="true"><img src="imagem_landing/giovanna-quirino.jpg" alt=""><h3>Giovanna Quirino</h3><p>FULLSTACK</p></article>
+          <article class="team-member" aria-hidden="true"><img src="imagem_landing/guilherme-guedes.jpg" alt=""><h3>Guilherme Montoni</h3><p>DADOS E BACK-END</p></article>
+          <article class="team-member" aria-hidden="true"><img src="imagem_landing/matheus-botana.jpg" alt=""><h3>Matheus Botana</h3><p>DADOS E FRONT-END</p></article>
+          <article class="team-member" aria-hidden="true"><img src="imagem_landing/pedro-sena.jpg" alt=""><h3>Pedro Sena</h3><p>FULLSTACK</p></article>
+          <article class="team-member" aria-hidden="true"><img src="imagem_landing/yasmin-holando.jpg" alt=""><h3>Yasmin Holando</h3><p>FRONT-END</p></article>
         </div>
       </div>
     </section>
@@ -179,7 +230,7 @@
           <p>Inteligência e Tecnologia para uma<br>gestão solar mais eficiente e sustentável</p>
           <a class="instagram" href="https://www.instagram.com/apollo.system/" target="_blank" rel="noopener noreferrer" aria-label="Instagram do Apollo — abre em nova aba"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5.1" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.1" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.8" cy="6.5" r="1.15" fill="currentColor"/></svg></a>
         </div>
-        <div class="footer-col"><h2>Navegação</h2><a href="#inicio">Início</a><a href="#funcionamento">Como funciona</a><a href="#funcionalidades">Funcionalidades</a><a href="#equipe">Equipe</a><a href="#contato">Contato</a><a href="#contato">Restrito</a></div>
+        <div class="footer-col"><h2>Navegação</h2><a href="#inicio">Início</a><a href="#funcionamento">Como funciona</a><a href="#funcionalidades">Funcionalidades</a><a href="#equipe">Equipe</a><a href="#contato">Contato</a><a href="login">Restrito</a></div>
         <div class="footer-col"><h2>Contato</h2><a href="mailto:Apollo@gmail.com">Apollo@gmail.com</a><a href="tel:+5511974583422">(11) 97458-3422</a><a href="tel:+5511974583422">(11) 97458-3422</a><span>São Paulo, SP - Brasil</span></div>
         <div class="footer-col"><h2>Suporte</h2><a href="#contato">Central de ajuda</a><a href="#contato">Perguntas frequentes</a><a href="#contato">Termos de uso</a><a href="#contato">Política de privacidade</a></div>
       </div>

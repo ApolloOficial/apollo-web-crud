@@ -29,7 +29,7 @@ public class AuthFilter implements Filter {
             "/", "/index.jsp", "/login", "/recuperar-senha",
             "/landing.jsp", "/landing.html", "/landing.css", "/landing.js"
     );
-    private static final Set<String> PREFIXOS_PUBLICOS = Set.of("/docs/");
+    private static final Set<String> PREFIXOS_PUBLICOS = Set.of("/docs/", "/imagem_landing/");
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
