@@ -10,9 +10,11 @@ import org.apollo.apollowebcrud.model.Endereco;
 import org.apollo.apollowebcrud.model.TipoUsuEnum;
 import org.apollo.apollowebcrud.model.Usuario;
 import org.apollo.apollowebcrud.service.EmpresaService;
+import org.apollo.apollowebcrud.service.FilialService;
 import org.apollo.apollowebcrud.util.SessaoUtils;
 
 import java.io.IOException;
+import java.util.List;
 
 // GET /empresa:
 //   - gerente sem empresa: já abre o formulário vazio (modo "novo")
@@ -27,6 +29,7 @@ public class EmpresaServlet extends HttpServlet {
     private static final String VIEW_FORMULARIO = "/WEB-INF/views/cadastro-empresa.jsp";
 
     private final EmpresaService empresaService = new EmpresaService();
+    private final FilialService filialService = new FilialService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -38,7 +41,10 @@ public class EmpresaServlet extends HttpServlet {
         } else if (request.getParameter("editar") != null) {
             editar(request, response, logado);
         } else {
-            request.setAttribute("listaEmpresas", empresaService.listarVisiveis(logado));
+            List<Empresa> empresas = empresaService.listarVisiveis(logado);
+            request.setAttribute("listaEmpresas", empresas);
+            request.setAttribute("endereco", empresas.isEmpty() ? null : empresaService.buscarEndereco(empresas.get(0)));
+            request.setAttribute("listaFiliais", filialService.listarVisiveis(logado));
             request.getRequestDispatcher(VIEW_EMPRESA).forward(request, response);
         }
     }
@@ -66,7 +72,7 @@ public class EmpresaServlet extends HttpServlet {
                 : empresaService.cadastrarEmpresa(dados, endereco, logado);
 
         if (erro == null) {
-            response.sendRedirect(request.getContextPath() + "/dashboard");
+            response.sendRedirect(request.getContextPath() + "/empresa?ok=" + (editando ? "editar" : "cadastrar"));
             return;
         }
 

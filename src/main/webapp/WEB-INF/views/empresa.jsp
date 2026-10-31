@@ -1,152 +1,99 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<%@ taglib prefix="ap" tagdir="/WEB-INF/tags" %>
+<c:set var="raiz" value="${pageContext.request.contextPath}"/>
+<c:set var="ativo" value="empresa"/>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apollo - Empresa</title>
-
+    <title>Apollo | Empresa</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- CSS desta tela -->
-    <link rel="stylesheet" href="../../docs/css/empresa.css">
-    <link rel="stylesheet" href="../../docs/css/sidebar.css">
+    <link rel="stylesheet" href="${raiz}/docs/css/logoApollo.css">
+    <link rel="stylesheet" href="${raiz}/docs/css/sidebar.css">
+    <link rel="stylesheet" href="${raiz}/docs/css/apollo.css">
 </head>
 <body>
-
 <div class="pagina">
+    <%@ include file="includes/sidebar.jspf" %>
 
-    <!-- ========== SIDEBAR ========== -->
-    <!-- ===== Sidebar (montada por sidebar.js conforme o tipo de usuário) ===== -->
-    <aside class="sidebar" data-ativo="empresa"></aside>
-    <script src="../docs/js/sidebar.js"></script>
-
-
-    <!-- ========== CONTEÚDO ========== -->
     <main class="conteudo">
+        <ap:topo titulo="Empresa" subtitulo="Visualize as informações da empresa e suas filiais cadastradas"/>
 
-        <header class="topo-empresa">
-            <div>
-                <h1 class="titulo">Empresa</h1>
-                <p class="subtitulo-pagina">Visualize as informações da sua empresa e suas filiais cadastradas</p>
-            </div>
 
-            <div class="usuario">
-                <div class="avatar-usuario" aria-hidden="true"></div>
-                <span>ADM dos BGL Tudo</span>
-            </div>
-        </header>
-
-        <!-- Cartão da empresa -->
-        <section class="card-empresa" aria-label="Dados da empresa">
-            <div class="empresa-topo">
-                <div class="empresa-id">
-                    <div class="logo-empresa" data-emp="sigla">Âmbar</div>
-                    <h2 data-emp="nome">Âmbar Energia</h2>
+        <c:forEach var="e" items="${listaEmpresas}">
+            <section class="cartao">
+                <div class="cabecalho-card">
+                    <div class="identidade">
+                        <div class="logo-card"><c:out value="${fn:toUpperCase(fn:substring(e.nome, 0, 2))}"/></div>
+                        <div>
+                            <h2><c:out value="${e.nome}"/></h2>
+                            <ap:badge valor="${e.status}"/>
+                        </div>
+                    </div>
+                    <c:if test="${usuarioLogado.perfil == 'GERENTE'}">
+                        <a class="btn btn-contorno" href="${raiz}/empresa?editar=1">Editar empresa</a>
+                    </c:if>
                 </div>
-                <button type="button" class="btn btn-editar-empresa" data-abrir="dlg-editar-empresa">
-                    <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
-                    Editar empresa
-                </button>
-            </div>
-
-            <div class="empresa-dados">
-                <div class="dado-empresa">
-                    <span class="rotulo">CNPJ</span>
-                    <span class="valor">11.111.111/0001-11</span>
+                <div class="dados" style="margin-top:18px">
+                    <div><span>CNPJ</span><strong><ap:cnpj valor="${e.cnpj}"/></strong></div>
+                    <div><span>E-mail de contato</span><strong><c:out value="${e.emailContato}" default="—"/></strong></div>
+                    <div><span>Descrição</span><strong><c:out value="${e.descricao}" default="—"/></strong></div>
+                    <div><span>Endereço</span>
+                        <strong>
+                            <c:choose>
+                                <c:when test="${not empty endereco}">
+                                    <c:out value="${endereco.logradouro}"/>, <c:out value="${endereco.numero}"/>
+                                    <c:if test="${not empty endereco.complemento}"> - <c:out value="${endereco.complemento}"/></c:if><br>
+                                    <c:out value="${endereco.bairro}"/> - <c:out value="${endereco.cidade}"/>/<c:out value="${endereco.estado}"/><br>
+                                    CEP <c:out value="${endereco.cep}"/>
+                                </c:when>
+                                <c:otherwise>—</c:otherwise>
+                            </c:choose>
+                        </strong>
+                    </div>
                 </div>
-                <div class="dado-empresa">
-                    <span class="rotulo">Email</span>
-                    <span class="valor" data-emp="email">Ambar@gmail.com.br</span>
-                </div>
-                <div class="dado-empresa">
-                    <span class="rotulo">Telefone</span>
-                    <span class="valor" data-emp="telefone">(19) 99999-9999</span>
-                </div>
-                <div class="dado-empresa">
-                    <span class="rotulo">Endereço</span>
-                    <span class="valor"><span data-emp="logradouro">Av. das nações, 123 - centro</span><br><span data-emp="cidade">São Paulo - SP 00000-000</span></span>
-                </div>
-            </div>
-        </section>
+            </section>
+        </c:forEach>
 
-        <!-- Filiais -->
-        <h3 class="titulo-filiais">
-            <svg viewBox="0 0 24 24"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
-            Filiais cadastradas
-        </h3>
+        <c:if test="${empty listaEmpresas}">
+            <section class="cartao"><p class="vazio">Nenhuma empresa vinculada ao seu usuário.</p></section>
+        </c:if>
 
-        <section class="lista-filiais" id="listaFiliais" aria-label="Filiais cadastradas"></section>
+        <div class="barra">
+            <h2 style="font-size:18px;font-weight:600">Filiais cadastradas</h2>
+            <c:if test="${usuarioLogado.perfil == 'GERENTE'}">
+                <a class="btn" href="${raiz}/filial?novo=1">Adicionar nova filial</a>
+            </c:if>
+        </div>
 
-        <button type="button" class="card-adicionar" id="btnAdicionarFilial">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
-            Adicionar nova filial
-        </button>
-
+        <c:choose>
+            <c:when test="${empty listaFiliais}">
+                <section class="cartao"><p class="vazio">Nenhuma filial cadastrada.</p></section>
+            </c:when>
+            <c:otherwise>
+                <section class="grade-filiais">
+                    <c:forEach var="f" items="${listaFiliais}">
+                        <article class="card-filial">
+                            <h3><c:out value="${f.nome}"/></h3>
+                            <p>CNPJ <ap:cnpj valor="${f.cnpj}"/></p>
+                            <div class="acoes" style="display:flex;gap:8px;align-items:center;justify-content:space-between">
+                                <ap:badge valor="${f.status}"/>
+                                <a class="btn btn-mini btn-contorno" href="${raiz}/filial?detalhes=${f.id}">Ver detalhes</a>
+                            </div>
+                        </article>
+                    </c:forEach>
+                </section>
+            </c:otherwise>
+        </c:choose>
+        <c:set var="erroAviso" value=""/>
+        <%@ include file="includes/aviso.jspf" %>
     </main>
 </div>
-
-
-<!-- ========== POP-UP: EDITAR EMPRESA ========== -->
-<dialog class="pop" id="dlg-editar-empresa" aria-labelledby="dlg-editar-empresa-t">
-    <form method="dialog">
-        <h2 class="pop-titulo" id="dlg-editar-empresa-t">
-            <span class="pop-icone"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 21v-4h6v4"/></svg></span>
-            Dados da Empresa
-        </h2>
-        <div class="pop-grade">
-            <label class="pop-campo"><span>Nome da empresa *</span><input class="pop-input" name="nome" type="text" value="Âmbar Energia" required></label>
-            <label class="pop-campo"><span>CNPJ *</span><input class="pop-input" name="cnpj" type="text" value="11.111.111/0001-11" disabled></label>
-            <label class="pop-campo"><span>E-mail *</span><input class="pop-input" name="email" type="email" value="Ambar@gmail.com.br" required></label>
-            <label class="pop-campo"><span>Telefone *</span><input class="pop-input" name="telefone" type="tel" value="(19) 99999-9999" required></label>
-            <label class="pop-campo"><span>Endereço *</span><input class="pop-input" name="logradouro" type="text" value="Av. das nações, 123 - centro" required></label>
-            <label class="pop-campo"><span>Cidade / UF / CEP *</span><input class="pop-input" name="cidade" type="text" value="São Paulo - SP 00000-000" required></label>
-        </div>
-        <div class="pop-rodape">
-            <div class="grupo">
-                <button class="pop-btn contorno" value="cancel" formnovalidate>Cancelar</button>
-                <button class="pop-btn cheio" value="ok">Salvar</button>
-            </div>
-        </div>
-    </form>
-</dialog>
-
-<!-- ========== POP-UP: CADASTRAR / EDITAR FILIAL ========== -->
-<dialog class="pop" id="dlg-filial" aria-labelledby="dlg-filial-titulo">
-    <form method="dialog">
-        <h2 class="pop-titulo">
-            <span class="pop-icone"><svg viewBox="0 0 24 24"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg></span>
-            <span id="dlg-filial-titulo">Cadastrar filial</span>
-        </h2>
-        <div class="pop-grade">
-            <label class="pop-campo largo"><span>Nome da filial *</span><input class="pop-input" name="nome" type="text" placeholder="Ex.: Filial centro" autocomplete="off" required></label>
-            <label class="pop-campo"><span>Endereço *</span><input class="pop-input" name="logradouro" type="text" placeholder="Ex.: Av. das nações, 123 - centro" autocomplete="off" required></label>
-            <label class="pop-campo"><span>Cidade / UF / CEP *</span><input class="pop-input" name="cidade" type="text" placeholder="Ex.: São Paulo - SP 00000-000" autocomplete="off" required></label>
-        </div>
-        <div class="pop-rodape">
-            <div class="grupo">
-                <button class="pop-btn contorno" value="cancel" formnovalidate>Cancelar</button>
-                <button class="pop-btn cheio" value="ok" id="dlg-filial-ok">Cadastrar</button>
-            </div>
-        </div>
-    </form>
-</dialog>
-
-<!-- ========== CONFIRMAR EXCLUSÃO ========== -->
-<dialog class="pop estreito" id="dlg-excluir-filial" aria-labelledby="dlg-excluir-filial-t">
-    <form method="dialog">
-        <h2 class="pop-titulo" id="dlg-excluir-filial-t">Excluir filial</h2>
-        <p class="pop-texto">Tem certeza que deseja excluir a filial <strong id="excluir-filial-nome"></strong>? Os inversores, strings e painéis vinculados também serão desativados.</p>
-        <div class="pop-rodape"><div class="grupo">
-            <button class="pop-btn contorno" value="cancel" formnovalidate>Cancelar</button>
-            <button class="pop-btn perigo" value="ok">Excluir</button>
-        </div></div>
-    </form>
-</dialog>
-
-<script src="../JS/empresa.js"></script>
+<script src="${raiz}/docs/js/aviso.js"></script>
 </body>
 </html>
