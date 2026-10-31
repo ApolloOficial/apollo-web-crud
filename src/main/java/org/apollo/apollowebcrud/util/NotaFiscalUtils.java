@@ -1,15 +1,17 @@
 package org.apollo.apollowebcrud.util;
 
+/** Validação da chave de acesso da nota fiscal eletrônica. */
 public final class NotaFiscalUtils {
 
+    /** Impede a criação de instâncias, já que a classe só tem métodos estáticos. */
     private NotaFiscalUtils() {
         throw new UnsupportedOperationException("Esta é uma classe utilitária e não pode ser instanciada.");
     }
 
-    /*
-        Valida a chave de acesso da NF-e: exatamente 44 dígitos +
-        dígito verificador calculado por módulo 11 com pesos 2–9 (ciclo)
-    */
+    /**
+     * Valida a chave da NF-e, que precisa ter exatamente 44 dígitos. O último é um dígito verificador
+     * calculado por módulo 11 com pesos de 2 a 9 em ciclo.
+     */
     public static boolean isChaveNfeValida(String chave) {
         if (chave == null) return false;
 
