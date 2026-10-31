@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apollo.apollowebcrud.model.Inversor;
 import org.apollo.apollowebcrud.model.StatusGeral;
 import org.apollo.apollowebcrud.model.Usuario;
+import org.apollo.apollowebcrud.service.FilialService;
 import org.apollo.apollowebcrud.service.InversorService;
 import org.apollo.apollowebcrud.service.StringSolarService;
 import org.apollo.apollowebcrud.util.ParametrosUtils;
@@ -29,6 +30,7 @@ public class InversorServlet extends HttpServlet {
 
     private final InversorService inversorService = new InversorService();
     private final StringSolarService stringSolarService = new StringSolarService();
+    private final FilialService filialService = new FilialService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -61,6 +63,7 @@ public class InversorServlet extends HttpServlet {
             return;
         }
         request.setAttribute("item", item);
+        request.setAttribute("filial", filialService.buscarVisivel(item.getIdFilial(), logado));
         request.setAttribute("listaStrings", stringSolarService.listarDoInversor(id, logado));
         request.getRequestDispatcher(VIEW_DETALHES).forward(request, response);
     }
@@ -80,7 +83,7 @@ public class InversorServlet extends HttpServlet {
         }
 
         if (erro == null) {
-            response.sendRedirect(request.getContextPath() + "/inversor");
+            response.sendRedirect(request.getContextPath() + "/inversor?ok=" + (editando ? "editar" : "cadastrar"));
             return;
         }
 

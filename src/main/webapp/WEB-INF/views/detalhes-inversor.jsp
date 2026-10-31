@@ -1,27 +1,27 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<%@ taglib prefix="ap" tagdir="/WEB-INF/tags" %>
+<c:set var="raiz" value="${pageContext.request.contextPath}"/>
+<c:set var="ativo" value="filial"/>
+<c:set var="podeEditar" value="${usuarioLogado.perfil != 'GERENTE'}"/>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apollo - Detalhes do Inversor</title>
-
+    <title>Apollo | Detalhes do inversor</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="../../docs/css/detalhes-inversor.css">
-    <link rel="stylesheet" href="../../docs/css/sidebar.css">
-    <link rel="stylesheet" href="../../docs/css/detalhes-melhorias.css">
+    <link rel="stylesheet" href="${raiz}/docs/css/logoApollo.css">
+    <link rel="stylesheet" href="${raiz}/docs/css/detalhes-inversor.css">
+    <link rel="stylesheet" href="${raiz}/docs/css/sidebar.css">
+    <link rel="stylesheet" href="${raiz}/docs/css/detalhes-melhoria.css">
 </head>
 <body>
-
 <div class="pagina">
-
-    <!-- ===== Sidebar (montada por sidebar.js conforme o tipo de usuário) ===== -->
-    <aside class="sidebar" data-ativo="filial"></aside>
-    <script src="../../docs/js/sidebar.js"></script>
+    <%@ include file="includes/sidebar.jspf" %>
 
     <main class="conteudo" id="tela-inversor">
 
@@ -29,140 +29,101 @@
             <div>
                 <h1 class="titulo">Detalhes do inversor</h1>
                 <nav class="breadcrumb" aria-label="Você está em">
-                    <a href="empresa.jsp">Filial</a><span class="sep">&gt;</span>
-                    <a href="detalhes-filial.jsp">Solaris Osasco</a><span class="sep">&gt;</span>
-                    <a href="detalhes-filial.jsp#listaInversores">Inversores</a><span class="sep">&gt;</span>
-                    <span class="atual">INV-OSA-01</span>
+                    <a href="${raiz}/filial">Filial</a><span class="sep">&gt;</span>
+                    <a href="${raiz}/filial?detalhes=${item.idFilial}"><c:out value="${filial.nome}" default="Filial"/></a><span class="sep">&gt;</span>
+                    <span class="atual"><c:out value="${item.codigo}"/></span>
                 </nav>
             </div>
-
             <div class="usuario">
-                <svg class="sino" viewBox="0 0 24 24" aria-label="Notificações"><path d="M12 2a6 6 0 0 0-6 6v4l-2 3h16l-2-3V8a6 6 0 0 0-6-6zM10 19a2 2 0 0 0 4 0z"/></svg>
-                <div class="avatar-usuario" aria-hidden="true"></div>
-                <span>Neymar júnior césar</span>
-                <span class="seta" aria-hidden="true">▾</span>
+                <a href="${raiz}/perfil" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit">
+                    <div class="avatar-usuario" aria-hidden="true"></div>
+                    <span><c:out value="${usuarioLogado.nome}"/></span>
+                </a>
             </div>
         </header>
 
-        <!-- Cabeçalho do inversor -->
         <section class="card-inversor">
             <div class="inversor-info">
                 <div class="avatar">INV</div>
                 <div>
                     <div class="linha-nome">
-                        <h2 data-inv="codigo">INV-OSA-01</h2>
-                        <span class="badge badge-ativo" data-status-inversor>Ativo</span>
+                        <h2><c:out value="${item.codigo}"/></h2>
+                        <ap:badge valor="${item.status}"/>
                     </div>
-                    <p class="subtitulo" data-inv="subtitulo">Sungrow SG250HX · 250 kW</p>
+                    <p class="subtitulo"><c:out value="${item.marca}"/> <c:out value="${item.modelo}"/> · <c:out value="${item.potenciaKw}" default="—"/> kW</p>
                 </div>
             </div>
-
-            <div class="acoes">
-                <button type="button" class="btn btn-editar" data-abrir="dlg-editar-inversor" data-permissao="equipamento">Editar</button>
-                <button type="button" class="btn btn-inativar" data-abrir="dlg-inativar-inversor" data-permissao="equipamento">Inativar</button>
-                <button type="button" class="btn btn-excluir" data-abrir="dlg-excluir-inversor" data-permissao="equipamento" aria-label="Excluir inversor">
-                    <svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                </button>
-            </div>
+            <c:if test="${podeEditar}">
+                <div class="acoes">
+                    <a class="btn btn-editar" href="${raiz}/inversor?editar=${item.id}">Editar</a>
+                </div>
+            </c:if>
         </section>
 
-        <!-- Campos -->
         <section class="grade-info">
             <div class="card-info">
-                <span class="rotulo">ID da filial</span>
-                <span class="valor vazio">Não informado</span>
+                <span class="rotulo">Filial</span>
+                <span class="valor"><c:out value="${filial.nome}" default="—"/></span>
             </div>
             <div class="card-info">
                 <span class="rotulo">Código</span>
-                <span class="valor" data-inv="codigo">INV-OSA-01</span>
+                <span class="valor"><c:out value="${item.codigo}"/></span>
             </div>
             <div class="card-info">
                 <span class="rotulo">N.º de série</span>
-                <span class="valor" data-inv="serie">A2310001234</span>
+                <span class="valor"><c:out value="${item.numeroSerie}"/></span>
             </div>
             <div class="card-info">
                 <span class="rotulo">Marca</span>
-                <span class="valor" data-inv="marca">Sungrow</span>
+                <span class="valor"><c:out value="${item.marca}"/></span>
             </div>
             <div class="card-info">
                 <span class="rotulo">Modelo</span>
-                <span class="valor" data-inv="modelo">SG250HX</span>
+                <span class="valor"><c:out value="${item.modelo}"/></span>
             </div>
             <div class="card-info">
                 <span class="rotulo">Potência (kW)</span>
-                <span class="valor" data-inv="potencia">250,00</span>
+                <span class="valor"><c:out value="${item.potenciaKw}" default="—"/></span>
             </div>
             <div class="card-info card-status">
                 <span class="rotulo">Status</span>
-                <span class="badge badge-ativo badge-mini" data-status-inversor>Ativo</span>
+                <ap:badge valor="${item.status}"/>
             </div>
             <div class="card-info">
                 <span class="rotulo">Data de instalação</span>
-                <span class="valor" data-inv="data">10/03/2024</span>
+                <span class="valor"><ap:data valor="${item.dataInstalacao}"/></span>
             </div>
         </section>
 
-        <!-- Strings -->
         <div class="secao-topo">
             <h3 class="titulo-secao">Strings</h3>
-            <button type="button" class="btn btn-cadastrar" data-abrir="dlg-cadastrar-string" data-permissao="cadastro">Cadastrar String</button>
+            <c:if test="${podeEditar}">
+                <a class="btn btn-cadastrar" href="${raiz}/string?novo=1">Cadastrar String</a>
+            </c:if>
         </div>
-        <section class="grade-strings" id="listaStrings"></section>
+        <section class="grade-strings" id="listaStrings">
+            <c:forEach var="s" items="${listaStrings}">
+                <article class="card-string">
+                    <div>
+                        <span class="tipo">String</span>
+                        <span class="codigo"><c:out value="${s.codigo}"/></span>
+                        <span class="mppt">MPPT <c:out value="${s.numeroMppt}" default="—"/> · Entrada <c:out value="${s.numeroEntrada}" default="—"/></span>
+                    </div>
+                    <div class="lado-direito">
+                        <ap:badge valor="${s.status}"/>
+                        <a href="${raiz}/string?detalhes=${s.id}" class="btn btn-detalhes">Ver detalhes</a>
+                    </div>
+                </article>
+            </c:forEach>
+            <c:if test="${empty listaStrings}">
+                <p class="vazio" style="padding:24px 0;color:#7a7a7a;font-size:14px">Nenhuma string cadastrada neste inversor.</p>
+            </c:if>
+        </section>
 
         <div class="rodape-detalhes">
-            <a href="detalhes-filial.jsp" class="link-voltar">Voltar para filial</a>
+            <a href="${raiz}/filial?detalhes=${item.idFilial}" class="link-voltar">Voltar para filial</a>
         </div>
-
     </main>
-
 </div>
-
-<!-- ===== Pop-ups ===== -->
-<dialog class="pop" id="dlg-cadastrar-string" aria-labelledby="dlg-cadastrar-string-t">
-    <form method="dialog">
-        <h2 class="pop-titulo" id="dlg-cadastrar-string-t"><span class="pop-icone"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="2.6"/><line x1="10.2" y1="11.2" x2="7.4" y2="8.4"/><line x1="13.8" y1="11.2" x2="16.6" y2="8.4"/><line x1="12" y1="15.6" x2="12" y2="18.4"/><circle cx="6" cy="7" r="1.6"/><circle cx="18" cy="7" r="1.6"/><circle cx="12" cy="20" r="1.6"/></svg></span>Dados da String</h2>
-        <div class="pop-grade">
-            <label class="pop-campo"><span>Código da String *</span><input class="pop-input" name="codigo" type="text" required></label>
-            <label class="pop-campo"><span>Inversor *</span><input class="pop-input" name="inversor" type="text" value="INV-OSA-01" required></label>
-            <label class="pop-campo"><span>MPPT *</span><input class="pop-input" name="mppt" type="number" required min="1"></label>
-            <label class="pop-campo"><span>Entrada *</span><input class="pop-input" name="entrada" type="number" required min="1"></label>
-            <label class="pop-campo"><span>Status *</span><select class="pop-select" name="status" required><option value="" selected></option><option>Ativo</option><option>Inativo</option></select></label>
-            <div class="pop-rodape"><div class="grupo"><button class="pop-btn contorno" value="cancel" formnovalidate>Cancelar</button><button class="pop-btn cheio" value="ok">Cadastrar</button></div></div>
-        </div>
-    </form>
-</dialog>
-<dialog class="pop" id="dlg-editar-inversor" aria-labelledby="dlg-editar-inversor-t">
-    <form method="dialog">
-        <h2 class="pop-titulo" id="dlg-editar-inversor-t"><span class="pop-icone"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M13 7l-3 5h4l-3 5"/></svg></span>Editar Inversor</h2>
-        <div class="pop-grade">
-            <label class="pop-campo"><span>Código do inversor *</span><input class="pop-input" name="codigo" type="text" value="INV-OSA-01" required autocomplete="off"></label>
-            <label class="pop-campo"><span>Número de série *</span><input class="pop-input" name="serie" type="text" value="A2310001234" required autocomplete="off"></label>
-            <label class="pop-campo"><span>Marca *</span><input class="pop-input" name="marca" type="text" value="Sungrow" required autocomplete="off"></label>
-            <label class="pop-campo"><span>Modelo *</span><input class="pop-input" name="modelo" type="text" value="SG250HX" required autocomplete="off"></label>
-            <label class="pop-campo"><span>Potência (kW)</span><input class="pop-input" name="potencia" type="number" value="250" min="0" step="0.01"></label>
-            <label class="pop-campo"><span>Data de instalação</span><input class="pop-input" name="data" type="date" value="2024-03-10" ></label>
-            <label class="pop-campo"><span>Status *</span><select class="pop-select" name="status" required><option selected>Ativo</option><option>Inativo</option></select></label>
-            <div class="pop-rodape"><div class="grupo"><button class="pop-btn contorno" value="cancel" formnovalidate>Cancelar</button><button class="pop-btn cheio" value="ok">Salvar</button></div></div>
-        </div>
-    </form>
-</dialog>
-<dialog class="pop estreito" id="dlg-inativar-inversor" aria-labelledby="dlg-inativar-inversor-t">
-    <form method="dialog">
-        <h2 class="pop-titulo" id="dlg-inativar-inversor-t">Inativar inversor</h2>
-        <p class="pop-texto">O inversor <strong>INV-OSA-01</strong> deixará de ser monitorado. Você pode reativá-lo depois pela edição.</p>
-        <div class="pop-rodape"><div class="grupo"><button class="pop-btn contorno" value="cancel" formnovalidate>Cancelar</button><button class="pop-btn cheio" value="ok">Inativar</button></div></div>
-    </form>
-</dialog>
-<dialog class="pop estreito" id="dlg-excluir-inversor" aria-labelledby="dlg-excluir-inversor-t">
-    <form method="dialog">
-        <h2 class="pop-titulo" id="dlg-excluir-inversor-t">Excluir inversor</h2>
-        <p class="pop-texto">Tem certeza que deseja excluir o inversor <strong>INV-OSA-01</strong>? As strings e os painéis vinculados também serão desativados.</p>
-        <div class="pop-rodape"><div class="grupo"><button class="pop-btn contorno" value="cancel" formnovalidate>Cancelar</button><button class="pop-btn perigo" value="ok">Excluir</button></div></div>
-    </form>
-</dialog>
-
-<script src="../../docs/js/validar-email.js"></script>
-<script src="../../docs/js/detalhes-inversor.js"></script>
-<script src="../../docs/js/permissoes.js"></script>
 </body>
 </html>
