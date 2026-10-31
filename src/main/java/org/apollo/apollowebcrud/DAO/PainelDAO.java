@@ -8,12 +8,16 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Acesso à tabela painel. Cada painel pertence a uma string e, por meio dela, a um inversor e a uma filial.
+ */
 public class PainelDAO extends ApolloConnection {
 
     public PainelDAO() {
         super();
     }
 
+    /** Lê as colunas da linha corrente e monta um painel. */
     private Painel montar(ResultSet rs) throws SQLException {
         Painel painel = new Painel();
         painel.setId(rs.getInt("id"));
@@ -32,6 +36,7 @@ public class PainelDAO extends ApolloConnection {
 
 // CREATE
 
+    /** Grava um painel e devolve o id gerado pelo banco, ou -1 se a gravação falhar. */
     public int inserir(Painel painel) {
         String sql = "INSERT INTO painel (id_string, numero_serie, marca, modelo, potencia_w, nota_fiscal, status, data_instalacao) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -64,6 +69,7 @@ public class PainelDAO extends ApolloConnection {
 
     // READ por id
 
+    /** Procura um painel com o id informado, retornando null se ele não existir. */
     public Painel buscarPorId(int id) {
         String sql = "SELECT * FROM painel WHERE id = ?";
 
@@ -85,6 +91,9 @@ public class PainelDAO extends ApolloConnection {
 
     // READ todos
 
+    /**
+     * Retorna a lista completa de painel. A lista fica vazia se não houver registros ou se ocorrer erro.
+     */
     public List<Painel> listarTodos() {
         List<Painel> lista = new ArrayList<>();
         String sql = "SELECT * FROM painel ORDER BY marca, modelo";
@@ -105,6 +114,7 @@ public class PainelDAO extends ApolloConnection {
 
     // UPDATE
 
+    /** Atualiza os dados de um painel identificado pelo id. Devolve true se alguma linha foi alterada. */
     public boolean atualizar(Painel painel) {
         String sql = "UPDATE painel SET id_string = ?, numero_serie = ?, marca = ?, modelo = ?, potencia_w = ?, nota_fiscal = ?, status = ?, data_instalacao = ? WHERE id = ?";
 
@@ -129,6 +139,7 @@ public class PainelDAO extends ApolloConnection {
 
     // DELETE
 
+    /** Exclui um painel pelo id e devolve true se algo foi apagado. */
     public boolean excluir(int id) {
         String sql = "DELETE FROM painel WHERE id = ?";
 
@@ -142,7 +153,7 @@ public class PainelDAO extends ApolloConnection {
         }
     }
 
-    // READ filtrado
+    /** Lista os painéis da filial, seguindo o caminho string e inversor. */
     public List<Painel> listarPorFilial(int idFilial) {
         List<Painel> lista = new ArrayList<>();
         String sql = "SELECT p.* FROM painel p JOIN string s ON s.id = p.id_string JOIN inversor i ON i.id = s.id_inversor WHERE i.id_filial = ? ORDER BY p.numero_serie";
@@ -163,6 +174,7 @@ public class PainelDAO extends ApolloConnection {
         return lista;
     }
 
+    /** Lista os painéis ligados a uma string. */
     public List<Painel> listarPorString(int idString) {
         List<Painel> lista = new ArrayList<>();
         String sql = "SELECT * FROM painel WHERE id_string = ? ORDER BY numero_serie";
@@ -183,6 +195,7 @@ public class PainelDAO extends ApolloConnection {
         return lista;
     }
 
+    /** Procura pelo número de série, usado para evitar painéis duplicados. */
     public Painel buscarPorNumeroSerie(String numeroSerie) {
         String sql = "SELECT * FROM painel WHERE numero_serie = ?";
 

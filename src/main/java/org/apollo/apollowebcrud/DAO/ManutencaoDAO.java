@@ -9,12 +9,14 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Acesso à tabela manutencao, que registra o histórico de serviços feitos nos painéis. */
 public class ManutencaoDAO extends ApolloConnection {
 
     public ManutencaoDAO() {
         super();
     }
 
+    /** Converte a linha atual do ResultSet em uma manutenção. */
     private Manutencao montar(ResultSet rs) throws SQLException {
         Manutencao manutencao = new Manutencao();
         manutencao.setId(rs.getInt("id"));
@@ -36,6 +38,7 @@ public class ManutencaoDAO extends ApolloConnection {
 
 // CREATE
 
+    /** Insere uma manutenção na tabela. O retorno é o id criado e -1 indica erro. */
     public int inserir(Manutencao manutencao) {
         String sql = "INSERT INTO manutencao (id_painel, tipo_manutencao, descricao, status, data_abertura, data_prevista, data_conclusao, id_usuario_responsavel) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -83,6 +86,7 @@ public class ManutencaoDAO extends ApolloConnection {
 
     // READ por id
 
+    /** Consulta uma manutenção pela chave primária, ou null se não houver registro. */
     public Manutencao buscarPorId(int id) {
         String sql = "SELECT * FROM manutencao WHERE id = ?";
 
@@ -104,6 +108,7 @@ public class ManutencaoDAO extends ApolloConnection {
 
     // READ todos
 
+    /** Lista todos os registros de manutenção. */
     public List<Manutencao> listarTodos() {
         List<Manutencao> lista = new ArrayList<>();
         String sql = "SELECT * FROM manutencao ORDER BY data_abertura DESC";
@@ -124,6 +129,7 @@ public class ManutencaoDAO extends ApolloConnection {
 
     // UPDATE
 
+    /** Grava as alterações de uma manutenção e informa se o registro foi encontrado e atualizado. */
     public boolean atualizar(Manutencao manutencao) {
         String sql = "UPDATE manutencao SET id_painel = ?, tipo_manutencao = ?, descricao = ?, status = ?, data_abertura = ?, data_prevista = ?, data_conclusao = ?, id_usuario_responsavel = ? WHERE id = ?";
 
@@ -164,6 +170,7 @@ public class ManutencaoDAO extends ApolloConnection {
 
     // DELETE
 
+    /** Apaga o registro de manutenção com o id informado. Devolve false se ele não existir. */
     public boolean excluir(int id) {
         String sql = "DELETE FROM manutencao WHERE id = ?";
 
@@ -177,7 +184,7 @@ public class ManutencaoDAO extends ApolloConnection {
         }
     }
 
-    // READ filtrado
+    /** Lista as manutenções dos painéis que pertencem à filial, passando por string e inversor. */
     public List<Manutencao> listarPorFilial(int idFilial) {
         List<Manutencao> lista = new ArrayList<>();
         String sql = "SELECT m.* FROM manutencao m JOIN painel p ON p.id = m.id_painel JOIN string s ON s.id = p.id_string JOIN inversor i ON i.id = s.id_inversor WHERE i.id_filial = ? ORDER BY m.data_abertura DESC";

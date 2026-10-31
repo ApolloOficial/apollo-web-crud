@@ -8,12 +8,14 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Acesso à tabela string, que agrupa painéis ligados a uma mesma entrada de um inversor. */
 public class StringSolarDAO extends ApolloConnection {
 
     public StringSolarDAO() {
         super();
     }
 
+    /** Transforma uma linha do resultado da consulta em uma string. */
     private StringSolar montar(ResultSet rs) throws SQLException {
         StringSolar stringSolar = new StringSolar();
         stringSolar.setId(rs.getInt("id"));
@@ -27,6 +29,7 @@ public class StringSolarDAO extends ApolloConnection {
 
 // CREATE
 
+    /** Cadastra uma string e devolve o id que o banco atribuiu. Em caso de falha o valor é -1. */
     public int inserir(StringSolar stringSolar) {
         String sql = "INSERT INTO string (id_inversor, codigo, numero_mppt, numero_entrada, status) VALUES (?, ?, ?, ?, ?)";
 
@@ -67,6 +70,7 @@ public class StringSolarDAO extends ApolloConnection {
 
     // READ por id
 
+    /** Busca uma string pelo id. Devolve null quando não encontra. */
     public StringSolar buscarPorId(int id) {
         String sql = "SELECT * FROM string WHERE id = ?";
 
@@ -88,6 +92,7 @@ public class StringSolarDAO extends ApolloConnection {
 
     // READ todos
 
+    /** Devolve todos os registros da tabela de string, ordenados no banco. */
     public List<StringSolar> listarTodos() {
         List<StringSolar> lista = new ArrayList<>();
         String sql = "SELECT * FROM string ORDER BY codigo";
@@ -108,6 +113,7 @@ public class StringSolarDAO extends ApolloConnection {
 
     // UPDATE
 
+    /** Altera uma string já existente e devolve true quando a atualização afetou um registro. */
     public boolean atualizar(StringSolar stringSolar) {
         String sql = "UPDATE string SET id_inversor = ?, codigo = ?, numero_mppt = ?, numero_entrada = ?, status = ? WHERE id = ?";
 
@@ -140,6 +146,9 @@ public class StringSolarDAO extends ApolloConnection {
 
     // DELETE
 
+    /**
+     * Remove uma string do banco de forma definitiva. Para inativar sem apagar existe o InativacaoDAO.
+     */
     public boolean excluir(int id) {
         String sql = "DELETE FROM string WHERE id = ?";
 
@@ -153,7 +162,7 @@ public class StringSolarDAO extends ApolloConnection {
         }
     }
 
-    // READ filtrado
+    /** Lista as strings da filial, passando pelo inversor de cada uma. */
     public List<StringSolar> listarPorFilial(int idFilial) {
         List<StringSolar> lista = new ArrayList<>();
         String sql = "SELECT s.* FROM string s JOIN inversor i ON i.id = s.id_inversor WHERE i.id_filial = ? ORDER BY s.codigo";
@@ -174,6 +183,7 @@ public class StringSolarDAO extends ApolloConnection {
         return lista;
     }
 
+    /** Lista as strings de um inversor. */
     public List<StringSolar> listarPorInversor(int idInversor) {
         List<StringSolar> lista = new ArrayList<>();
         String sql = "SELECT * FROM string WHERE id_inversor = ? ORDER BY codigo";
@@ -194,6 +204,7 @@ public class StringSolarDAO extends ApolloConnection {
         return lista;
     }
 
+    /** Procura pelo código dentro de um inversor, onde ele não pode se repetir. */
     public StringSolar buscarPorCodigoNoInversor(int idInversor, String codigo) {
         String sql = "SELECT * FROM string WHERE id_inversor = ? AND codigo = ?";
 

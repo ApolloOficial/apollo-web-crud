@@ -8,12 +8,16 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Acesso à tabela inversor. As consultas por filial garantem que cada equipe veja apenas os seus equipamentos.
+ */
 public class InversorDAO extends ApolloConnection {
 
     public InversorDAO() {
         super();
     }
 
+    /** Transforma uma linha do resultado da consulta em um inversor. */
     private Inversor montar(ResultSet rs) throws SQLException {
         Inversor inversor = new Inversor();
         inversor.setId(rs.getInt("id"));
@@ -32,6 +36,7 @@ public class InversorDAO extends ApolloConnection {
 
 // CREATE
 
+    /** Cadastra um inversor e devolve o id que o banco atribuiu. Em caso de falha o valor é -1. */
     public int inserir(Inversor inversor) {
         String sql = "INSERT INTO inversor (id_filial, codigo, numero_serie, marca, modelo, potencia_kw, status, data_instalacao) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -64,6 +69,7 @@ public class InversorDAO extends ApolloConnection {
 
     // READ por id
 
+    /** Busca um inversor pelo id. Devolve null quando não encontra. */
     public Inversor buscarPorId(int id) {
         String sql = "SELECT * FROM inversor WHERE id = ?";
 
@@ -85,6 +91,7 @@ public class InversorDAO extends ApolloConnection {
 
     // READ todos
 
+    /** Devolve todos os registros da tabela de inversor, ordenados no banco. */
     public List<Inversor> listarTodos() {
         List<Inversor> lista = new ArrayList<>();
         String sql = "SELECT * FROM inversor ORDER BY codigo";
@@ -105,6 +112,7 @@ public class InversorDAO extends ApolloConnection {
 
     // UPDATE
 
+    /** Altera um inversor já existente e devolve true quando a atualização afetou um registro. */
     public boolean atualizar(Inversor inversor) {
         String sql = "UPDATE inversor SET id_filial = ?, codigo = ?, numero_serie = ?, marca = ?, modelo = ?, potencia_kw = ?, status = ?, data_instalacao = ? WHERE id = ?";
 
@@ -129,6 +137,9 @@ public class InversorDAO extends ApolloConnection {
 
     // DELETE
 
+    /**
+     * Remove um inversor do banco de forma definitiva. Para inativar sem apagar existe o InativacaoDAO.
+     */
     public boolean excluir(int id) {
         String sql = "DELETE FROM inversor WHERE id = ?";
 
@@ -142,7 +153,7 @@ public class InversorDAO extends ApolloConnection {
         }
     }
 
-    // READ filtrado
+    /** Lista os inversores de uma filial. */
     public List<Inversor> listarPorFilial(int idFilial) {
         List<Inversor> lista = new ArrayList<>();
         String sql = "SELECT * FROM inversor WHERE id_filial = ? ORDER BY codigo";
@@ -163,15 +174,21 @@ public class InversorDAO extends ApolloConnection {
         return lista;
     }
 
+    /** Procura pelo número de série, que é único em todo o sistema. */
     public Inversor buscarPorNumeroSerie(String numeroSerie) {
         return buscarUm("SELECT * FROM inversor WHERE numero_serie = ?", numeroSerie, null);
     }
 
+    /**
+     * Procura pelo código dentro de uma filial, já que o mesmo código pode existir em filiais diferentes.
+     */
     public Inversor buscarPorCodigoNaFilial(int idFilial, String codigo) {
         return buscarUm("SELECT * FROM inversor WHERE id_filial = ? AND codigo = ?", codigo, idFilial);
     }
 
-    // idFilial pode ser null (consulta só com o texto)
+    /**
+     * Executa a consulta de um único inversor. O idFilial pode ser null quando a busca usa só o texto.
+     */
     private Inversor buscarUm(String sql, String texto, Integer idFilial) {
         try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             int posicao = 1;

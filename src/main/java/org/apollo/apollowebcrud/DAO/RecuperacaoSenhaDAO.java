@@ -7,12 +7,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-// Códigos de recuperação de senha. Só o hash do código é guardado, nunca o código em si.
+/** Códigos de recuperação de senha. Somente o hash do código é guardado, nunca o código em si. */
 public class RecuperacaoSenhaDAO extends ApolloConnection {
 
     private static final int MAX_TENTATIVAS = 5;
 
-    // Invalida códigos anteriores do usuário e grava o novo, na mesma transação
+    /** Invalida os códigos antigos do usuário e grava o novo na mesma transação. */
     public boolean salvar(int idUsuario, String codigoHash, int minutosValidade) {
         String invalidar = "UPDATE recuperacao_senha SET usado = TRUE WHERE id_usuario = ? AND usado = FALSE";
         String inserir = "INSERT INTO recuperacao_senha (id_usuario, codigo_hash, expira_em) "
@@ -43,7 +43,9 @@ public class RecuperacaoSenhaDAO extends ApolloConnection {
         }
     }
 
-    // Hash do código mais recente que ainda vale (não usado, não expirado, poucas tentativas)
+    /**
+     * Devolve o hash do código mais recente que ainda vale, isto é, não usado, não vencido e com poucas tentativas.
+     */
     public String buscarHashValido(int idUsuario) {
         String sql = "SELECT codigo_hash FROM recuperacao_senha "
                 + "WHERE id_usuario = ? AND usado = FALSE AND expira_em > CURRENT_TIMESTAMP AND tentativas < ? "
@@ -64,6 +66,7 @@ public class RecuperacaoSenhaDAO extends ApolloConnection {
         return null;
     }
 
+    /** Soma uma tentativa errada ao código ativo do usuário. */
     public void registrarTentativa(int idUsuario) {
         String sql = "UPDATE recuperacao_senha SET tentativas = tentativas + 1 WHERE id_usuario = ? AND usado = FALSE";
 
@@ -75,7 +78,7 @@ public class RecuperacaoSenhaDAO extends ApolloConnection {
         }
     }
 
-    // Troca a senha e queima o código na mesma transação
+    /** Troca a senha e marca o código como usado na mesma transação. */
     public boolean redefinirSenha(int idUsuario, String senhaHash) {
         String trocar = "UPDATE usuario SET senha_hash = ? WHERE id = ?";
         String queimar = "UPDATE recuperacao_senha SET usado = TRUE WHERE id_usuario = ? AND usado = FALSE";

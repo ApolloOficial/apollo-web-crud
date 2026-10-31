@@ -6,8 +6,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-// Exclusão lógica: o "D" do CRUD vira UPDATE do status (o banco não é apagado). Também reativa.
-// O cascade (inativar empresa -> filiais, usuários, equipamentos) será feito no Service.
+/**
+ * Exclusão lógica, em que o D do CRUD vira um UPDATE de status e nada é apagado do banco.
+ * Também faz a reativação quando ela é permitida.
+ */
 public class InativacaoDAO extends ApolloConnection {
 
     private static final String INATIVO = "INATIVO";
@@ -39,8 +41,10 @@ public class InativacaoDAO extends ApolloConnection {
         return atualizar("filial", "ativo", ATIVO, id);
     }
 
-    // Inativar a filial inativa junto o que depende dela (usuários e equipamentos que estavam ATIVOS),
-    // tudo numa transação. Reativar a filial NÃO reativa nada disso: volta um a um, manualmente.
+    /**
+     * Inativa a filial junto com usuários e equipamentos que estavam ativos nela, tudo em uma transação.
+     * Reativar a filial depois não traz nada disso de volta, cada item volta manualmente.
+     */
     public boolean inativarFilialComDependentes(int idFilial) {
         String[] comandos = {
                 "UPDATE filial SET ativo = 'INATIVO' WHERE id = ? AND ativo = 'ATIVO'",
@@ -77,6 +81,7 @@ public class InativacaoDAO extends ApolloConnection {
         }
     }
 
+    /** Roda um UPDATE com o id da filial como parâmetro e informa quantas linhas mudaram. */
     private int executar(Connection connection, String sql, int idFilial) throws SQLException {
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, idFilial);
@@ -102,12 +107,14 @@ public class InativacaoDAO extends ApolloConnection {
         return atualizar("painel", "status", INATIVO, id);
     }
 
-    // A manutenção não tem INATIVO: o estado equivalente é CANCELADA
+    /** A manutenção não possui o status INATIVO, então o equivalente é CANCELADA. */
     public boolean cancelarManutencao(int id) {
         return atualizar("manutencao", "status", "CANCELADA", id);
     }
 
-    // Tabela e coluna vêm só das constantes acima (nunca do usuário); o valor e o id vão por parâmetro
+    /**
+     * O nome da tabela e da coluna vêm apenas das constantes da classe e nunca do usuário. Valor e id seguem por parâmetro.
+     */
     private boolean atualizar(String tabela, String coluna, String novoValor, int id) {
         String sql = "UPDATE " + tabela + " SET " + coluna + " = ? WHERE id = ?";
 

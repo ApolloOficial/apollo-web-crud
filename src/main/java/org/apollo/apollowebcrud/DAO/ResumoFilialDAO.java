@@ -7,7 +7,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-// Só contagens e somas das métricas da tela de detalhes da filial. Cada método recebe o id da filial.
+/**
+ * Contagens e somas das métricas da tela de detalhes da filial. Cada método recebe o id da filial.
+ */
 public class ResumoFilialDAO extends ApolloConnection {
 
     private static final String DA_FILIAL = "JOIN string s ON s.id = p.id_string JOIN inversor i ON i.id = s.id_inversor WHERE i.id_filial = ?";
@@ -41,15 +43,18 @@ public class ResumoFilialDAO extends ApolloConnection {
         return contar(manutencoes("m.status = 'EM_ANDAMENTO'"), idFilial);
     }
 
+    /** Monta a consulta de manutenções da filial filtrada pela condição de status recebida. */
     private String manutencoes(String condicaoStatus) {
         return "SELECT COUNT(*) FROM manutencao m JOIN painel p ON p.id = m.id_painel "
                 + DA_FILIAL + " AND " + condicaoStatus;
     }
 
+    /** Executa a consulta de contagem. */
     private int contar(String sql, int id) {
         return (int) somar(sql, id);
     }
 
+    /** Executa a consulta de soma. */
     private double somar(String sql, int id) {
         try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);

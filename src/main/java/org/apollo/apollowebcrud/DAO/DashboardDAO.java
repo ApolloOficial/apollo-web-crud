@@ -7,8 +7,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-// Só consultas de contagem/soma para os cards do dashboard. Conta apenas registros ATIVOS
-// (manutenção: tudo que não foi cancelado). Cada método recebe o id da empresa ou da filial.
+/**
+ * Consultas de contagem e soma para os cards do dashboard. Só entram registros ATIVOS e,
+ * no caso das manutenções, tudo que não foi cancelado. Os métodos recebem o id da empresa ou da filial.
+ */
 public class DashboardDAO extends ApolloConnection {
 
     // ---------- EMPRESA (visão do gerente) ----------
@@ -55,10 +57,12 @@ public class DashboardDAO extends ApolloConnection {
 
     // ---------- AUXILIARES ----------
 
+    /** Executa uma consulta de contagem com o id como único parâmetro. */
     private int contar(String sql, int id) {
         return (int) somar(sql, id);
     }
 
+    /** Executa uma consulta que devolve um valor numérico, ou zero em caso de erro. */
     private double somar(String sql, int id) {
         try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);

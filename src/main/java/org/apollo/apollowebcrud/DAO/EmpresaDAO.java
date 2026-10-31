@@ -9,6 +9,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Acesso à tabela empresa. Como cada empresa tem um endereço, o cadastro e a atualização
+ * gravam as duas tabelas na mesma transação.
+ */
 public class EmpresaDAO extends ApolloConnection {
 
     private static final String COLUNAS = "id, nome, descricao, cnpj, email_contato, id_endereco, ativo, url_foto, id_usuario_cadastro";
@@ -19,6 +23,7 @@ public class EmpresaDAO extends ApolloConnection {
         super();
     }
 
+    /** Converte a linha atual do ResultSet em uma empresa. */
     private Empresa montar(ResultSet rs) throws SQLException {
         Empresa empresa = new Empresa();
         empresa.setId(rs.getInt("id"));
@@ -35,6 +40,7 @@ public class EmpresaDAO extends ApolloConnection {
 
     // CREATE
 
+    /** Grava endereço e empresa na mesma transação e devolve o id da empresa, ou -1 em caso de erro. */
     public int inserir(Empresa empresa, Endereco endereco) {
         try (Connection connection = abrirConexao()) {
             connection.setAutoCommit(false);
@@ -55,7 +61,9 @@ public class EmpresaDAO extends ApolloConnection {
         }
     }
 
-    // grava endereço + empresa na mesma transação; devolve o id gerado
+    /**
+     * Versão que usa uma conexão externa, para que a empresa possa ser cadastrada junto com contrato e gerente.
+     */
     public int inserirNaConexao(Connection connection, Empresa empresa, Endereco endereco) throws SQLException {
         String sql = "INSERT INTO empresa (nome, descricao, cnpj, email_contato, id_endereco, ativo, url_foto, id_usuario_cadastro) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -86,6 +94,7 @@ public class EmpresaDAO extends ApolloConnection {
 
     // READ por id
 
+    /** Procura uma empresa com o id informado, retornando null se ele não existir. */
     public Empresa buscarPorId(int id) {
         String sql = "SELECT " + COLUNAS + " FROM empresa WHERE id = ?";
 
@@ -105,6 +114,7 @@ public class EmpresaDAO extends ApolloConnection {
         return null;
     }
 
+    /** Procura uma empresa pelo CNPJ, usado para impedir cadastros duplicados. */
     public Empresa buscarPorCnpj(String cnpj) {
         String sql = "SELECT " + COLUNAS + " FROM empresa WHERE cnpj = ?";
 
@@ -126,6 +136,9 @@ public class EmpresaDAO extends ApolloConnection {
 
     // READ todos
 
+    /**
+     * Retorna a lista completa de empresa. A lista fica vazia se não houver registros ou se ocorrer erro.
+     */
     public List<Empresa> listarTodos() {
         List<Empresa> lista = new ArrayList<>();
         String sql = "SELECT " + COLUNAS + " FROM empresa ORDER BY nome";
@@ -146,6 +159,7 @@ public class EmpresaDAO extends ApolloConnection {
 
     // UPDATE
 
+    /** Atualiza empresa e endereço juntos, desfazendo tudo se uma das gravações falhar. */
     public boolean atualizar(Empresa empresa, Endereco endereco) {
         try (Connection connection = abrirConexao()) {
             connection.setAutoCommit(false);
@@ -170,6 +184,7 @@ public class EmpresaDAO extends ApolloConnection {
         }
     }
 
+    /** Executa os dois UPDATEs usando a conexão recebida. */
     private boolean atualizarNaConexao(Connection connection, Empresa empresa, Endereco endereco) throws SQLException {
         String sql = "UPDATE empresa SET nome = ?, descricao = ?, cnpj = ?, email_contato = ?, ativo = ?, url_foto = ? WHERE id = ?";
 

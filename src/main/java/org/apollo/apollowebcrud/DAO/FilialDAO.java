@@ -9,6 +9,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Acesso à tabela filial. Assim como na empresa, o endereço é gravado
+ * na mesma transação que a filial.
+ */
 public class FilialDAO extends ApolloConnection {
 
     private final EnderecoDAO enderecoDAO = new EnderecoDAO();
@@ -17,6 +21,7 @@ public class FilialDAO extends ApolloConnection {
         super();
     }
 
+    /** Lê as colunas da linha corrente e monta uma filial. */
     private Filial montar(ResultSet rs) throws SQLException {
         Filial filial = new Filial();
         filial.setId(rs.getInt("id"));
@@ -34,6 +39,7 @@ public class FilialDAO extends ApolloConnection {
 
 // CREATE
 
+    /** Cadastra endereço e filial de uma só vez e devolve o id da filial, ou -1 se houver erro. */
     public int inserir(Filial filial, Endereco endereco) {
         try (Connection connection = abrirConexao()) {
             connection.setAutoCommit(false);
@@ -54,7 +60,7 @@ public class FilialDAO extends ApolloConnection {
         }
     }
 
-    // grava endereço + filial na mesma transação; devolve o id gerado
+    /** Grava o endereço e depois a filial na conexão recebida, devolvendo o id gerado. */
     private int inserirNaConexao(Connection connection, Filial filial, Endereco endereco) throws SQLException {
         String sql = "INSERT INTO filial (id_empresa, id_segmento, nome, cnpj, email, telefone, id_endereco, ativo, id_usuario_cadastro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -86,6 +92,7 @@ public class FilialDAO extends ApolloConnection {
 
     // READ por id
 
+    /** Busca uma filial pelo id. Devolve null quando não encontra. */
     public Filial buscarPorId(int id) {
         String sql = "SELECT * FROM filial WHERE id = ?";
 
@@ -105,6 +112,7 @@ public class FilialDAO extends ApolloConnection {
         return null;
     }
 
+    /** Procura a filial pelo CNPJ, usado na validação de duplicidade. */
     public Filial buscarPorCnpj(String cnpj) {
         String sql = "SELECT * FROM filial WHERE cnpj = ?";
 
@@ -126,6 +134,7 @@ public class FilialDAO extends ApolloConnection {
 
     // READ todos
 
+    /** Devolve todos os registros da tabela de filial, ordenados no banco. */
     public List<Filial> listarTodos() {
         List<Filial> lista = new ArrayList<>();
         String sql = "SELECT * FROM filial ORDER BY nome";
@@ -146,6 +155,7 @@ public class FilialDAO extends ApolloConnection {
 
     // UPDATE
 
+    /** Atualiza filial e endereço na mesma transação. */
     public boolean atualizar(Filial filial, Endereco endereco) {
         try (Connection connection = abrirConexao()) {
             connection.setAutoCommit(false);
@@ -170,6 +180,7 @@ public class FilialDAO extends ApolloConnection {
         }
     }
 
+    /** Executa os UPDATEs de endereço e filial com a conexão recebida. */
     private boolean atualizarNaConexao(Connection connection, Filial filial, Endereco endereco) throws SQLException {
         String sql = "UPDATE filial SET id_empresa = ?, id_segmento = ?, nome = ?, cnpj = ?, email = ?, telefone = ?, ativo = ? WHERE id = ?";
 
@@ -190,7 +201,7 @@ public class FilialDAO extends ApolloConnection {
         }
     }
 
-    // READ filtrado
+    /** Lista as filiais de uma empresa por ordem de nome. */
     public List<Filial> listarPorEmpresa(int idEmpresa) {
         List<Filial> lista = new ArrayList<>();
         String sql = "SELECT * FROM filial WHERE id_empresa = ? ORDER BY nome";

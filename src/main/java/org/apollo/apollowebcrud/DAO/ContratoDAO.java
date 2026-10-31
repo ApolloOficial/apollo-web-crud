@@ -8,12 +8,17 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Acesso à tabela contrato. Cada empresa possui um contrato, que nasce junto com ela
+ * e depois só é consultado pelo gerente.
+ */
 public class ContratoDAO extends ApolloConnection {
 
     public ContratoDAO() {
         super();
     }
 
+    /** Transforma uma linha do resultado da consulta em um contrato. */
     private Contrato montar(ResultSet rs) throws SQLException {
         Contrato contrato = new Contrato();
         contrato.setId(rs.getInt("id"));
@@ -27,6 +32,7 @@ public class ContratoDAO extends ApolloConnection {
 
     // CREATE
 
+    /** Cadastra um contrato e devolve o id que o banco atribuiu. Em caso de falha o valor é -1. */
     public int inserir(Contrato contrato) {
         try (Connection connection = abrirConexao()) {
             return inserirNaConexao(connection, contrato);
@@ -37,7 +43,9 @@ public class ContratoDAO extends ApolloConnection {
         }
     }
 
-    // Usado dentro de transações (a conexão é da transação, quem chama é que fecha)
+    /**
+     * Insere o contrato usando uma conexão já aberta. Serve para transações em que quem chama é responsável por fechar a conexão.
+     */
     public int inserirNaConexao(Connection connection, Contrato contrato) throws SQLException {
         String sql = "INSERT INTO contrato (id_empresa, data_inicio, valor_mensal, status, id_usuario_cadastro) VALUES (?, ?, ?, ?, ?)";
 
@@ -63,6 +71,7 @@ public class ContratoDAO extends ApolloConnection {
 
     // READ por id
 
+    /** Busca um contrato pelo id. Devolve null quando não encontra. */
     public Contrato buscarPorId(int id) {
         String sql = "SELECT * FROM contrato WHERE id = ?";
 
@@ -83,6 +92,7 @@ public class ContratoDAO extends ApolloConnection {
         return null;
     }
 
+    /** Busca o contrato de uma empresa, ou null se ela ainda não tiver um. */
     public Contrato buscarPorEmpresa(int idEmpresa) {
         String sql = "SELECT * FROM contrato WHERE id_empresa = ?";
 
@@ -104,6 +114,7 @@ public class ContratoDAO extends ApolloConnection {
 
     // READ todos
 
+    /** Devolve todos os registros da tabela de contrato, ordenados no banco. */
     public List<Contrato> listarTodos() {
         List<Contrato> lista = new ArrayList<>();
         String sql = "SELECT * FROM contrato ORDER BY data_inicio DESC";
@@ -124,6 +135,7 @@ public class ContratoDAO extends ApolloConnection {
 
     // UPDATE
 
+    /** Altera um contrato já existente e devolve true quando a atualização afetou um registro. */
     public boolean atualizar(Contrato contrato) {
         String sql = "UPDATE contrato SET id_empresa = ?, data_inicio = ?, valor_mensal = ?, status = ? WHERE id = ?";
 
@@ -145,6 +157,9 @@ public class ContratoDAO extends ApolloConnection {
 
     // DELETE
 
+    /**
+     * Remove um contrato do banco de forma definitiva. Para inativar sem apagar existe o InativacaoDAO.
+     */
     public boolean excluir(int id) {
         String sql = "DELETE FROM contrato WHERE id = ?";
 

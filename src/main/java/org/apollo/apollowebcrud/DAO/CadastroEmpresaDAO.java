@@ -8,8 +8,10 @@ import org.apollo.apollowebcrud.util.ApolloConnection;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-// Cadastro de empresa é uma transação com 4 gravações: endereço + empresa + contrato + vínculo do gerente.
-// Ou grava tudo, ou não grava nada.
+/**
+ * Cadastro completo da empresa em uma transação com quatro gravações: endereço, empresa,
+ * contrato e vínculo do gerente. Ou tudo é gravado ou nada é.
+ */
 public class CadastroEmpresaDAO extends ApolloConnection {
 
     private final EmpresaDAO empresaDAO = new EmpresaDAO();
@@ -20,7 +22,7 @@ public class CadastroEmpresaDAO extends ApolloConnection {
         super();
     }
 
-    // Devolve o id da empresa criada, ou -1 se nada foi gravado
+    /** Devolve o id da empresa criada ou -1 se nada foi gravado. */
     public int cadastrar(Empresa empresa, Endereco endereco, Contrato contrato, int idGerente) {
         try (Connection connection = abrirConexao()) {
             connection.setAutoCommit(false);
