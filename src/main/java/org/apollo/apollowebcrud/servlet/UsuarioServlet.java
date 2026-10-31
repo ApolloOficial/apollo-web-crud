@@ -20,9 +20,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-// GET /membros (listagem) | GET /membros?editar=ID (formulário preenchido; o cadastro novo fica em /cadastro)
-// POST com o campo "acao": editar | inativar | reativar
-// Formulário de edição: modo ("editar") e item (Usuario). Erro de edição: erroMembros
+/**
+ * Gerenciamento dos membros da equipe. O GET mostra a listagem ou, com editar, o formulário
+ * preenchido (o cadastro de novos usuários fica em /cadastro). O POST aceita editar, inativar e reativar.
+ * Os erros de edição seguem para a tela no atributo erroMembros.
+ */
 @WebServlet("/membros")
 public class UsuarioServlet extends HttpServlet {
 
@@ -32,6 +34,7 @@ public class UsuarioServlet extends HttpServlet {
     private final UsuarioService usuarioService = new UsuarioService();
     private final FilialService filialService = new FilialService();
 
+    /** Abre a listagem de membros ou o formulário de edição. */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -49,6 +52,9 @@ public class UsuarioServlet extends HttpServlet {
         mostrarFormulario(request, response, item);
     }
 
+    /**
+     * Executa a ação do campo acao. Sucesso redireciona para a lista e erro volta para a tela de origem.
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -76,6 +82,10 @@ public class UsuarioServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Carrega os membros visíveis, as filiais deles e os totais de técnicos, operadores e
+     * filiais com equipe que aparecem no topo da tela.
+     */
     private void mostrarLista(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         Usuario logado = SessaoUtils.usuarioLogado(request);
@@ -105,6 +115,7 @@ public class UsuarioServlet extends HttpServlet {
         request.getRequestDispatcher(VIEW_MEMBROS).forward(request, response);
     }
 
+    /** Abre o formulário de edição com o usuário informado. */
     private void mostrarFormulario(HttpServletRequest request, HttpServletResponse response, Usuario item)
             throws ServletException, IOException {
         request.setAttribute("modo", "editar");
@@ -112,6 +123,7 @@ public class UsuarioServlet extends HttpServlet {
         request.getRequestDispatcher(VIEW_FORMULARIO).forward(request, response);
     }
 
+    /** Lê nome, e-mail, CPF, telefone e foto do formulário de edição. */
     private Usuario lerUsuario(HttpServletRequest request, int id) {
         Usuario usuario = new Usuario();
         usuario.setId(id);

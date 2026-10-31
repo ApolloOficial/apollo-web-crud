@@ -11,7 +11,10 @@ import org.apollo.apollowebcrud.util.SessaoUtils;
 
 import java.io.IOException;
 
-// Só leitura (gerente). Atributos: contrato (Contrato, pode ser null) e empresa (Empresa)
+/**
+ * Tela de contrato da empresa, somente leitura e pensada para o gerente.
+ * A view recebe o contrato, que pode ser nulo, e a empresa.
+ */
 @WebServlet("/contrato")
 public class ContratoServlet extends HttpServlet {
 
@@ -20,6 +23,7 @@ public class ContratoServlet extends HttpServlet {
     private final ContratoService contratoService = new ContratoService();
     private final EmpresaService empresaService = new EmpresaService();
 
+    /** Busca o contrato da empresa do usuário logado e abre a tela. */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

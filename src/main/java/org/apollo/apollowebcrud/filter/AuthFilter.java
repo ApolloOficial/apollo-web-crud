@@ -19,6 +19,12 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Filtro de autenticação e autorização aplicado a todas as rotas da aplicação.
+ * Rotas públicas passam direto. Para as demais, o filtro exige um usuário na sessão,
+ * revalida o cadastro dele no banco a cada requisição e consulta a classe Autorizacao
+ * para saber se o perfil pode abrir a tela pedida.
+ */
 @WebFilter("/*")
 public class AuthFilter implements Filter {
 
@@ -31,6 +37,11 @@ public class AuthFilter implements Filter {
     );
     private static final Set<String> PREFIXOS_PUBLICOS = Set.of("/docs/", "/imagem_landing/");
 
+    /**
+     * Executa a verificação em cada requisição. Sem sessão válida o usuário volta para o login
+     * e um perfil sem permissão recebe o erro 403. Se o banco estiver fora do ar na hora de
+     * revalidar o usuário, a resposta é 503.
+     */
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
@@ -80,6 +91,7 @@ public class AuthFilter implements Filter {
         }
     }
 
+    /** Encerra a sessão sem se importar se outra requisição já a invalidou antes. */
     private void invalidarSessao(HttpSession sessao) {
         try {
             sessao.invalidate();
@@ -88,17 +100,22 @@ public class AuthFilter implements Filter {
         }
     }
 
-    // POST, ou GET que abre formulário de cadastro/edição (?novo / ?editar)
+    /**
+     * Indica se a requisição altera dados, isto é, qualquer POST ou um GET que abre
+     * formulário de cadastro ou edição (parâmetros novo e editar).
+     */
     private boolean requisicaoDeEscrita(HttpServletRequest request) {
         return !"GET".equals(request.getMethod())
                 || request.getParameter("novo") != null
                 || request.getParameter("editar") != null;
     }
 
+    /** Devolve o caminho pedido sem o nome do contexto da aplicação. */
     private String caminho(HttpServletRequest request) {
         return request.getRequestURI().substring(request.getContextPath().length());
     }
 
+    /** Confere se o caminho está entre as rotas públicas ou começa com um prefixo liberado. */
     private boolean rotaPublica(String caminho) {
         return ROTAS_PUBLICAS.contains(caminho)
                 || PREFIXOS_PUBLICOS.stream().anyMatch(caminho::startsWith);

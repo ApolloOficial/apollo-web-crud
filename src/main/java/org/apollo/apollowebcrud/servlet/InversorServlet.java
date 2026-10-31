@@ -16,11 +16,11 @@ import org.apollo.apollowebcrud.util.SessaoUtils;
 
 import java.io.IOException;
 
-// GET /inversor (listagem) | GET /inversor?novo=1 (formulário vazio) | GET /inversor?editar=ID (formulário preenchido)
-// POST com o campo "acao": cadastrar (padrão) | editar
-// GET /inversor?detalhes=ID (tela de detalhes)
-// Atributos do formulário: modo ("novo" ou "editar") e item (o Inversor a preencher)
-// Atributos dos detalhes: item (o Inversor) e listaStrings (as strings dele)
+/**
+ * Controle dos inversores da filial do usuário. O GET atende listagem, formulário vazio,
+ * formulário preenchido e detalhes. O POST cadastra ou edita conforme o campo acao.
+ * A tela de detalhes recebe o inversor e a lista de strings ligadas a ele.
+ */
 @WebServlet("/inversor")
 public class InversorServlet extends HttpServlet {
 
@@ -32,6 +32,7 @@ public class InversorServlet extends HttpServlet {
     private final StringSolarService stringSolarService = new StringSolarService();
     private final FilialService filialService = new FilialService();
 
+    /** Escolhe entre listagem, formulário e detalhes de acordo com os parâmetros. */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -54,6 +55,7 @@ public class InversorServlet extends HttpServlet {
         }
     }
 
+    /** Carrega o inversor, a filial dele e as strings para a tela de detalhes. */
     private void detalhes(HttpServletRequest request, HttpServletResponse response, Usuario logado)
             throws ServletException, IOException {
         int id = ParametrosUtils.idOuZero(request.getParameter("detalhes"));
@@ -68,6 +70,10 @@ public class InversorServlet extends HttpServlet {
         request.getRequestDispatcher(VIEW_DETALHES).forward(request, response);
     }
 
+    /**
+     * Valida o formato dos campos e chama o serviço para cadastrar ou editar. Sucesso leva de volta
+     * à listagem, erro reabre o formulário com os valores digitados.
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -91,6 +97,7 @@ public class InversorServlet extends HttpServlet {
         mostrarFormulario(request, response, editando ? "editar" : "novo", dados != null ? dados : lerInversor(request));
     }
 
+    /** Encaminha para o formulário com o modo e o inversor a preencher. */
     private void mostrarFormulario(HttpServletRequest request, HttpServletResponse response, String modo, Inversor item)
             throws ServletException, IOException {
         request.setAttribute("modo", modo);
@@ -98,6 +105,10 @@ public class InversorServlet extends HttpServlet {
         request.getRequestDispatcher(VIEW_FORMULARIO).forward(request, response);
     }
 
+    /**
+     * Confere potência, data de instalação e status antes de chamar o serviço.
+     * Devolve a mensagem do primeiro problema encontrado ou null se estiver tudo certo.
+     */
     private String erroDeFormato(HttpServletRequest request) {
         if (invalido(request.getParameter("potenciaKw"), ParametrosUtils.decimalOuNulo(request.getParameter("potenciaKw")))) {
             return "A potência informada não é um número válido";
@@ -112,10 +123,12 @@ public class InversorServlet extends HttpServlet {
         return null;
     }
 
+    /** Um campo é inválido quando foi preenchido mas não pôde ser convertido. */
     private boolean invalido(String bruto, Object convertido) {
         return bruto != null && !bruto.isBlank() && convertido == null;
     }
 
+    /** Transforma os parâmetros do formulário em um objeto Inversor. */
     private Inversor lerInversor(HttpServletRequest request) {
         Inversor inversor = new Inversor();
         inversor.setId(ParametrosUtils.idOuZero(request.getParameter("id")));

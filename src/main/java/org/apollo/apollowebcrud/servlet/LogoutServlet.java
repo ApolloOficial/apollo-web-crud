@@ -9,9 +9,11 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
+/** Encerra a sessão do usuário e o devolve para a tela de login. */
 @WebServlet("/logout")
 public class LogoutServlet extends HttpServlet {
 
+    /** Invalida a sessão atual. Só aceita POST para que um link externo não deslogue ninguém. */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

@@ -26,11 +26,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-// GET /string (listagem) | GET /string?novo=1 | GET /string?editar=ID
-// POST com o campo "acao": cadastrar (padrão) | editar
-// GET /string?detalhes=ID (tela de detalhes)
-// Atributos do formulário: modo ("novo" ou "editar"), item (a StringSolar) e listaInversores (para o select)
-// Atributos dos detalhes: item (a StringSolar), inversor (o Inversor dela) e listaPaineis (os painéis dela)
+/**
+ * Controle das strings, que agrupam os painéis ligados a um inversor. O GET atende listagem,
+ * formulários e detalhes e o POST cadastra ou edita conforme o campo acao.
+ * Os detalhes recebem a string, o inversor dela, os painéis, as manutenções e as séries dos painéis.
+ */
 @WebServlet("/string")
 public class StringSolarServlet extends HttpServlet {
 
@@ -44,6 +44,7 @@ public class StringSolarServlet extends HttpServlet {
     private final FilialService filialService = new FilialService();
     private final ManutencaoService manutencaoService = new ManutencaoService();
 
+    /** Direciona para a listagem, o formulário ou os detalhes de acordo com os parâmetros. */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -67,6 +68,7 @@ public class StringSolarServlet extends HttpServlet {
         }
     }
 
+    /** Monta a tela de detalhes com inversor, filial, painéis e manutenções da string. */
     private void detalhes(HttpServletRequest request, HttpServletResponse response, Usuario logado)
             throws ServletException, IOException {
         int id = ParametrosUtils.idOuZero(request.getParameter("detalhes"));
@@ -86,6 +88,10 @@ public class StringSolarServlet extends HttpServlet {
         request.getRequestDispatcher(VIEW_DETALHES).forward(request, response);
     }
 
+    /**
+     * Valida os campos e executa o cadastro ou a edição pelo serviço. Redireciona para a listagem
+     * em caso de sucesso e reabre o formulário com a mensagem quando há erro.
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -112,7 +118,7 @@ public class StringSolarServlet extends HttpServlet {
         mostrarFormulario(request, response, editando ? "editar" : "novo", dados);
     }
 
-    // Lista de inversores da filial para o campo de escolha do formulário
+    /** Carrega os inversores da filial para o campo de escolha e abre o formulário. */
     private void mostrarFormulario(HttpServletRequest request, HttpServletResponse response, String modo, StringSolar item)
             throws ServletException, IOException {
         request.setAttribute("modo", modo);
@@ -121,6 +127,7 @@ public class StringSolarServlet extends HttpServlet {
         request.getRequestDispatcher(VIEW_FORMULARIO).forward(request, response);
     }
 
+    /** Mapa de id do inversor para o código dele. */
     private Map<Integer, String> codigosDosInversores(Usuario logado) {
         Map<Integer, String> codigos = new HashMap<>();
         for (Inversor inversor : inversorService.listarVisiveis(logado)) {
@@ -129,6 +136,7 @@ public class StringSolarServlet extends HttpServlet {
         return codigos;
     }
 
+    /** Filtra as manutenções visíveis para o usuário que pertencem aos painéis informados. */
     private List<Manutencao> manutencoesDosPaineis(List<Painel> paineis, Usuario logado) {
         Set<Integer> ids = new HashSet<>();
         for (Painel painel : paineis) {
@@ -139,6 +147,7 @@ public class StringSolarServlet extends HttpServlet {
                 .toList();
     }
 
+    /** Mapa de id do painel para número de série. */
     private Map<Integer, String> seriesDosPaineis(List<Painel> paineis) {
         Map<Integer, String> series = new HashMap<>();
         for (Painel painel : paineis) {
@@ -147,6 +156,7 @@ public class StringSolarServlet extends HttpServlet {
         return series;
     }
 
+    /** O inversor da string não muda na edição, então o valor original é recolocado. */
     private void manterInversorOriginal(StringSolar dados, Usuario logado) {
         StringSolar original = stringSolarService.buscarDaFilial(dados.getId(), logado);
         if (original != null) {
@@ -154,6 +164,7 @@ public class StringSolarServlet extends HttpServlet {
         }
     }
 
+    /** Confere MPPT, entrada e status, devolvendo a primeira mensagem de erro ou null. */
     private String erroDeFormato(HttpServletRequest request) {
         if (invalido(request.getParameter("numeroMppt"), ParametrosUtils.inteiroOuNulo(request.getParameter("numeroMppt")))) {
             return "O número MPPT não é válido";
@@ -168,10 +179,12 @@ public class StringSolarServlet extends HttpServlet {
         return null;
     }
 
+    /** Verdadeiro quando o campo veio preenchido mas a conversão falhou. */
     private boolean invalido(String bruto, Object convertido) {
         return bruto != null && !bruto.isBlank() && convertido == null;
     }
 
+    /** Converte os parâmetros do formulário em uma StringSolar. */
     private StringSolar lerString(HttpServletRequest request) {
         StringSolar string = new StringSolar();
         string.setId(ParametrosUtils.idOuZero(request.getParameter("id")));

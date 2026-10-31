@@ -14,6 +14,7 @@ import org.apollo.apollowebcrud.util.SessaoUtils;
 import java.io.IOException;
 import java.util.List;
 
+/** Exibe os dados do usuário logado junto com a empresa e a filial a que ele pertence. */
 @WebServlet("/perfil")
 public class PerfilServlet extends HttpServlet {
 
@@ -22,6 +23,7 @@ public class PerfilServlet extends HttpServlet {
     private final EmpresaService empresaService = new EmpresaService();
     private final FilialService filialService = new FilialService();
 
+    /** Busca empresa e filial do usuário e abre a tela de perfil. */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

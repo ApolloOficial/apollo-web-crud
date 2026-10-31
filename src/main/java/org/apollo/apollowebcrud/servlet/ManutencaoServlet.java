@@ -20,9 +20,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-// GET /manutencao (listagem) | GET /manutencao?novo=1 | GET /manutencao?editar=ID
-// POST com o campo "acao": cadastrar (padrão) | editar
-// Atributos do formulário: modo ("novo" ou "editar"), item (a Manutencao), listaPaineis e listaResponsaveis (selects)
+/**
+ * Controle das manutenções dos painéis da filial. O GET atende listagem, formulário vazio e
+ * formulário preenchido, e o POST cadastra ou edita de acordo com o campo acao.
+ * O formulário recebe modo, item, listaPaineis e listaResponsaveis para os campos de escolha.
+ */
 @WebServlet("/manutencao")
 public class ManutencaoServlet extends HttpServlet {
 
@@ -33,6 +35,7 @@ public class ManutencaoServlet extends HttpServlet {
     private final PainelService painelService = new PainelService();
     private final UsuarioService usuarioService = new UsuarioService();
 
+    /** Abre a listagem ou o formulário, conforme os parâmetros novo e editar. */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -55,6 +58,10 @@ public class ManutencaoServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Valida o formato dos campos e delega ao serviço o cadastro ou a edição. O painel não muda
+     * durante a edição, então o original é preservado se houver erro.
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -81,7 +88,7 @@ public class ManutencaoServlet extends HttpServlet {
         mostrarFormulario(request, response, editando ? "editar" : "novo", dados);
     }
 
-    // Painéis e responsáveis possíveis da filial (campos de escolha do formulário)
+    /** Carrega os painéis e os responsáveis possíveis da filial e abre o formulário. */
     private void mostrarFormulario(HttpServletRequest request, HttpServletResponse response, String modo, Manutencao item)
             throws ServletException, IOException {
         Usuario logado = SessaoUtils.usuarioLogado(request);
@@ -92,6 +99,7 @@ public class ManutencaoServlet extends HttpServlet {
         request.getRequestDispatcher(VIEW_FORMULARIO).forward(request, response);
     }
 
+    /** Mapa de id do painel para número de série, usado nos campos de escolha. */
     private Map<Integer, String> seriesDosPaineis(Usuario logado) {
         Map<Integer, String> series = new HashMap<>();
         for (Painel painel : painelService.listarVisiveis(logado)) {
@@ -100,6 +108,7 @@ public class ManutencaoServlet extends HttpServlet {
         return series;
     }
 
+    /** Mapa de id do usuário para nome, com os responsáveis que podem receber a manutenção. */
     private Map<Integer, String> nomesDosResponsaveis(Usuario logado) {
         Map<Integer, String> nomes = new HashMap<>();
         for (Usuario responsavel : usuarioService.listarResponsaveisDaFilial(logado)) {
@@ -108,6 +117,7 @@ public class ManutencaoServlet extends HttpServlet {
         return nomes;
     }
 
+    /** Recoloca o painel gravado no banco, já que ele não pode ser trocado na edição. */
     private void manterPainelOriginal(Manutencao dados, Usuario logado) {
         Manutencao original = manutencaoService.buscarDaFilial(dados.getId(), logado);
         if (original != null) {
@@ -115,6 +125,10 @@ public class ManutencaoServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Verifica tipo, status (apenas na edição) e as três datas da manutenção.
+     * Devolve a mensagem de erro ou null quando tudo está válido.
+     */
     private String erroDeFormato(HttpServletRequest request, boolean editando) {
         if (ParametrosUtils.enumOuNulo(TipoManutencao.class, request.getParameter("tipoManutencao")) == null) {
             return "O tipo da manutenção não é válido";
@@ -131,6 +145,7 @@ public class ManutencaoServlet extends HttpServlet {
         return null;
     }
 
+    /** Constrói a Manutencao a partir dos parâmetros do formulário. */
     private Manutencao lerManutencao(HttpServletRequest request) {
         Manutencao m = new Manutencao();
         m.setId(ParametrosUtils.idOuZero(request.getParameter("id")));

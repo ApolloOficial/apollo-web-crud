@@ -6,12 +6,15 @@ import org.apollo.apollowebcrud.model.Usuario;
 import java.util.Map;
 import java.util.Set;
 
-// Regra única de "quem pode abrir qual tela". O AuthFilter só pergunta; para mudar permissão, edite aqui.
+/**
+ * Regra única de quem pode abrir cada tela. O AuthFilter apenas consulta esta classe,
+ * então qualquer mudança de permissão deve ser feita aqui.
+ */
 public final class Autorizacao {
 
     private static final Set<String> COMUNS = Set.of("/dashboard", "/logout", "/empresa", "/perfil");
 
-    // Telas de equipamento: técnico e operador cadastram/editam; o gerente só visualiza
+    // Telas de equipamento: técnico e operador cadastram e editam, enquanto o gerente só visualiza
     private static final Set<String> ROTAS_EQUIPAMENTO = Set.of("/inversor", "/string", "/painel", "/manutencao");
 
     private static final Map<TipoUsuEnum, Set<String>> ROTAS_POR_PERFIL = Map.of(
@@ -23,10 +26,12 @@ public final class Autorizacao {
     // O gerente que ainda não tem empresa só pode usar a tela de empresa (e sair)
     private static final Set<String> ROTAS_GERENTE_SEM_EMPRESA = Set.of("/empresa", "/logout", "/perfil");
 
+    /** Classe utilitária, não deve ser instanciada. */
     private Autorizacao() {
         throw new UnsupportedOperationException("Esta é uma classe utilitária e não pode ser instanciada.");
     }
 
+    /** Informa se o perfil do usuário tem acesso ao caminho indicado. */
     public static boolean permite(Usuario usuario, String caminho) {
         if (usuario.getPerfil() == null) {
             return false;
@@ -37,13 +42,19 @@ public final class Autorizacao {
         return casa(COMUNS, caminho) || casa(ROTAS_POR_PERFIL.get(usuario.getPerfil()), caminho);
     }
 
-    // Cadastrar, editar e inativar equipamentos: só técnico e operador. O gerente apenas visualiza.
-    // O AuthFilter chama isto quando a requisição é de escrita (POST, ?novo ou ?editar).
+    /**
+     * Informa se o perfil pode cadastrar, editar ou inativar no caminho indicado.
+     * Nas telas de equipamentos só técnico e operador escrevem, o gerente apenas consulta.
+     * O AuthFilter chama este método quando a requisição é de escrita.
+     */
     public static boolean permiteEscrita(Usuario usuario, String caminho) {
         return !(usuario.getPerfil() == TipoUsuEnum.GERENTE && casa(ROTAS_EQUIPAMENTO, caminho));
     }
 
-    // "/filial" libera "/filial" e "/filial/qualquer-coisa", mas não "/filialxyz"
+    /**
+     * Compara o caminho com as rotas liberadas. A rota /filial libera /filial e também
+     * /filial/qualquer-coisa, mas não /filialxyz.
+     */
     private static boolean casa(Set<String> rotas, String caminho) {
         return rotas.stream().anyMatch(r -> caminho.equals(r) || caminho.startsWith(r + "/"));
     }

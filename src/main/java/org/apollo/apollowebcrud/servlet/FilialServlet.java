@@ -19,11 +19,13 @@ import org.apollo.apollowebcrud.util.SessaoUtils;
 import java.io.IOException;
 import java.util.List;
 
-// GET /filial (listagem) | ?novo=1 (formulário vazio) | ?editar=ID (formulário preenchido) | ?detalhes=ID (tela de detalhes)
-// POST com o campo "acao": cadastrar (padrão) | editar | inativar | reativar
-// Formulário: modo ("novo"/"editar"), item (Filial), endereco (Endereco) e listaSegmentos (select)
-// Detalhes: item (Filial), endereco (Endereco), segmento (Segmento), resumo (ResumoFilial, as métricas),
-// listaInversores (inversores da filial) e equipe (técnicos e operadores)
+/**
+ * Controle das filiais. O GET atende a listagem, o formulário vazio (novo), o formulário
+ * preenchido (editar) e a tela de detalhes (detalhes), conforme o parâmetro recebido.
+ * O POST executa a ação do campo acao, que pode ser cadastrar (padrão), editar, inativar ou reativar.
+ * O formulário recebe modo, item, endereco e listaSegmentos. Os detalhes recebem a filial,
+ * o endereço, o segmento, o resumo de métricas, os inversores e a equipe.
+ */
 @WebServlet("/filial")
 public class FilialServlet extends HttpServlet {
 
@@ -36,6 +38,7 @@ public class FilialServlet extends HttpServlet {
     private final FilialDetalhesService filialDetalhesService = new FilialDetalhesService();
     private final EmpresaService empresaService = new EmpresaService();
 
+    /** Direciona a requisição para a listagem, o formulário ou a tela de detalhes. */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -52,6 +55,7 @@ public class FilialServlet extends HttpServlet {
         }
     }
 
+    /** Abre o formulário de edição preenchido com a filial escolhida. */
     private void editar(HttpServletRequest request, HttpServletResponse response, Usuario logado)
             throws ServletException, IOException {
         Filial item = filialService.buscarParaEdicao(ParametrosUtils.idOuZero(request.getParameter("editar")), logado);
@@ -62,6 +66,7 @@ public class FilialServlet extends HttpServlet {
         mostrarFormulario(request, response, "editar", item, filialService.buscarEndereco(item));
     }
 
+    /** Reúne endereço, segmento, métricas, inversores e equipe da filial para a tela de detalhes. */
     private void detalhes(HttpServletRequest request, HttpServletResponse response, Usuario logado)
             throws ServletException, IOException {
         Filial item = filialService.buscarVisivel(ParametrosUtils.idOuZero(request.getParameter("detalhes")), logado);
@@ -80,6 +85,10 @@ public class FilialServlet extends HttpServlet {
         request.getRequestDispatcher(VIEW_DETALHES).forward(request, response);
     }
 
+    /**
+     * Executa a ação pedida. Se o serviço não devolver erro, redireciona para a listagem com a confirmação.
+     * Do contrário a tela de origem é exibida novamente com a mensagem.
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -109,12 +118,14 @@ public class FilialServlet extends HttpServlet {
         }
     }
 
+    /** Carrega as filiais visíveis para o usuário e abre a listagem. */
     private void mostrarLista(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setAttribute("listaFiliais", filialService.listarVisiveis(SessaoUtils.usuarioLogado(request)));
         request.getRequestDispatcher(VIEW_LISTA).forward(request, response);
     }
 
+    /** Encaminha para o formulário já com a lista de segmentos para o campo de escolha. */
     private void mostrarFormulario(HttpServletRequest request, HttpServletResponse response, String modo, Filial item, Endereco endereco)
             throws ServletException, IOException {
         request.setAttribute("modo", modo);
@@ -124,7 +135,10 @@ public class FilialServlet extends HttpServlet {
         request.getRequestDispatcher(VIEW_FORMULARIO).forward(request, response);
     }
 
-    // segmento inválido vira 0 (id que não existe) e o Service responde com a mensagem de erro
+    /**
+     * Monta a Filial com os campos do formulário. Um segmento inválido vira 0, id que não existe,
+     * e o serviço responde com a mensagem de erro.
+     */
     private Filial lerFilial(HttpServletRequest request, int id) {
         Filial filial = new Filial();
         filial.setId(id);
@@ -136,6 +150,7 @@ public class FilialServlet extends HttpServlet {
         return filial;
     }
 
+    /** Lê os campos de endereço do formulário. */
     private Endereco lerEndereco(HttpServletRequest request) {
         Endereco endereco = new Endereco();
         endereco.setCep(request.getParameter("cep"));

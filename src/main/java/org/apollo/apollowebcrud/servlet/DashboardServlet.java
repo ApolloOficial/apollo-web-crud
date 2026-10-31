@@ -12,9 +12,11 @@ import org.apollo.apollowebcrud.util.SessaoUtils;
 
 import java.io.IOException;
 
-// Gerente abre dashboard-gerente.jsp; técnico e operador abrem dashboard-tecnico.jsp (telas originais do colega).
-// Atributos para a view: "dashboard" (os números dos cards) e "visaoGerente" (true = cards de empresa;
-// false = cards de filial)
+/**
+ * Página inicial depois do login. O gerente abre dashboard-gerente.jsp, com os números
+ * da empresa, e técnico e operador abrem dashboard-tecnico.jsp, com os da filial.
+ * A view recebe dashboard, com os valores dos cards, e visaoGerente para diferenciar os dois casos.
+ */
 @WebServlet("/dashboard")
 public class DashboardServlet extends HttpServlet {
 
@@ -23,6 +25,7 @@ public class DashboardServlet extends HttpServlet {
 
     private final DashboardService dashboardService = new DashboardService();
 
+    /** Calcula os indicadores conforme o perfil e encaminha para a tela correspondente. */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

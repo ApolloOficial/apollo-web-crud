@@ -16,12 +16,12 @@ import org.apollo.apollowebcrud.util.SessaoUtils;
 import java.io.IOException;
 import java.util.List;
 
-// GET /empresa:
-//   - gerente sem empresa: já abre o formulário vazio (modo "novo")
-//   - ?editar=1: formulário preenchido com a empresa do gerente (modo "editar")
-//   - caso contrário: a tela da empresa (listaEmpresas)
-// POST com o campo "acao": cadastrar (padrão) | editar
-// Formulário: modo, item (Empresa) e endereco (Endereco)
+/**
+ * Tela e formulário da empresa do gerente.
+ * No GET, quem ainda não tem empresa cai direto no formulário de cadastro, o parâmetro
+ * editar abre o formulário preenchido e nos demais casos aparece a tela com os dados.
+ * O POST aceita as ações cadastrar (padrão) e editar.
+ */
 @WebServlet("/empresa")
 public class EmpresaServlet extends HttpServlet {
 
@@ -31,6 +31,7 @@ public class EmpresaServlet extends HttpServlet {
     private final EmpresaService empresaService = new EmpresaService();
     private final FilialService filialService = new FilialService();
 
+    /** Escolhe entre a tela da empresa, o formulário vazio e o formulário de edição. */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -49,6 +50,7 @@ public class EmpresaServlet extends HttpServlet {
         }
     }
 
+    /** Abre o formulário em modo de edição com os dados da empresa do gerente. */
     private void editar(HttpServletRequest request, HttpServletResponse response, Usuario logado)
             throws ServletException, IOException {
         Empresa item = empresaService.buscarDoGerente(logado);
@@ -59,6 +61,10 @@ public class EmpresaServlet extends HttpServlet {
         mostrarFormulario(request, response, "editar", item, empresaService.buscarEndereco(item));
     }
 
+    /**
+     * Cadastra ou edita a empresa conforme o campo acao. Com sucesso redireciona para a tela
+     * da empresa e, com erro, volta ao formulário com a mensagem.
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -80,6 +86,7 @@ public class EmpresaServlet extends HttpServlet {
         mostrarFormulario(request, response, editando ? "editar" : "novo", dados, endereco);
     }
 
+    /** Encaminha para o formulário com o modo, a empresa e o endereço. */
     private void mostrarFormulario(HttpServletRequest request, HttpServletResponse response, String modo, Empresa item, Endereco endereco)
             throws ServletException, IOException {
         request.setAttribute("modo", modo);
@@ -88,10 +95,12 @@ public class EmpresaServlet extends HttpServlet {
         request.getRequestDispatcher(VIEW_FORMULARIO).forward(request, response);
     }
 
+    /** Verdadeiro quando o usuário é gerente e ainda não possui empresa vinculada. */
     private boolean gerenteSemEmpresa(Usuario logado) {
         return logado.getPerfil() == TipoUsuEnum.GERENTE && logado.getIdEmpresa() == null;
     }
 
+    /** Lê os campos da empresa enviados no formulário. */
     private Empresa lerEmpresa(HttpServletRequest request) {
         Empresa empresa = new Empresa();
         empresa.setNome(request.getParameter("nome"));
@@ -102,6 +111,7 @@ public class EmpresaServlet extends HttpServlet {
         return empresa;
     }
 
+    /** Lê os campos de endereço enviados no formulário. */
     private Endereco lerEndereco(HttpServletRequest request) {
         Endereco endereco = new Endereco();
         endereco.setCep(request.getParameter("cep"));
