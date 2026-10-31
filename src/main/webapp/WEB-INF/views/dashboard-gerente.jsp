@@ -9,28 +9,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Apollo | Dashboard</title>
 
-  <!-- Fonte do layout (Poppins); se não carregar, cai para Arial do apollostyle.css -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap">
 
-  <!-- Arquivos enviados (mantenha na mesma pasta; ajuste os nomes se forem diferentes) -->
-  <link rel="stylesheet" href="${raiz}/docs/css/apollostyle.css">
+  <link rel="stylesheet" href="${raiz}/docs/css/Apollostyle.css">
   <link rel="stylesheet" href="${raiz}/docs/css/logoApollo.css">
   <link rel="stylesheet" href="${raiz}/docs/css/pop-ups.css">
-  <!-- Complemento desta tela -->
-  <link rel="stylesheet" href="${raiz}/docs/css/dashboard.css">
+  <link rel="stylesheet" href="${raiz}/docs/css/Dashboard.css">
   <script src="${raiz}/docs/js/pop-ups.js" defer></script>
     <link rel="stylesheet" href="${raiz}/docs/css/sidebar.css">
 </head>
 <body>
 <div class="pagina">
 
-    <!-- ===== Sidebar (montada por sidebar.js: aqui sempre a do Gerente = Dashboard, Contrato e Empresa) ===== -->
-    <aside class="sidebar" data-ativo="dashboard" data-tipo="gerente"></aside>
-    <script src="${raiz}/docs/js/sidebar.js?v=4"></script>
+    <c:set var="ativo" value="dashboard"/>
+    <%@ include file="includes/sidebar.jspf" %>
 
-  <!-- ===== Conteúdo ===== -->
   <main class="conteudo">
     <header class="topo">
       <h1 class="titulo">Dashboard</h1>
@@ -47,7 +42,6 @@
 
     <div class="dash-grade">
 
-      <!-- Cards de resumo -->
       <section class="resumo" aria-label="Resumo">
         <article class="card">
           <div class="card-titulo">
