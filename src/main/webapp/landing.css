@@ -167,7 +167,7 @@ main{
     z-index:-2;
     inset:0;
     width:100%;
-    background:#fff url("assets/hero-background.jpg") center top/cover no-repeat
+    background:#fff url("../../main/webapp/imagem_landing/hero-background.jpg") center top/cover no-repeat
 }
 .hero::before{
     content:none
@@ -869,7 +869,7 @@ main{
     align-items:center;
     padding:62px 0;
     color:#fff;
-    background:#18212a url("assets/instituto-bg.jpg") center 48%/cover no-repeat
+    background:#18212a url("../../main/webapp/imagem_landing/instituto-bg.jpg") center 48%/cover no-repeat
 }
 .instituto::before{
     content:"";
@@ -991,7 +991,7 @@ main{
 .footer-waves{
     height:203px;
     margin-top:-1px;
-    background:#fff url("assets/footer-waves.jpg") center/100% 100% no-repeat;
+    background:#fff url("../../main/webapp/imagem_landing/footer-waves.jpg") center/100% 100% no-repeat;
     line-height:0;
     overflow:hidden
 }
@@ -1150,7 +1150,7 @@ main{
         inset:0;
         width:100%;
         opacity:.8;
-        background-image:url("assets/hero-solar.jpg");
+        background-image:url("../../main/webapp/imagem_landing/hero-solar.jpg");
         background-position:58% center;
         background-size:cover
     }
