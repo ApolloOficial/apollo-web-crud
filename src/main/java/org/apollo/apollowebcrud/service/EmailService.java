@@ -1,6 +1,5 @@
 package org.apollo.apollowebcrud.service;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.mail.Authenticator;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
@@ -9,6 +8,8 @@ import jakarta.mail.Session;
 import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+
+import org.apollo.apollowebcrud.util.ConfigUtils;
 
 import java.util.Properties;
 
@@ -29,10 +30,9 @@ public class EmailService {
 
     /** Faz o envio propriamente dito e registra o erro no log em vez de lançá-lo para quem chamou. */
     private boolean enviar(String destinatario, String assunto, String texto) {
-        Dotenv env = Dotenv.load();
-        String host = env.get("SMTP_HOST");
-        String usuario = env.get("SMTP_USER");
-        String senha = env.get("SMTP_PASSWORD");
+        String host = ConfigUtils.valor("SMTP_HOST");
+        String usuario = ConfigUtils.valor("SMTP_USER");
+        String senha = ConfigUtils.valor("SMTP_PASSWORD");
 
         if (host == null || usuario == null || senha == null) {
             System.err.println("SMTP não configurado no .env (SMTP_HOST, SMTP_USER, SMTP_PASSWORD)");
@@ -40,8 +40,8 @@ public class EmailService {
         }
 
         try {
-            Message mensagem = new MimeMessage(criarSessao(env, host, usuario, senha));
-            mensagem.setFrom(new InternetAddress(env.get("SMTP_FROM", usuario)));
+            Message mensagem = new MimeMessage(criarSessao(host, usuario, senha));
+            mensagem.setFrom(new InternetAddress(ConfigUtils.valor("SMTP_FROM", usuario)));
             mensagem.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
             mensagem.setSubject(assunto);
             mensagem.setText(texto);
@@ -54,10 +54,10 @@ public class EmailService {
     }
 
     /** Cria a sessão SMTP com autenticação e STARTTLS. */
-    private Session criarSessao(Dotenv env, String host, String usuario, String senha) {
+    private Session criarSessao(String host, String usuario, String senha) {
         Properties props = new Properties();
         props.put("mail.smtp.host", host);
-        props.put("mail.smtp.port", env.get("SMTP_PORT", "587"));
+        props.put("mail.smtp.port", ConfigUtils.valor("SMTP_PORT", "587"));
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
 
