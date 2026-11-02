@@ -35,12 +35,6 @@
         <div class="barra">
             <div class="barra-filtros">
                 <input class="filtro" type="search" id="busca" placeholder="Buscar por nome ou e-mail" aria-label="Buscar membro">
-                <select class="filtro" id="filtro-status" aria-label="Filtrar por cargo">
-                    <option value="">Todos os cargos</option>
-                    <option value="GERENTE">Gerente</option>
-                    <option value="TECNICO">Técnico</option>
-                    <option value="OPERADOR">Operador</option>
-                </select>
             </div>
             <c:if test="${usuarioLogado.perfil == 'GERENTE' || usuarioLogado.perfil == 'TECNICO'}">
                 <a class="btn" href="${raiz}/cadastro">Cadastrar membro</a>
