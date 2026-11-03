@@ -1,8 +1,10 @@
 package org.apollo.apollowebcrud.model;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * Inversor solar instalado em uma filial. Agrupa strings de painéis e informa a potência total em kW.
+ */
 public class Inversor {
 
 //    ATRIBUTOS
@@ -13,14 +15,14 @@ public class Inversor {
     private String numeroSerie;
     private String marca;
     private String modelo;
-    private double potenciaKw;
+    private Double potenciaKw;
     private StatusGeral status;
     private LocalDate dataInstalacao;
     private String mensagemErro;
 
 //    CONSTRUTOR
 
-    public Inversor(int id, int idFilial, String codigo, String numeroSerie, String marca, String modelo, double potenciaKw, StatusGeral status, LocalDate dataInstalacao) {
+    public Inversor(int id, int idFilial, String codigo, String numeroSerie, String marca, String modelo, Double potenciaKw, StatusGeral status, LocalDate dataInstalacao) {
         this.id = id;
         this.idFilial = idFilial;
         this.codigo = codigo;
@@ -63,7 +65,7 @@ public class Inversor {
         return modelo;
     }
 
-    public double getPotenciaKw() {
+    public Double getPotenciaKw() {
         return potenciaKw;
     }
 
@@ -105,7 +107,7 @@ public class Inversor {
         this.modelo = modelo;
     }
 
-    public void setPotenciaKw(double potenciaKw) {
+    public void setPotenciaKw(Double potenciaKw) {
         this.potenciaKw = potenciaKw;
     }
 

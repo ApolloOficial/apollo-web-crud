@@ -1,0 +1,6 @@
+/* Só o que é específico da tela "Esqueci a senha".
+   O resto vem de login.css, que precisa ser carregado antes. */
+
+.titulo{margin-bottom:14px}
+
+#form-esqueci .campo{margin-bottom:24px}

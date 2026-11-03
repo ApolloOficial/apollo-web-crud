@@ -1,0 +1,50 @@
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<c:choose>
+    <c:when test="${not empty erroAviso}">
+        <c:set var="avisoTipo" value="erro"/>
+        <c:set var="avisoTitulo" value="Não foi possível concluir"/>
+        <c:set var="avisoTexto" value="${erroAviso}"/>
+    </c:when>
+    <c:when test="${not empty param.ok}">
+        <c:set var="avisoTipo" value="sucesso"/>
+        <c:choose>
+            <c:when test="${param.ok == 'cadastrar'}">
+                <c:set var="avisoTitulo" value="Cadastro realizado"/>
+                <c:set var="avisoTexto" value="O cadastro foi concluído com sucesso."/>
+            </c:when>
+            <c:when test="${param.ok == 'editar'}">
+                <c:set var="avisoTitulo" value="Alterações salvas"/>
+                <c:set var="avisoTexto" value="As alterações foram salvas com sucesso."/>
+            </c:when>
+            <c:when test="${param.ok == 'inativar'}">
+                <c:set var="avisoTitulo" value="Registro inativado"/>
+                <c:set var="avisoTexto" value="O registro foi inativado com sucesso."/>
+            </c:when>
+            <c:when test="${param.ok == 'reativar'}">
+                <c:set var="avisoTitulo" value="Registro reativado"/>
+                <c:set var="avisoTexto" value="O registro foi reativado com sucesso."/>
+            </c:when>
+            <c:otherwise>
+                <c:set var="avisoTitulo" value="Tudo certo"/>
+                <c:set var="avisoTexto" value="Operação realizada com sucesso."/>
+            </c:otherwise>
+        </c:choose>
+    </c:when>
+</c:choose>
+<c:if test="${not empty avisoTipo}">
+    <dialog class="aviso aviso-${avisoTipo}" id="aviso" aria-labelledby="aviso-titulo">
+        <div class="aviso-icone" aria-hidden="true"><c:out value="${avisoTipo == 'erro' ? '!' : '✓'}"/></div>
+        <h2 id="aviso-titulo"><c:out value="${avisoTitulo}"/></h2>
+        <p><c:out value="${avisoTexto}"/></p>
+        <button type="button" class="btn" data-fechar>OK</button>
+    </dialog>
+</c:if>
+<dialog class="aviso aviso-confirma" id="confirmacao" aria-labelledby="confirmacao-titulo">
+    <div class="aviso-icone" aria-hidden="true">?</div>
+    <h2 id="confirmacao-titulo">Confirmar alteração</h2>
+    <p data-texto></p>
+    <div class="aviso-botoes">
+        <button type="button" class="btn btn-contorno" data-fechar>Cancelar</button>
+        <button type="button" class="btn" data-confirmar-envio>Confirmar</button>
+    </div>
+</dialog>

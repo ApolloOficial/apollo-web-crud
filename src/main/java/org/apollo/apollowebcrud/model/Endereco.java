@@ -1,5 +1,6 @@
 package org.apollo.apollowebcrud.model;
 
+/** Endereço postal reaproveitado por empresas e filiais. */
 public class Endereco {
 
 //    ATRIBUTOS

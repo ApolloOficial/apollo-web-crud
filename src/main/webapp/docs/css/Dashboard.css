@@ -1,0 +1,144 @@
+/* ===== Dashboard (Gerente e Técnico/Operador) ===== */
+:root {
+  --dash-laranja: #ff9000;
+  --dash-verde-fundo: #9fffad;
+  --dash-verde-texto: #006e1a;
+  --dash-borda: #d9d9d9;
+  --dash-mes: #8f8f8f;
+}
+
+/* mesma fonte da sidebar */
+.conteudo, .conteudo * { font-family: 'Poppins', Arial, Helvetica, sans-serif; }
+
+/* ---------- Topo ---------- */
+.usuario { gap: 12px; }
+.sino {
+  display: grid; place-items: center;
+  width: 40px; height: 40px; border-radius: 50%;
+  background: transparent; border: 0; cursor: pointer; color: #111;
+}
+.sino:hover { background: #fff3e9; }
+.sino svg, .card-titulo svg, .grafico-titulo svg {
+  fill: none; stroke: currentColor; stroke-width: 1.8;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.sino svg { width: 20px; height: 20px; }
+.avatar {
+  display: grid; place-items: center; flex-shrink: 0;
+  width: 41px; height: 41px; border-radius: 50%;
+  background: var(--dash-borda); border: 3px solid #b4b4b4;
+  font-size: 12px; font-weight: 600; color: #444;
+}
+.nome-usuario { font-size: 12px; font-weight: 600; }
+
+/* ---------- Notificações ---------- */
+.notificacoes { position: relative; flex-shrink: 0; }
+.notificacoes summary { list-style: none; }
+.notificacoes summary::-webkit-details-marker { display: none; }
+.notificacoes .sino { position: relative; }
+.notificacoes[open] .sino { background: #fff3e9; }
+.notificacoes-ponto {
+  position: absolute; top: 5px; right: 6px;
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--dash-laranja); border: 1px solid #fff;
+}
+.notificacoes-painel {
+  position: absolute; top: calc(100% + 10px); right: 0;
+  z-index: 100; width: 300px; max-width: 85vw;
+  padding: 18px; border-radius: 12px;
+  background: #fff; border: 1px solid var(--dash-borda);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+  color: #222; font-size: 13px; line-height: 1.6;
+  box-sizing: border-box;
+}
+.notificacoes-painel strong { font-weight: 600; }
+.notificacoes-painel p { margin: 10px 0; }
+.notificacoes-painel a {
+  display: inline-block; color: #d97700;
+  font-weight: 600; text-decoration: none;
+}
+.notificacoes-painel a:hover { text-decoration: underline; }
+
+/* ---------- Perfil clicável ---------- */
+.usuario-perfil {
+  display: inline-flex; align-items: center; gap: 12px;
+  color: inherit; text-decoration: none;
+}
+.usuario-perfil:hover .nome-usuario { text-decoration: underline; }
+.usuario-perfil:hover .avatar { border-color: var(--dash-laranja); }
+.usuario-perfil:focus-visible, .notificacoes .sino:focus-visible {
+  outline: 2px solid var(--dash-laranja); outline-offset: 3px;
+}
+
+/* ---------- Etiqueta "Controle geral" ---------- */
+.status-titulo.laranja {
+  border-color: var(--dash-laranja);
+  color: var(--dash-laranja);
+  font-weight: 600;
+  padding: 4px 14px;
+}
+
+/* ---------- Grade ---------- */
+.dash-grade {
+  display: grid;
+  grid-template-columns: minmax(0, 480px) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.resumo {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 18px;
+}
+.resumo .card { min-height: 150px; display: flex; flex-direction: column; align-items: flex-start; }
+
+.card-titulo {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 600; color: #111;
+}
+.card-titulo svg { width: 20px; height: 20px; flex-shrink: 0; }
+.card-numero {
+  font-size: 28px; font-weight: 600; line-height: 1.15;
+  margin: 14px 0 auto;
+  white-space: nowrap;
+}
+.tag-verde {
+  display: inline-block; margin-top: 14px;
+  padding: 2px 10px; border-radius: 20px;
+  background: var(--dash-verde-fundo); color: var(--dash-verde-texto);
+  font-size: 12px; font-weight: 400; white-space: nowrap;
+}
+
+/* ---------- Gráfico ---------- */
+.grafico { padding: 24px 20px 16px; }
+.grafico-titulo {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 15px; font-weight: 600; margin-bottom: 24px;
+}
+.grafico-titulo svg { width: 20px; height: 20px; flex-shrink: 0; }
+.grafico-area {
+  display: block; width: 100%; height: 180px;
+  border-bottom: 1px solid var(--dash-borda);
+}
+.grafico-eixo {
+  display: flex; justify-content: space-between; gap: 4px;
+  padding-top: 10px;
+  font-size: 12px; font-weight: 600; color: var(--dash-mes);
+}
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 1200px) {
+  .dash-grade { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 600px) {
+  .resumo { grid-template-columns: minmax(0, 1fr); }
+  .nome-usuario { display: none; }
+  .grafico-eixo span:nth-child(even) { display: none; }
+  .notificacoes-painel { width: 260px; }
+}

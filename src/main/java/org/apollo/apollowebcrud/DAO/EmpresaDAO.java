@@ -1,4 +1,4 @@
-package org.apollo.apollowebcrud.DAO;
+package org.apollo.apollowebcrud.dao;
 
 import org.apollo.apollowebcrud.model.Empresa;
 import org.apollo.apollowebcrud.model.Endereco;
@@ -9,14 +9,21 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Acesso à tabela empresa. Como cada empresa tem um endereço, o cadastro e a atualização
+ * gravam as duas tabelas na mesma transação.
+ */
 public class EmpresaDAO extends ApolloConnection {
 
     private static final String COLUNAS = "id, nome, descricao, cnpj, email_contato, id_endereco, ativo, url_foto, id_usuario_cadastro";
+
+    private final EnderecoDAO enderecoDAO = new EnderecoDAO();
 
     public EmpresaDAO() {
         super();
     }
 
+    /** Converte a linha atual do ResultSet em uma empresa. */
     private Empresa montar(ResultSet rs) throws SQLException {
         Empresa empresa = new Empresa();
         empresa.setId(rs.getInt("id"));
@@ -31,80 +38,67 @@ public class EmpresaDAO extends ApolloConnection {
         return empresa;
     }
 
-    private void desfazer() {
-        try {
-            connection.rollback();
-        } catch (SQLException e) {
-            System.err.println("Erro ao desfazer transação: " + e.getMessage());
-        }
-    }
-
-    private void restaurarAutoCommit() {
-        try {
-            connection.setAutoCommit(true);
-        } catch (SQLException e) {
-            System.err.println("Erro ao restaurar auto-commit: " + e.getMessage());
-        }
-    }
-
     // CREATE
 
+    /** Grava endereço e empresa na mesma transação e devolve o id da empresa, ou -1 em caso de erro. */
     public int inserir(Empresa empresa, Endereco endereco) {
-        String sql = "INSERT INTO empresa (nome, descricao, cnpj, email_contato, id_endereco, ativo, url_foto, id_usuario_cadastro) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
-        try {
+        try (Connection connection = abrirConexao()) {
             connection.setAutoCommit(false);
 
-            // insere endereço e seta o id na empresa
-            int idEndereco = EnderecoDAO.inserirNaConexao(endereco, connection);
-            empresa.setIdEndereco(idEndereco);
+            try {
+                int idGerado = inserirNaConexao(connection, empresa, endereco);
+                connection.commit();
+                return idGerado;
 
-            // retorna o id gerado pelo banco
-            try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                stmt.setString(1, empresa.getNome());
-                stmt.setString(2, empresa.getDescricao());
-                stmt.setString(3, empresa.getCnpj());
-                stmt.setString(4, empresa.getEmailContato());
-                stmt.setInt(5, empresa.getIdEndereco());
-                stmt.setString(6, StatusGeral.ATIVO.name());
-                stmt.setString(7, empresa.getUrlFoto());
-
-                if (empresa.getIdUsuarioCadastro() != null) {
-                    stmt.setInt(8, empresa.getIdUsuarioCadastro());
-                } else {
-                    stmt.setNull(8, Types.INTEGER);
-                }
-
-                stmt.executeUpdate();
-
-                try (ResultSet rs = stmt.getGeneratedKeys()) {
-                    if (rs.next()) {
-                        int idGerado = rs.getInt(1);
-                        connection.commit();
-                        return idGerado;
-                    }
-                }
+            } catch (SQLException e) {
+                desfazer(connection);
+                throw e;
             }
 
-            connection.commit();
-            return -1;
-
         } catch (SQLException e) {
-            desfazer();
             System.err.println("Erro ao inserir empresa: " + e.getMessage());
             return -1;
-
-        } finally {
-            restaurarAutoCommit();
         }
+    }
+
+    /**
+     * Versão que usa uma conexão externa, para que a empresa possa ser cadastrada junto com contrato e gerente.
+     */
+    public int inserirNaConexao(Connection connection, Empresa empresa, Endereco endereco) throws SQLException {
+        String sql = "INSERT INTO empresa (nome, descricao, cnpj, email_contato, id_endereco, ativo, url_foto, id_usuario_cadastro) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        int idEndereco = enderecoDAO.inserirNaConexao(endereco, connection);
+        empresa.setIdEndereco(idEndereco);
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, empresa.getNome());
+            stmt.setString(2, empresa.getDescricao());
+            stmt.setString(3, empresa.getCnpj());
+            stmt.setString(4, empresa.getEmailContato());
+            stmt.setInt(5, empresa.getIdEndereco());
+            stmt.setString(6, StatusGeral.ATIVO.name());
+            stmt.setString(7, empresa.getUrlFoto());
+            stmt.setObject(8, empresa.getIdUsuarioCadastro(), Types.INTEGER);
+
+            stmt.executeUpdate();
+
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        }
+
+        throw new SQLException("Não foi possível obter o id gerado.");
     }
 
     // READ por id
 
+    /** Procura uma empresa com o id informado, retornando null se ele não existir. */
     public Empresa buscarPorId(int id) {
         String sql = "SELECT " + COLUNAS + " FROM empresa WHERE id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
 
             try (ResultSet rs = stmt.executeQuery()) {
@@ -120,13 +114,36 @@ public class EmpresaDAO extends ApolloConnection {
         return null;
     }
 
+    /** Procura uma empresa pelo CNPJ, usado para impedir cadastros duplicados. */
+    public Empresa buscarPorCnpj(String cnpj) {
+        String sql = "SELECT " + COLUNAS + " FROM empresa WHERE cnpj = ?";
+
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, cnpj);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return montar(rs);
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar empresa por CNPJ: " + e.getMessage());
+        }
+
+        return null;
+    }
+
     // READ todos
 
+    /**
+     * Retorna a lista completa de empresa. A lista fica vazia se não houver registros ou se ocorrer erro.
+     */
     public List<Empresa> listarTodos() {
         List<Empresa> lista = new ArrayList<>();
         String sql = "SELECT " + COLUNAS + " FROM empresa ORDER BY nome";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql);
+        try (Connection connection = abrirConexao(); PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
@@ -142,51 +159,48 @@ public class EmpresaDAO extends ApolloConnection {
 
     // UPDATE
 
+    /** Atualiza empresa e endereço juntos, desfazendo tudo se uma das gravações falhar. */
     public boolean atualizar(Empresa empresa, Endereco endereco) {
-        String sql = "UPDATE empresa SET nome = ?, descricao = ?, cnpj = ?, email_contato = ?, ativo = ?, url_foto = ? WHERE id = ?";
-
-        try {
+        try (Connection connection = abrirConexao()) {
             connection.setAutoCommit(false);
 
-            endereco.setId(empresa.getIdEndereco());
-            EnderecoDAO.atualizarNaConexao(endereco, connection);
-
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setString(1, empresa.getNome());
-                stmt.setString(2, empresa.getDescricao());
-                stmt.setString(3, empresa.getCnpj());
-                stmt.setString(4, empresa.getEmailContato());
-                stmt.setString(5, empresa.getStatus().name());
-                stmt.setString(6, empresa.getUrlFoto());
-                stmt.setInt(7, empresa.getId());
-
-                boolean atualizou = stmt.executeUpdate() > 0;
-                connection.commit();
+            try {
+                boolean atualizou = atualizarNaConexao(connection, empresa, endereco);
+                if (atualizou) {
+                    connection.commit();
+                } else {
+                    desfazer(connection);
+                }
                 return atualizou;
+
+            } catch (SQLException e) {
+                desfazer(connection);
+                throw e;
             }
 
         } catch (SQLException e) {
-            desfazer();
             System.err.println("Erro ao atualizar empresa: " + e.getMessage());
             return false;
-
-        } finally {
-            restaurarAutoCommit();
         }
     }
 
-    // DELETE
+    /** Executa os dois UPDATEs usando a conexão recebida. */
+    private boolean atualizarNaConexao(Connection connection, Empresa empresa, Endereco endereco) throws SQLException {
+        String sql = "UPDATE empresa SET nome = ?, descricao = ?, cnpj = ?, email_contato = ?, ativo = ?, url_foto = ? WHERE id = ?";
 
-    public boolean excluir(int id) {
-        String sql = "DELETE FROM empresa WHERE id = ?";
+        endereco.setId(empresa.getIdEndereco());
+        enderecoDAO.atualizarNaConexao(endereco, connection);
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            return stmt.executeUpdate() > 0;
+            stmt.setString(1, empresa.getNome());
+            stmt.setString(2, empresa.getDescricao());
+            stmt.setString(3, empresa.getCnpj());
+            stmt.setString(4, empresa.getEmailContato());
+            stmt.setString(5, empresa.getStatus().name());
+            stmt.setString(6, empresa.getUrlFoto());
+            stmt.setInt(7, empresa.getId());
 
-        } catch (SQLException e) {
-            System.err.println("Erro ao excluir empresa: " + e.getMessage());
-            return false;
+            return stmt.executeUpdate() > 0;
         }
     }
 }

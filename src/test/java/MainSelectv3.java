@@ -1,4 +1,4 @@
-import org.apollo.apollowebcrud.DAO.*;
+import org.apollo.apollowebcrud.dao.*;
 import org.apollo.apollowebcrud.model.*;
 
 import java.util.List;

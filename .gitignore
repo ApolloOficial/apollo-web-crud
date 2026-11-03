@@ -19,6 +19,9 @@ build/
 
 ### Dados Sensíveis ###
 /src/main/resources/.env
+.env
+.env.*
+**/.env
 
 
 .idea/

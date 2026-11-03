@@ -1,5 +1,6 @@
 package org.apollo.apollowebcrud.model;
 
+/** Registro da tabela tipo_usuario, que liga o id guardado no banco ao perfil TipoUsuEnum. */
 public class TipoUsuario {
 
 //    ATRIBUTOS

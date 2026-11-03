@@ -1,4 +1,5 @@
-package org.apollo.apollowebcrud.DAO;
+
+package org.apollo.apollowebcrud.dao;
 
 import org.apollo.apollowebcrud.model.Manutencao;
 import org.apollo.apollowebcrud.model.StatusManutencao;
@@ -9,58 +10,93 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Acesso à tabela manutencao, que registra o histórico de serviços feitos nos painéis. */
 public class ManutencaoDAO extends ApolloConnection {
 
     public ManutencaoDAO() {
         super();
     }
 
+    /** Converte a linha atual do ResultSet em uma manutenção. */
     private Manutencao montar(ResultSet rs) throws SQLException {
         Manutencao manutencao = new Manutencao();
+
         manutencao.setId(rs.getInt("id"));
         manutencao.setIdPainel(rs.getInt("id_painel"));
-        manutencao.setTipoManutencao(TipoManutencao.valueOf(rs.getString("tipo_manutencao")));
+        manutencao.setTipoManutencao(
+                TipoManutencao.valueOf(rs.getString("tipo_manutencao"))
+        );
         manutencao.setDescricao(rs.getString("descricao"));
-        manutencao.setStatus(StatusManutencao.valueOf(rs.getString("status")));
-        manutencao.setDataAbertura(rs.getDate("data_abertura").toLocalDate());
+        manutencao.setStatus(
+                StatusManutencao.valueOf(rs.getString("status"))
+        );
+        manutencao.setDataAbertura(
+                rs.getDate("data_abertura").toLocalDate()
+        );
 
         Date dataPrevista = rs.getDate("data_prevista");
-        manutencao.setDataPrevista(dataPrevista != null ? dataPrevista.toLocalDate() : null);
+        manutencao.setDataPrevista(
+                dataPrevista != null ? dataPrevista.toLocalDate() : null
+        );
 
         Date dataConclusao = rs.getDate("data_conclusao");
-        manutencao.setDataConclusao(dataConclusao != null ? dataConclusao.toLocalDate() : null);
+        manutencao.setDataConclusao(
+                dataConclusao != null ? dataConclusao.toLocalDate() : null
+        );
 
-        manutencao.setIdUsuarioResponsavel(rs.getObject("id_usuario_responsavel", Integer.class));
+        manutencao.setIdUsuarioResponsavel(
+                rs.getObject("id_usuario_responsavel", Integer.class)
+        );
+
         return manutencao;
     }
 
-// CREATE
+    // ---------- CREATE ----------
 
+    /** Insere uma manutenção na tabela. O retorno é o id criado e -1 indica erro. */
     public int inserir(Manutencao manutencao) {
-        String sql = "INSERT INTO manutencao (id_painel, tipo_manutencao, descricao, status, data_abertura, data_prevista, data_conclusao, id_usuario_responsavel) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO manutencao " +
+                "(id_painel, tipo_manutencao, descricao, status, " +
+                "data_abertura, data_prevista, data_conclusao, " +
+                "id_usuario_responsavel) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-        // retorna o id gerado pelo banco
-        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (
+                Connection connection = abrirConexao();
+                PreparedStatement stmt = connection.prepareStatement(
+                        sql, Statement.RETURN_GENERATED_KEYS)
+        ) {
             stmt.setInt(1, manutencao.getIdPainel());
             stmt.setString(2, manutencao.getTipoManutencao().name());
             stmt.setString(3, manutencao.getDescricao());
-            stmt.setString(4, StatusManutencao.ABERTA.name());
-            stmt.setDate(5, Date.valueOf(manutencao.getDataAbertura()));
+
+            // Grava o status definido pelo Service.
+            stmt.setString(4, manutencao.getStatus().name());
+
+            stmt.setDate(
+                    5, Date.valueOf(manutencao.getDataAbertura())
+            );
 
             if (manutencao.getDataPrevista() != null) {
-                stmt.setDate(6, Date.valueOf(manutencao.getDataPrevista()));
+                stmt.setDate(
+                        6, Date.valueOf(manutencao.getDataPrevista())
+                );
             } else {
                 stmt.setNull(6, Types.DATE);
             }
 
             if (manutencao.getDataConclusao() != null) {
-                stmt.setDate(7, Date.valueOf(manutencao.getDataConclusao()));
+                stmt.setDate(
+                        7, Date.valueOf(manutencao.getDataConclusao())
+                );
             } else {
                 stmt.setNull(7, Types.DATE);
             }
 
             if (manutencao.getIdUsuarioResponsavel() != null) {
-                stmt.setInt(8, manutencao.getIdUsuarioResponsavel());
+                stmt.setInt(
+                        8, manutencao.getIdUsuarioResponsavel()
+                );
             } else {
                 stmt.setNull(8, Types.INTEGER);
             }
@@ -76,17 +112,23 @@ public class ManutencaoDAO extends ApolloConnection {
             return -1;
 
         } catch (SQLException e) {
-            System.err.println("Erro ao inserir manutenção: " + e.getMessage());
+            System.err.println(
+                    "Erro ao inserir manutenção: " + e.getMessage()
+            );
             return -1;
         }
     }
 
-    // READ por id
+    // ---------- READ POR ID ----------
 
+    /** Consulta uma manutenção pela chave primária, ou null se não existir. */
     public Manutencao buscarPorId(int id) {
         String sql = "SELECT * FROM manutencao WHERE id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (
+                Connection connection = abrirConexao();
+                PreparedStatement stmt = connection.prepareStatement(sql)
+        ) {
             stmt.setInt(1, id);
 
             try (ResultSet rs = stmt.executeQuery()) {
@@ -96,58 +138,89 @@ public class ManutencaoDAO extends ApolloConnection {
             }
 
         } catch (SQLException e) {
-            System.err.println("Erro ao buscar manutenção: " + e.getMessage());
+            System.err.println(
+                    "Erro ao buscar manutenção: " + e.getMessage()
+            );
         }
 
         return null;
     }
 
-    // READ todos
+    // ---------- READ TODOS ----------
 
+    /** Lista todos os registros de manutenção. */
     public List<Manutencao> listarTodos() {
         List<Manutencao> lista = new ArrayList<>();
-        String sql = "SELECT * FROM manutencao ORDER BY data_abertura DESC";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+        String sql = "SELECT * FROM manutencao " +
+                "ORDER BY data_abertura DESC";
 
+        try (
+                Connection connection = abrirConexao();
+                PreparedStatement stmt = connection.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()
+        ) {
             while (rs.next()) {
                 lista.add(montar(rs));
             }
 
         } catch (SQLException e) {
-            System.err.println("Erro ao listar manutenções: " + e.getMessage());
+            System.err.println(
+                    "Erro ao listar manutenções: " + e.getMessage()
+            );
         }
 
         return lista;
     }
 
-    // UPDATE
+    // ---------- UPDATE ----------
 
+    /** Grava as alterações de uma manutenção. */
     public boolean atualizar(Manutencao manutencao) {
-        String sql = "UPDATE manutencao SET id_painel = ?, tipo_manutencao = ?, descricao = ?, status = ?, data_abertura = ?, data_prevista = ?, data_conclusao = ?, id_usuario_responsavel = ? WHERE id = ?";
+        String sql = "UPDATE manutencao SET " +
+                "id_painel = ?, " +
+                "tipo_manutencao = ?, " +
+                "descricao = ?, " +
+                "status = ?, " +
+                "data_abertura = ?, " +
+                "data_prevista = ?, " +
+                "data_conclusao = ?, " +
+                "id_usuario_responsavel = ? " +
+                "WHERE id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (
+                Connection connection = abrirConexao();
+                PreparedStatement stmt = connection.prepareStatement(sql)
+        ) {
             stmt.setInt(1, manutencao.getIdPainel());
             stmt.setString(2, manutencao.getTipoManutencao().name());
             stmt.setString(3, manutencao.getDescricao());
             stmt.setString(4, manutencao.getStatus().name());
-            stmt.setDate(5, Date.valueOf(manutencao.getDataAbertura()));
+
+            stmt.setDate(
+                    5, Date.valueOf(manutencao.getDataAbertura())
+            );
 
             if (manutencao.getDataPrevista() != null) {
-                stmt.setDate(6, Date.valueOf(manutencao.getDataPrevista()));
+                stmt.setDate(
+                        6, Date.valueOf(manutencao.getDataPrevista())
+                );
             } else {
                 stmt.setNull(6, Types.DATE);
             }
 
             if (manutencao.getDataConclusao() != null) {
-                stmt.setDate(7, Date.valueOf(manutencao.getDataConclusao()));
+                stmt.setDate(
+                        7, Date.valueOf(manutencao.getDataConclusao())
+                );
             } else {
                 stmt.setNull(7, Types.DATE);
             }
 
             if (manutencao.getIdUsuarioResponsavel() != null) {
-                stmt.setInt(8, manutencao.getIdUsuarioResponsavel());
+                stmt.setInt(
+                        8, manutencao.getIdUsuarioResponsavel()
+                );
             } else {
                 stmt.setNull(8, Types.INTEGER);
             }
@@ -157,23 +230,66 @@ public class ManutencaoDAO extends ApolloConnection {
             return stmt.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            System.err.println("Erro ao atualizar manutenção: " + e.getMessage());
+            System.err.println(
+                    "Erro ao atualizar manutenção: " + e.getMessage()
+            );
             return false;
         }
     }
 
-    // DELETE
+    // ---------- DELETE ----------
 
+    /** Apaga o registro de manutenção com o id informado. */
     public boolean excluir(int id) {
         String sql = "DELETE FROM manutencao WHERE id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (
+                Connection connection = abrirConexao();
+                PreparedStatement stmt = connection.prepareStatement(sql)
+        ) {
             stmt.setInt(1, id);
             return stmt.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            System.err.println("Erro ao excluir manutenção: " + e.getMessage());
+            System.err.println(
+                    "Erro ao excluir manutenção: " + e.getMessage()
+            );
             return false;
         }
+    }
+
+    // ---------- LISTAGEM POR FILIAL ----------
+
+    /** Lista as manutenções dos painéis pertencentes à filial. */
+    public List<Manutencao> listarPorFilial(int idFilial) {
+        List<Manutencao> lista = new ArrayList<>();
+
+        String sql = "SELECT m.* " +
+                "FROM manutencao m " +
+                "JOIN painel p ON p.id = m.id_painel " +
+                "JOIN string s ON s.id = p.id_string " +
+                "JOIN inversor i ON i.id = s.id_inversor " +
+                "WHERE i.id_filial = ? " +
+                "ORDER BY m.data_abertura DESC";
+
+        try (
+                Connection connection = abrirConexao();
+                PreparedStatement stmt = connection.prepareStatement(sql)
+        ) {
+            stmt.setInt(1, idFilial);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(montar(rs));
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println(
+                    "Erro ao listar manutenções da filial: " + e.getMessage()
+            );
+        }
+
+        return lista;
     }
 }

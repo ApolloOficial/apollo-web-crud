@@ -88,3 +88,5 @@ git push origin feature/nome-da-sua-tarefa
 * [@Nichiruto0](https://github.com/Nichiruto0)
 * [@Migs345](https://github.com/Migs345)
 * [@pczr](https://github.com/pczr)
+* [@ikarobueno05](https://github.com/ikarobueno05)
+* [@Sabor-Fernandex (Fernandes)](https://github.com/Sabor-Fernandex)

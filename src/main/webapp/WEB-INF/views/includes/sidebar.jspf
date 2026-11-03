@@ -1,0 +1,49 @@
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<c:set var="perfilLogado" value="${usuarioLogado.perfil}"/>
+<c:set var="semEmpresa" value="${perfilLogado == 'GERENTE' && usuarioLogado.idEmpresa == null}"/>
+<aside class="sidebar">
+    <a class="logo" href="${raiz}/dashboard" aria-label="Apollo">
+        <div class="logo-apollo" role="img" aria-label="Apollo">
+            <div class="nome"><i class="a-anel"></i><i class="a-haste"></i><i class="p-anel"></i><i class="p-haste"></i><i class="o1-anel"></i><i class="l1"></i><i class="l2"></i><i class="o2-anel"></i></div>
+            <div class="marca-apollo"><i class="m1"></i><i class="m2"></i></div>
+        </div>
+    </a>
+    <nav class="menu">
+        <c:if test="${!semEmpresa}">
+            <a href="${raiz}/dashboard" class="menu-item${ativo eq 'dashboard' ? ' ativo' : ''}">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Dashboard</a>
+        </c:if>
+        <c:if test="${perfilLogado == 'GERENTE'}">
+            <a href="${raiz}/empresa" class="menu-item${ativo eq 'empresa' ? ' ativo' : ''}">
+                <svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 21v-4h6v4"/></svg>Empresa</a>
+        </c:if>
+        <c:if test="${!semEmpresa}">
+            <a href="${raiz}/filial" class="menu-item${ativo eq 'filial' ? ' ativo' : ''}">
+                <svg viewBox="0 0 24 24"><circle cx="6" cy="5" r="2"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="8" r="2"/><path d="M6 7v10M18 10c0 4-6 3-12 7"/></svg>Filiais</a>
+        </c:if>
+        <c:if test="${perfilLogado == 'TECNICO' || perfilLogado == 'OPERADOR'}">
+            <a href="${raiz}/inversor" class="menu-item${ativo eq 'inversor' ? ' ativo' : ''}">
+                <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M13 7l-3 5h4l-3 5"/></svg>Inversores</a>
+            <a href="${raiz}/string" class="menu-item${ativo eq 'string' ? ' ativo' : ''}">
+                <svg viewBox="0 0 24 24"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg>Strings</a>
+            <a href="${raiz}/painel" class="menu-item${ativo eq 'painel' ? ' ativo' : ''}">
+                <svg viewBox="0 0 24 24"><path d="M4 4h16l2 12H2zM12 4v12M7 4l-2 12M17 4l2 12M3 10h18M10 20h4"/></svg>Painéis</a>
+            <a href="${raiz}/manutencao" class="menu-item${ativo eq 'manutencao' ? ' ativo' : ''}">
+                <svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.2-.6-.6-2.2z"/></svg>Manutenções</a>
+        </c:if>
+        <c:if test="${(perfilLogado == 'GERENTE' || perfilLogado == 'TECNICO') && !semEmpresa}">
+            <a href="${raiz}/membros" class="menu-item${ativo eq 'membros' ? ' ativo' : ''}">
+                <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.5-4 3-6 6.5-6s6 2 6.5 6"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14c2.5 0 4 1.7 4.5 5"/></svg>Membros</a>
+        </c:if>
+        <c:if test="${perfilLogado == 'GERENTE' && !semEmpresa}">
+            <a href="${raiz}/contrato" class="menu-item${ativo eq 'contrato' ? ' ativo' : ''}">
+                <svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>Contrato</a>
+        </c:if>
+    </nav>
+    <a href="${raiz}/perfil" class="menu-item menu-baixo${ativo eq 'perfil' ? ' ativo' : ''}">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c.7-4.5 4-6 8-6s7.3 1.5 8 6"/></svg>Perfil</a>
+    <form class="sair" action="${raiz}/logout" method="post">
+        <button type="submit" class="menu-item menu-sair">
+            <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>Sair</button>
+    </form>
+</aside>
