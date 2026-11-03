@@ -1,7 +1,12 @@
+
 package org.apollo.apollowebcrud.model;
 
 import java.time.LocalDate;
 
+/**
+ * Serviço realizado em um painel, preventivo, corretivo ou preditivo. Tem datas de abertura, previsão e conclusão
+ * e um usuário responsável.
+ */
 public class Manutencao {
 
 //    ATRIBUTOS
@@ -109,11 +114,8 @@ public class Manutencao {
         this.dataPrevista = dataPrevista;
     }
 
-//    Garante que a conclusão da tarefa não seja cadastrada em um momento futuro
+    /** Define a data de conclusão. A validação é realizada no ManutencaoService. */
     public void setDataConclusao(LocalDate dataConclusao) {
-        if (dataConclusao != null && dataConclusao.isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("Data de finalização não pode ser no futuro");
-        }
         this.dataConclusao = dataConclusao;
     }
 

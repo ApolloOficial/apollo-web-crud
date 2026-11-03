@@ -1,23 +1,22 @@
 package org.apollo.apollowebcrud.util;
 
-import org.apollo.apollowebcrud.dao.UsuarioDAO;
-
 import java.util.regex.Pattern;
 
-public class EmailUtils {
-    public static final UsuarioDAO usuarioDAO = new UsuarioDAO();
+/** Validação simples de e-mail. */
+public final class EmailUtils {
 
-    public static boolean verificarEmailExist(String email) {
-        return usuarioDAO.buscarPorEmail(email) != null;
+    /**
+     * Exige o formato algo@dominio.ext. O banco só obriga o @, mas aqui o formato é um pouco mais rígido.
+     */
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
+
+    /** Impede a criação de instâncias, já que a classe só tem métodos estáticos. */
+    private EmailUtils() {
+        throw new UnsupportedOperationException("Esta é uma classe utilitária e não pode ser instanciada.");
     }
 
-    // E-mail: padrão comum
-
-    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z]+\\.[A-Za-z]+(\\.[A-Za-z]+)?$");
-
+    /** Verdadeiro se o texto, sem espaços nas pontas, segue o formato esperado. */
     public static boolean isEmailValido(String email) {
-        if (email == null) return false;
-        return EMAIL_PATTERN.matcher(email).matches();
+        return email != null && EMAIL_PATTERN.matcher(email.trim()).matches();
     }
-
 }

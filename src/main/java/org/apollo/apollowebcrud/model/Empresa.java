@@ -1,5 +1,8 @@
 package org.apollo.apollowebcrud.model;
 
+/**
+ * Empresa cliente da Apollo. Cada gerente possui uma única empresa, que reúne as filiais e o contrato.
+ */
 public class Empresa {
 
 //     ATRIBUTOS

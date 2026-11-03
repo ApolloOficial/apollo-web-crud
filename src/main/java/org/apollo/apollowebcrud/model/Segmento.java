@@ -1,5 +1,6 @@
 package org.apollo.apollowebcrud.model;
 
+/** Ramo de atuação da filial, escolhido no cadastro dela. */
 public class Segmento {
 
 //    ATRIBUTOS

@@ -1,7 +1,6 @@
 import org.apollo.apollowebcrud.dao.*;
 
 public class MainDeletev3 {
-
     public static void main(String[] args) {
 
         ContratoDAO contratoDAO = new ContratoDAO();
@@ -15,15 +14,12 @@ public class MainDeletev3 {
         EmpresaDAO empresaDAO = new EmpresaDAO();
         SegmentoDAO segmentoDAO = new SegmentoDAO();
 
-        System.out.println("Contrato: "     + contratoDAO.excluir(1));
-        System.out.println("Manutencao: "   + manutencaoDAO.excluir(1));
-        System.out.println("Painel: "       + painelDAO.excluir(1));
-        System.out.println("StringSolar: "  + stringSolarDAO.excluir(1));
-        System.out.println("Inversor: "     + inversorDAO.excluir(1));
-        System.out.println("Usuario: "      + usuarioDAO.excluir(1));
-        System.out.println("TipoUsuario: "  + tipoUsuarioDAO.excluir(1));
-        System.out.println("Filial: "       + filialDAO.excluir(1));
-        System.out.println("Empresa: "      + empresaDAO.excluir(1));
-        System.out.println("Segmento: "     + segmentoDAO.excluir(1));
+        System.out.println("Contrato: " + contratoDAO.excluir(1));
+        System.out.println("Manutencao: " + manutencaoDAO.excluir(1));
+        System.out.println("Painel: " + painelDAO.excluir(1));
+        System.out.println("StringSolar: " + stringSolarDAO.excluir(1));
+        System.out.println("Inversor: " + inversorDAO.excluir(1));
+        System.out.println("TipoUsuario: " + tipoUsuarioDAO.excluir(1));
+        System.out.println("Segmento: " + segmentoDAO.excluir(1));
     }
 }

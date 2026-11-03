@@ -1,18 +1,22 @@
 package org.apollo.apollowebcrud.util;
 
-import org.apollo.apollowebcrud.dao.EmpresaDAO;
-
+/** Funções de apoio para CNPJ, como remoção de máscara e validação dos dígitos. */
 public final class CnpjUtils {
-    public static final EmpresaDAO empresaDAO = new EmpresaDAO();
 
+    /** Impede a criação de instâncias, já que a classe só tem métodos estáticos. */
     private CnpjUtils() {
         throw new UnsupportedOperationException("Esta é uma classe utilitária e não pode ser instanciada.");
     }
 
-    /*
-        Valida o CNPJ de verdade: formato + dígitos verificadores +
-        rejeita sequências repetidas (00.000.000/0000-00 etc, que passam no formato mas são inválidas)
-    */
+    /** Deixa só os dígitos do CNPJ e devolve texto vazio se ele for null. */
+    public static String removerMascara(String cnpj) {
+        return cnpj == null ? "" : cnpj.replaceAll("\\D", "");
+    }
+
+    /**
+     * Valida o CNPJ de verdade, conferindo o tamanho, os dígitos verificadores e rejeitando sequências
+     * repetidas como 00.000.000/0000-00, que passam no formato mas não existem.
+     */
     public static boolean isCnpjValido(String cnpj) {
         if (cnpj == null) return false;
 
