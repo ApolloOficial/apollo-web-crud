@@ -1,3 +1,4 @@
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="ap" tagdir="/WEB-INF/tags" %>
@@ -43,7 +44,7 @@
                         </c:forEach>
                     </select></label>
                 <label class="campo"><span>Número de série *</span>
-                    <input type="text" name="numeroSerie" maxlength="60" required value="<c:out value='${item.numeroSerie}'/>"></label>
+                    <input type="text" name="numeroSerie" maxlength="100" required value="<c:out value='${item.numeroSerie}'/>"></label>
                 <label class="campo"><span>Marca *</span>
                     <input type="text" name="marca" maxlength="60" required value="<c:out value='${item.marca}'/>"></label>
                 <label class="campo"><span>Modelo *</span>

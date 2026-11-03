@@ -115,11 +115,7 @@ public class Painel {
         this.status = status;
     }
 
-    /** Impede que a instalação seja registrada com data no futuro. */
     public void setDataInstalacao(LocalDate dataInstalacao) {
-        if (dataInstalacao != null && dataInstalacao.isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("Data de finalização não pode ser no futuro");
-        }
         this.dataInstalacao = dataInstalacao;
     }
 

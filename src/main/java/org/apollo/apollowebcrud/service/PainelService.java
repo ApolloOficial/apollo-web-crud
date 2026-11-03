@@ -100,7 +100,7 @@ public class PainelService {
     }
 
     /**
-     * Confere o número de série, os tamanhos dos textos, a potência e a chave da nota fiscal (44 dígitos).
+     * Confere o número de série, os tamanhos dos textos, a potência, a data de instalação e a chave da nota fiscal (44 dígitos).
      * O número de série também não pode se repetir, exceto no próprio painel durante a edição.
      */
     private String validar(Painel p, int idIgnorar) {
@@ -110,6 +110,9 @@ public class PainelService {
         if (excede(p.getModelo(), 150)) return "O modelo deve ter até 150 caracteres";
         if (p.getPotenciaW() != null && (p.getPotenciaW() <= 0 || p.getPotenciaW() >= 100000)) {
             return "A potência deve ser maior que zero";
+        }
+        if (p.getDataInstalacao() != null && p.getDataInstalacao().isAfter(java.time.LocalDate.now())) {
+            return "A data de instalação não pode estar no futuro";
         }
         if (!vazio(p.getNotaFiscal()) && !NotaFiscalUtils.isChaveNfeValida(p.getNotaFiscal())) {
             return "A chave da nota fiscal não é válida (44 dígitos)";

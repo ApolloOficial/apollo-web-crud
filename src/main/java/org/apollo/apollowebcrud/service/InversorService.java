@@ -103,7 +103,7 @@ public class InversorService {
     }
 
     /**
-     * Confere código e número de série (obrigatórios), tamanho máximo dos textos e potência positiva.
+     * Confere código e número de série (obrigatórios), tamanho máximo dos textos, potência positiva e data válida.
      * Também impede código repetido na mesma filial e número de série repetido no sistema.
      * O idIgnorar impede que o próprio inversor seja tratado como repetido durante a edição.
      */
@@ -116,6 +116,9 @@ public class InversorService {
         if (excede(i.getModelo(), 150)) return "O modelo deve ter até 150 caracteres";
         if (i.getPotenciaKw() != null && (i.getPotenciaKw() <= 0 || i.getPotenciaKw() >= 100000)) {
             return "A potência deve ser maior que zero";
+        }
+        if (i.getDataInstalacao() != null && i.getDataInstalacao().isAfter(java.time.LocalDate.now())) {
+            return "A data de instalação não pode estar no futuro";
         }
 
         Inversor mesmoCodigo = inversorDAO.buscarPorCodigoNaFilial(idFilial, i.getCodigo().trim());
