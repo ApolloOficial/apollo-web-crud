@@ -39,9 +39,7 @@
                         </span>
                     </div>
                 </div>
-                <c:if test="${usuarioLogado.perfil == 'GERENTE' || usuarioLogado.perfil == 'TECNICO'}">
-                    <a class="btn btn-contorno" href="${raiz}/membros?editar=${usuarioLogado.id}">Editar meus dados</a>
-                </c:if>
+                <a class="btn btn-contorno" href="${raiz}/perfil?editar=1">Editar meus dados</a>
             </div>
         </section>
 

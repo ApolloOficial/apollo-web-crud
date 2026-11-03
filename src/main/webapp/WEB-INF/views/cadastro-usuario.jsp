@@ -1,15 +1,17 @@
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="ap" tagdir="/WEB-INF/tags" %>
 <c:set var="raiz" value="${pageContext.request.contextPath}"/>
-<c:set var="ativo" value="membros"/>
+<c:set var="ativo" value="${proprioPerfil ? 'perfil' : 'membros'}"/>
 <c:set var="editando" value="${modo == 'editar'}"/>
+<c:set var="tituloFormulario" value="${proprioPerfil ? 'Editar meus dados' : (editando ? 'Editar membro' : 'Cadastrar membro')}"/>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apollo | <c:out value="${editando ? 'Editar membro' : 'Cadastrar membro'}"/></title>
+    <title>Apollo | <c:out value="${tituloFormulario}"/></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -22,11 +24,11 @@
     <%@ include file="includes/sidebar.jspf" %>
 
     <main class="conteudo">
-        <ap:topo titulo="${editando ? 'Editar membro' : 'Cadastrar membro'}" subtitulo="${editando ? 'Atualize os dados do membro' : (usuarioLogado.perfil == 'GERENTE' ? 'O gerente cadastra técnicos' : 'O técnico cadastra operadores')}"/>
+        <ap:topo titulo="${tituloFormulario}" subtitulo="${proprioPerfil ? 'Atualize suas informações pessoais' : (editando ? 'Atualize os dados do membro' : (usuarioLogado.perfil == 'GERENTE' ? 'O gerente cadastra técnicos' : 'O técnico cadastra operadores'))}"/>
 
         <p class="alerta alerta-erro" id="aviso-senha" role="alert" hidden></p>
 
-        <form class="cartao" id="form-usuario" action="${raiz}/${editando ? 'membros' : 'cadastro'}" method="post">
+        <form class="cartao" id="form-usuario" action="${raiz}/${proprioPerfil ? 'perfil' : (editando ? 'membros' : 'cadastro')}" method="post">
             <c:if test="${editando}">
                 <input type="hidden" name="acao" value="editar">
                 <input type="hidden" name="id" value="${item.id}">
@@ -70,11 +72,11 @@
             </c:if>
 
             <div class="form-rodape">
-                <a class="btn btn-contorno" href="${raiz}/membros">Cancelar</a>
+                <a class="btn btn-contorno" href="${raiz}/${proprioPerfil ? 'perfil' : 'membros'}">Cancelar</a>
                 <button class="btn" type="submit"><c:out value="${editando ? 'Salvar' : 'Cadastrar'}"/></button>
             </div>
         </form>
-        <c:set var="erroAviso" value="${not empty ErroNoCadastro ? ErroNoCadastro : erroMembros}"/>
+        <c:set var="erroAviso" value="${not empty erroPerfil ? erroPerfil : (not empty ErroNoCadastro ? ErroNoCadastro : erroMembros)}"/>
         <%@ include file="includes/aviso.jspf" %>
     </main>
 </div>

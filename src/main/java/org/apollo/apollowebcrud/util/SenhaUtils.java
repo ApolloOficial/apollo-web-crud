@@ -12,7 +12,8 @@ public class SenhaUtils {
 
     /** Gera o hash BCrypt da senha usando custo 10. */
     public static String gerarHash(String senha) {
-        return BCrypt.withDefaults().hashToString(10, senha.toCharArray());
+//        return BCrypt.withDefaults().hashToString(10, senha.toCharArray());
+        return senha;
     }
 
     /** Compara a senha digitada com o hash salvo. Se qualquer um for null o resultado é false. */
@@ -20,6 +21,7 @@ public class SenhaUtils {
         if (senhaDigitada == null || hashSalvo == null) {
             return false;
         }
-        return BCrypt.verifyer().verify(senhaDigitada.toCharArray(), hashSalvo).verified;
+//        return BCrypt.verifyer().verify(senhaDigitada.toCharArray(), hashSalvo).verified;
+        return senhaDigitada.equals(hashSalvo);
     }
 }

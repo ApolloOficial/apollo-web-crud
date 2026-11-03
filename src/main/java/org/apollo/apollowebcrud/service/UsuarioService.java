@@ -59,6 +59,7 @@ public class UsuarioService {
         if (usuario.getPerfil() == null || usuario.getPerfil() != areaSelecionada) {
             return null;
         }
+
         usuario.setSenhaHash(null); // a senha nunca sai do Service
 
         return usuario;
@@ -105,19 +106,41 @@ public class UsuarioService {
     // ---------- LISTAGEM ----------
 
     /**
-     * O gerente vê os técnicos da empresa e o técnico vê os operadores da filial. O operador não possui essa tela.
+     * O gerente vê os técnicos e operadores da empresa, enquanto o técnico vê os operadores
+     * da própria filial. O operador não possui acesso à tela de gerenciamento de membros.
      */
     public List<Usuario> listarVisiveis(Usuario logado) {
+
         if (logado.getPerfil() == TipoUsuEnum.GERENTE && logado.getIdEmpresa() != null) {
-            return comPerfil(usuarioDAO.listarPorEmpresaETipo(logado.getIdEmpresa(), TipoUsuEnum.TECNICO.name()), TipoUsuEnum.TECNICO);
+            List<Usuario> membros = new java.util.ArrayList<>(
+                    comPerfil(
+                            usuarioDAO.listarPorEmpresaETipo(
+                                    logado.getIdEmpresa(), TipoUsuEnum.TECNICO.name()),
+                            TipoUsuEnum.TECNICO)
+            );
+
+            membros.addAll(comPerfil(
+                    usuarioDAO.listarPorEmpresaETipo(
+                            logado.getIdEmpresa(), TipoUsuEnum.OPERADOR.name()),
+                    TipoUsuEnum.OPERADOR));
+
+            membros.sort(java.util.Comparator.comparing(
+                    Usuario::getNome, String.CASE_INSENSITIVE_ORDER));
+
+            return membros;
         }
+
         if (logado.getPerfil() == TipoUsuEnum.TECNICO && logado.getIdFilial() != null) {
-            return comPerfil(usuarioDAO.listarPorFilialETipo(logado.getIdFilial(), TipoUsuEnum.OPERADOR.name()), TipoUsuEnum.OPERADOR);
+            return comPerfil(
+                    usuarioDAO.listarPorFilialETipo(
+                            logado.getIdFilial(), TipoUsuEnum.OPERADOR.name()),
+                    TipoUsuEnum.OPERADOR);
         }
+
         return List.of();
     }
 
-    /** Como a lista é de um tipo só, o perfil de cada linha já é conhecido e é preenchido aqui. */
+    /** Preenche o perfil dos usuários retornados pelo DAO. */
     private List<Usuario> comPerfil(List<Usuario> usuarios, TipoUsuEnum perfil) {
         usuarios.forEach(u -> u.setPerfil(perfil));
         return usuarios;
@@ -128,8 +151,19 @@ public class UsuarioService {
         if (!logado.podeOperarEquipamentos()) {
             return List.of();
         }
-        List<Usuario> responsaveis = new java.util.ArrayList<>(usuarioDAO.listarPorFilialETipo(logado.getIdFilial(), TipoUsuEnum.TECNICO.name()));
-        responsaveis.addAll(usuarioDAO.listarPorFilialETipo(logado.getIdFilial(), TipoUsuEnum.OPERADOR.name()));
+
+        List<Usuario> responsaveis = new java.util.ArrayList<>(
+                comPerfil(
+                        usuarioDAO.listarPorFilialETipo(
+                                logado.getIdFilial(), TipoUsuEnum.TECNICO.name()),
+                        TipoUsuEnum.TECNICO)
+        );
+
+        responsaveis.addAll(comPerfil(
+                usuarioDAO.listarPorFilialETipo(
+                        logado.getIdFilial(), TipoUsuEnum.OPERADOR.name()),
+                TipoUsuEnum.OPERADOR));
+
         return responsaveis;
     }
 
@@ -138,11 +172,13 @@ public class UsuarioService {
         if (idUsuario == null) {
             return false;
         }
+
         Usuario usuario = usuarioDAO.buscarPorId(idUsuario);
         if (usuario == null || !StatusGeral.ATIVO.name().equals(usuario.getStatus())
                 || !Objects.equals(usuario.getIdFilial(), idFilial)) {
             return false;
         }
+
         TipoUsuEnum perfil = tipoUsuarioService.buscarPerfil(usuario.getIdTipoUsuario());
         return perfil == TipoUsuEnum.TECNICO || perfil == TipoUsuEnum.OPERADOR;
     }
@@ -175,18 +211,51 @@ public class UsuarioService {
     // O gerente gerencia os técnicos da empresa dele e o técnico gerencia os operadores da filial dele.
 
     /**
-     * Atualiza dados pessoais do usuário identificado em dados.getId(). Tipo, empresa e filial não mudam
-     * e a nova senha é opcional.
+     * Atualiza os dados pessoais de um usuário gerenciado pelo usuário logado.
+     * O gerente edita técnicos e o técnico edita operadores, dentro dos seus respectivos escopos.
      */
     public String editarUsuario(Usuario dados, String novaSenha, Usuario logado) {
         Usuario atual = buscarGerenciavel(dados.getId(), logado);
+
         if (atual == null) {
             return "Usuário não encontrado ou sem permissão";
         }
 
+        return salvarDadosPessoais(dados, novaSenha, atual);
+    }
+
+    /**
+     * Permite que o usuário logado altere seus próprios dados pessoais.
+     * O usuário é buscado novamente no banco para preservar seus vínculos e permissões.
+     */
+    public String editarProprioPerfil(Usuario dados, String novaSenha, Usuario logado) {
+        if (logado == null || logado.getId() <= 0) {
+            return "Sessão inválida";
+        }
+
+        Usuario atual = usuarioDAO.buscarPorId(logado.getId());
+
+        if (atual == null || !estaAtivo(atual)) {
+            return "Usuário não encontrado ou inativo";
+        }
+
+        return salvarDadosPessoais(dados, novaSenha, atual);
+    }
+
+    /**
+     * Valida e atualiza os dados pessoais do usuário. Tipo, empresa, filial e status não mudam.
+     * A troca de senha é opcional e só acontece quando uma nova senha é informada.
+     */
+    private String salvarDadosPessoais(Usuario dados, String novaSenha, Usuario atual) {
+        dados.setId(atual.getId());
+
         String erro = validarDadosPessoais(dados);
         boolean trocaSenha = novaSenha != null && !novaSenha.isEmpty();
-        if (erro == null && trocaSenha) erro = validarSenha(novaSenha);
+
+        if (erro == null && trocaSenha) {
+            erro = validarSenha(novaSenha);
+        }
+
         if (erro != null) {
             return erro;
         }
@@ -195,10 +264,12 @@ public class UsuarioService {
         atual.setEmail(dados.getEmail().trim());
         atual.setCpf(CpfUtils.removerMascara(dados.getCpf()));
         atual.setTelefone(telefoneSomenteDigitos(dados.getTelefone()));
-        atual.setUrlFoto(dados.getUrlFoto() == null || dados.getUrlFoto().isBlank() ? null : dados.getUrlFoto().trim());
+        atual.setUrlFoto(dados.getUrlFoto() == null || dados.getUrlFoto().isBlank()
+                ? null : dados.getUrlFoto().trim());
 
         boolean salvou = usuarioDAO.atualizar(atual)
-                && (!trocaSenha || usuarioDAO.atualizarSenha(atual.getId(), SenhaUtils.gerarHash(novaSenha)));
+                && (!trocaSenha || usuarioDAO.atualizarSenha(
+                atual.getId(), SenhaUtils.gerarHash(novaSenha)));
 
         return salvou ? null : "Erro interno no servidor ao tentar salvar o usuário";
     }
@@ -290,10 +361,12 @@ public class UsuarioService {
         if (novo.getIdFilial() == null) {
             return "A filial não foi informada";
         }
+
         Filial filial = filialService.buscarPorId(novo.getIdFilial());
         if (filial == null || filial.getIdEmpresa() != cadastrador.getIdEmpresa()) {
             return "A filial selecionada não pertence à sua empresa";
         }
+
         return null;
     }
 
@@ -302,6 +375,7 @@ public class UsuarioService {
         if (u.getNome() == null || u.getNome().trim().isEmpty()) {
             return "O nome não foi informado";
         }
+
         String erro = validarEmail(u.getEmail(), u.getId());
         if (erro == null) erro = validarCpf(u.getCpf(), u.getId());
         if (erro == null) erro = validarTelefone(u.getTelefone());
@@ -335,10 +409,12 @@ public class UsuarioService {
         if (!CpfUtils.isValido(cpfLimpo)) {
             return "O CPF não é válido";
         }
+
         Usuario mesmoCpf = usuarioDAO.buscarPorCpf(cpfLimpo);
         if (mesmoCpf != null && mesmoCpf.getId() != idIgnorar) {
             return "Este CPF já foi cadastrado no sistema";
         }
+
         return null;
     }
 
@@ -378,7 +454,7 @@ public class UsuarioService {
         novo.setIdUsuarioCadastro(cadastrador.getId());
     }
 
-    /** Remove máscara do telefone e devolve null se ele estiver vazio. */
+    /** Remove máscara do telefone e devolve null quando ele estiver vazio. */
     private String telefoneSomenteDigitos(String telefone) {
         if (telefone == null || telefone.trim().isEmpty()) {
             return null;
