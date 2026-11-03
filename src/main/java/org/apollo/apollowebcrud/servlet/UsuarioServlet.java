@@ -82,6 +82,7 @@ public class UsuarioServlet extends HttpServlet {
         }
     }
 
+
     /**
      * Carrega os membros visíveis, as filiais deles e os totais de técnicos, operadores e
      * filiais com equipe que aparecem no topo da tela.
@@ -91,29 +92,46 @@ public class UsuarioServlet extends HttpServlet {
         Usuario logado = SessaoUtils.usuarioLogado(request);
         List<Usuario> membros = usuarioService.listarVisiveis(logado);
         Map<Integer, String> nomesFiliais = new HashMap<>();
+
         for (Filial filial : filialService.listarVisiveis(logado)) {
             nomesFiliais.put(filial.getId(), filial.getNome());
         }
+
         Set<Integer> filiaisComEquipe = new HashSet<>();
         int tecnicos = 0;
         int operadores = 0;
+
         for (Usuario membro : membros) {
             if (membro.getPerfil() == TipoUsuEnum.TECNICO) {
                 tecnicos++;
             } else if (membro.getPerfil() == TipoUsuEnum.OPERADOR) {
                 operadores++;
             }
+
             if (membro.getIdFilial() != null) {
                 filiaisComEquipe.add(membro.getIdFilial());
             }
         }
+
+        // Conta os técnicos da própria filial sem adicioná-los à listagem.
+        if (logado.getPerfil() == TipoUsuEnum.TECNICO) {
+            for (Usuario usuario : usuarioService.listarResponsaveisDaFilial(logado)) {
+                if (usuario.getPerfil() == TipoUsuEnum.TECNICO) {
+                    tecnicos++;
+                }
+            }
+        }
+
         request.setAttribute("listaMembros", membros);
         request.setAttribute("nomesFiliais", nomesFiliais);
+        request.setAttribute("totalMembros", membros.size());
         request.setAttribute("totalTecnicos", tecnicos);
         request.setAttribute("totalOperadores", operadores);
         request.setAttribute("totalFiliaisComEquipe", filiaisComEquipe.size());
+
         request.getRequestDispatcher(VIEW_MEMBROS).forward(request, response);
     }
+
 
     /** Abre o formulário de edição com o usuário informado. */
     private void mostrarFormulario(HttpServletRequest request, HttpServletResponse response, Usuario item)

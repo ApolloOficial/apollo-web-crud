@@ -24,9 +24,8 @@
     <main class="conteudo">
         <ap:topo titulo="Membros" subtitulo="Gerencie os usuários da empresa e acompanhe as equipes"/>
 
-
         <section class="grade-resumo" aria-label="Resumo">
-            <div class="resumo-item"><span>Total de membros</span><strong>${fn:length(listaMembros)}</strong></div>
+            <div class="resumo-item"><span>Total de membros</span><strong>${totalMembros}</strong></div>
             <div class="resumo-item"><span>Técnicos</span><strong>${totalTecnicos}</strong></div>
             <div class="resumo-item"><span>Operadores</span><strong>${totalOperadores}</strong></div>
             <div class="resumo-item"><span>Filiais com equipe</span><strong>${totalFiliaisComEquipe}</strong></div>
@@ -68,20 +67,27 @@
                         <td><ap:badge valor="${m.status}"/></td>
                         <td>
                             <div class="acoes">
-                                <a class="btn btn-mini btn-contorno" href="${raiz}/membros?editar=${m.id}">Editar</a>
-                                <form action="${raiz}/membros" method="post" data-confirmar="Confirma esta alteração de status?">
-                                    <input type="hidden" name="id" value="${m.id}">
-                                    <c:choose>
-                                        <c:when test="${m.status == 'ATIVO'}">
-                                            <input type="hidden" name="acao" value="inativar">
-                                            <button class="btn btn-mini btn-perigo" type="submit">Inativar</button>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <input type="hidden" name="acao" value="reativar">
-                                            <button class="btn btn-mini" type="submit">Reativar</button>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </form>
+                                <c:choose>
+                                    <c:when test="${(usuarioLogado.perfil == 'GERENTE' && m.perfil == 'TECNICO') || (usuarioLogado.perfil == 'TECNICO' && m.perfil == 'OPERADOR')}">
+                                        <a class="btn btn-mini btn-contorno" href="${raiz}/membros?editar=${m.id}">Editar</a>
+                                        <form action="${raiz}/membros" method="post" data-confirmar="Confirma esta alteração de status?">
+                                            <input type="hidden" name="id" value="${m.id}">
+                                            <c:choose>
+                                                <c:when test="${m.status == 'ATIVO'}">
+                                                    <input type="hidden" name="acao" value="inativar">
+                                                    <button class="btn btn-mini btn-perigo" type="submit">Inativar</button>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <input type="hidden" name="acao" value="reativar">
+                                                    <button class="btn btn-mini" type="submit">Reativar</button>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </form>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span>Somente leitura</span>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                         </td>
                     </tr>
