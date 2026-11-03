@@ -1,3 +1,4 @@
+
 package org.apollo.apollowebcrud.model;
 
 import java.time.LocalDate;
@@ -113,11 +114,8 @@ public class Manutencao {
         this.dataPrevista = dataPrevista;
     }
 
-    /** Impede que a conclusão seja registrada com data no futuro. */
+    /** Define a data de conclusão. A validação é realizada no ManutencaoService. */
     public void setDataConclusao(LocalDate dataConclusao) {
-        if (dataConclusao != null && dataConclusao.isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("Data de finalização não pode ser no futuro");
-        }
         this.dataConclusao = dataConclusao;
     }
 
