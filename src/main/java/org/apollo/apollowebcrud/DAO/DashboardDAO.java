@@ -33,6 +33,16 @@ public class DashboardDAO extends ApolloConnection {
                 + "WHERE f.id_empresa = ? AND i.status = 'ATIVO'", idEmpresa);
     }
 
+    /** Conta manutenções abertas ou em andamento em todas as filiais da empresa. */
+    public int contarManutencoesPendentesDaEmpresa(int idEmpresa) {
+        return contar("SELECT COUNT(*) FROM manutencao m "
+                + "JOIN painel p ON p.id = m.id_painel "
+                + "JOIN string s ON s.id = p.id_string "
+                + "JOIN inversor i ON i.id = s.id_inversor "
+                + "JOIN filial f ON f.id = i.id_filial "
+                + "WHERE f.id_empresa = ? AND m.status IN ('ABERTA', 'EM_ANDAMENTO')", idEmpresa);
+    }
+
     // ---------- FILIAL (visão do técnico e do operador) ----------
 
     public int contarMembrosDaFilial(int idFilial) {
@@ -53,6 +63,15 @@ public class DashboardDAO extends ApolloConnection {
                 + "JOIN string s ON s.id = p.id_string "
                 + "JOIN inversor i ON i.id = s.id_inversor "
                 + "WHERE i.id_filial = ? AND m.status <> 'CANCELADA'", idFilial);
+    }
+
+    /** Conta manutenções abertas ou em andamento na filial do usuário. */
+    public int contarManutencoesPendentesDaFilial(int idFilial) {
+        return contar("SELECT COUNT(*) FROM manutencao m "
+                + "JOIN painel p ON p.id = m.id_painel "
+                + "JOIN string s ON s.id = p.id_string "
+                + "JOIN inversor i ON i.id = s.id_inversor "
+                + "WHERE i.id_filial = ? AND m.status IN ('ABERTA', 'EM_ANDAMENTO')", idFilial);
     }
 
     // ---------- AUXILIARES ----------
