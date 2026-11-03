@@ -25,6 +25,17 @@ public class DashboardService {
         return new Dashboard();
     }
 
+    /** Conta as manutenções pendentes conforme o perfil do usuário logado. */
+    public int contarManutencoesPendentes(Usuario logado) {
+        if (logado.getPerfil() == TipoUsuEnum.GERENTE && logado.getIdEmpresa() != null) {
+            return dashboardDAO.contarManutencoesPendentesDaEmpresa(logado.getIdEmpresa());
+        }
+        if (logado.getIdFilial() != null) {
+            return dashboardDAO.contarManutencoesPendentesDaFilial(logado.getIdFilial());
+        }
+        return 0;
+    }
+
     /** Visão do gerente com membros, filiais, inversores e potência de toda a empresa. */
     private Dashboard dashboardDaEmpresa(int idEmpresa) {
         Dashboard dashboard = new Dashboard();

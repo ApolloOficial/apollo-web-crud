@@ -15,7 +15,7 @@ import java.io.IOException;
 /**
  * Página inicial depois do login. O gerente abre dashboard-gerente.jsp, com os números
  * da empresa, e técnico e operador abrem dashboard-tecnico.jsp, com os da filial.
- * A view recebe dashboard, com os valores dos cards, e visaoGerente para diferenciar os dois casos.
+ * A view recebe dashboard, com os valores dos cards, visaoGerente e manutencoesPendentes.
  */
 @WebServlet("/dashboard")
 public class DashboardServlet extends HttpServlet {
@@ -34,6 +34,7 @@ public class DashboardServlet extends HttpServlet {
         boolean visaoGerente = logado.getPerfil() == TipoUsuEnum.GERENTE;
 
         request.setAttribute("dashboard", dashboardService.montarDashboard(logado));
+        request.setAttribute("manutencoesPendentes", dashboardService.contarManutencoesPendentes(logado));
         request.setAttribute("visaoGerente", visaoGerente);
         request.getRequestDispatcher(visaoGerente ? VIEW_GERENTE : VIEW_FILIAL).forward(request, response);
     }

@@ -30,11 +30,30 @@
     <header class="topo">
       <h1 class="titulo">Dashboard</h1>
       <div class="usuario">
-        <button type="button" class="sino" aria-label="Notificações">
-          <svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
-        </button>
-        <span class="avatar" aria-hidden="true"><c:out value="${usuarioLogado.iniciais}"/></span>
-        <span class="nome-usuario"><c:out value="${usuarioLogado.nome}"/></span>
+        <details class="notificacoes">
+          <summary class="sino" aria-label="Ver notificações">
+            <svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
+            <c:if test="${manutencoesPendentes > 0}">
+              <span class="notificacoes-ponto" aria-hidden="true"></span>
+            </c:if>
+          </summary>
+          <div class="notificacoes-painel">
+            <strong>Avisos de manutenção</strong>
+            <c:choose>
+              <c:when test="${manutencoesPendentes > 0}">
+                <p>Existem <strong>${manutencoesPendentes}</strong> manutenções abertas ou em andamento na sua filial.</p>
+                <a href="${raiz}/manutencao">Ver manutenções</a>
+              </c:when>
+              <c:otherwise>
+                <p>Nenhuma manutenção pendente no momento.</p>
+              </c:otherwise>
+            </c:choose>
+          </div>
+        </details>
+        <a class="usuario-perfil" href="${raiz}/perfil" aria-label="Abrir meu perfil">
+          <span class="avatar" aria-hidden="true"><c:out value="${usuarioLogado.iniciais}"/></span>
+          <span class="nome-usuario"><c:out value="${usuarioLogado.nome}"/></span>
+        </a>
       </div>
     </header>
 
