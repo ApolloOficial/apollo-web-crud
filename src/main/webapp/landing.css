@@ -3408,3 +3408,11 @@ h1, h2, h3, h4, h5, h6 { font-family:var(--font-display); }
 button, input, textarea, select { font-family:var(--font-body); }
 .btn-primary, .btn-team, .btn-plano, .plano-list li, .func-panel ul,
 .is-option, .click-hint, .is-content p, .ia-tag, .ia-msg { font-family:var(--font-body); }
+
+.hero-media img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center top;
+    display:block
+}
