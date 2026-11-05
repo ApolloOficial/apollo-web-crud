@@ -32,8 +32,7 @@ public class AuthFilter implements Filter {
     private final Logger logger = Logger.getLogger(AuthFilter.class.getName());
 
     private static final Set<String> ROTAS_PUBLICAS = Set.of(
-            "/", "/index.jsp", "/login", "/recuperar-senha",
-            "/landing.jsp", "/landing.html", "/landing.css", "/landing.js"
+            "/", "/index.jsp", "/login", "/recuperar-senha", "/landing.html", "/landing.css", "/landing.js"
     );
     private static final Set<String> PREFIXOS_PUBLICOS = Set.of("/docs/", "/imagem_landing/");
 
